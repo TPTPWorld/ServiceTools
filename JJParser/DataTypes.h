@@ -299,6 +299,7 @@ typedef enum {
     tptp_tpi,
     tptp_thf,
     tptp_tff,
+    tptp_tcf,
     tptp_fof,
     tptp_cnf,
     tptp_mixed,

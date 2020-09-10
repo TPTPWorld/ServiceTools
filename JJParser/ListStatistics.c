@@ -36,6 +36,11 @@ int ListCount(LISTNODE List,CountType WhatToCount) {
                         Counter += 1;
                     }
                     break;
+                case tcf_nodes:
+                    if (GetSyntax(List->AnnotatedFormula) == tptp_tcf) {
+                        Counter += 1;
+                    }
+                    break;
                 case fof_nodes:
                     if (GetSyntax(List->AnnotatedFormula) == tptp_fof) {
                         Counter += 1;
@@ -435,12 +440,14 @@ StatisticsType GetListStatistics(LISTNODE ListHead,SIGNATURE Signature) {
 //DEBUG printf("PROGRESS: starting\n");
     Statistics.FormulaStatistics.NumberOfFormulae = 
 HeadListCount(&HeadListNode,nodes);
-    Statistics.FormulaStatistics.NumberOfFOF = 
-HeadListCount(&HeadListNode,fof_nodes);
     Statistics.FormulaStatistics.NumberOfTHF = 
 HeadListCount(&HeadListNode,thf_nodes);
     Statistics.FormulaStatistics.NumberOfTFF = 
 HeadListCount(&HeadListNode,tff_nodes);
+    Statistics.FormulaStatistics.NumberOfTCF = 
+HeadListCount(&HeadListNode,tcf_nodes);
+    Statistics.FormulaStatistics.NumberOfFOF = 
+HeadListCount(&HeadListNode,fof_nodes);
     Statistics.FormulaStatistics.NumberOfCNF = 
 HeadListCount(&HeadListNode,cnf_nodes);
 //DEBUG printf("PROGRESS: counted nodes of type\n");

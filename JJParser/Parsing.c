@@ -246,7 +246,8 @@ void FreeTerm(TERM * Term,VARIABLENODE * Variables) {
             }
         } else if ((*Term)->Type == formula) {
             FreeFormula(&((*Term)->TheSymbol.Formula),Variables);
-        } else if ((*Term)->Type == nested_thf || (*Term)->Type == nested_tff ||
+        } else if ((*Term)->Type == nested_thf || 
+(*Term)->Type == nested_tff || (*Term)->Type == nested_tcf ||
 (*Term)->Type == nested_fof || (*Term)->Type == nested_cnf) {
             FreeFormulaWithVariables(&((*Term)->TheSymbol.NestedFormula));
         } else if ((*Term)->Type == nested_fot) {
@@ -530,7 +531,8 @@ TERM DuplicateTerm(TERM Original,ContextType Context,int ForceNewVariables) {
                 Term->TheSymbol.Variable = Original->TheSymbol.Variable;
             }
             IncreaseVariableUseCount(Term->TheSymbol.Variable,1);
-        } else if (Term->Type == nested_thf || Term->Type == nested_tff ||
+        } else if (Term->Type == nested_thf || 
+Term->Type == nested_tff || Term->Type == nested_tcf ||
 Term->Type == nested_fof || Term->Type == nested_cnf) {
 //----For CNF the variables are implicitly universally quantified, and must
 //----be new variables. For FOF we use the originals (can't recall why)
@@ -713,6 +715,8 @@ int * InfixNegatedAtom,int VariablesMustBeQuantified) {
                 Type = nested_thf;
             } else if (CheckToken(Stream,lower_word,"$tff")) {
                 Type = nested_tff;
+            } else if (CheckToken(Stream,lower_word,"$tcf")) {
+                Type = nested_tcf;
             } else if (CheckToken(Stream,lower_word,"$fof")) {
                 Type = nested_fof;
             } else if (CheckToken(Stream,lower_word,"$cnf")) {
@@ -805,12 +809,13 @@ FunctorType == number) {
         AcceptToken(Stream,punctuation,MatchingBracket);
 //----Is it a nested formula?
     } else if (Type == nested_thf || Type == nested_tff || 
-Type == nested_fof || Type == nested_cnf) {
+Type == nested_tcf || Type == nested_fof || Type == nested_cnf) {
         NumberOfArguments = 0;
         Term->Arguments = NULL;
         AcceptToken(Stream,punctuation,"(");
         Term->TheSymbol.NestedFormula = ParseFormulaWithVariables(Stream,
-Type == nested_thf ? tptp_thf : Type == nested_tff ? tptp_tff :
+Type == nested_thf ? tptp_thf : 
+Type == nested_tff ? tptp_tff : Type == nested_tcf ? tptp_tcf :
 Type == nested_fof ? tptp_fof : tptp_cnf,Context.Signature,0);
 //----Have to allow unbound variables in nested terms, e.g., for bind/2
 //----terms in inference() terms where the list of bindings together makes
@@ -850,7 +855,7 @@ Context.Signature,0);
     } else {
         InfixRHSType = nonterm;
 //----Cannot have a variable if a predicate was expected
-        if (Language != tptp_thf && Language != tptp_tff && 
+        if (Language != tptp_thf && 
 Type == predicate && FunctorType == upper_word) {
             TokenError(Stream);
         }
@@ -871,7 +876,8 @@ Term->Type == variable) {
         Term->TheSymbol.Variable = InsertVariable(Stream,Context.Signature,
 Context.Variables,EndOfScope,0,PrefixSymbol,free_variable,
 VariablesMustBeQuantified);
-    } else if (Term->Type == nested_thf || Term->Type == nested_tff ||
+    } else if (Term->Type == nested_thf || 
+Term->Type == nested_tff || Term->Type == nested_tcf ||
 Term->Type == nested_fof || Term->Type == nested_cnf || 
 Term->Type == nested_fot || 
 Term->Type == ite_term || Term->Type == let_term) {
@@ -1412,7 +1418,7 @@ VariablesMustBeQuantified);
   ( CheckTokenType(Stream,binary_connective) ||
 //----THF and TFF have types. Should this be allowed independent of AllowBinary?
     ( ( Language == tptp_thf ||
-        Language == tptp_tff ) &&
+        Language == tptp_tff  || Language == tptp_tcf ) &&
       ( CheckToken(Stream,punctuation,":") ||
         CheckToken(Stream,punctuation,">") ||
         CheckToken(Stream,punctuation,":=") ||
@@ -1662,6 +1668,7 @@ SIGNATURE Signature) {
         case tptp_fof:
             return(DuplicateAnnotatedTSTPFormula(Original,Signature,0));
             break;
+        case tptp_tcf:
         case tptp_cnf:
             return(DuplicateAnnotatedTSTPFormula(Original,Signature,1));
             break;
@@ -1693,6 +1700,7 @@ AnnotatedFormulaUnion.Comment));
                 case tptp_tpi:
                 case tptp_thf:
                 case tptp_tff:
+                case tptp_tcf:
                 case tptp_fof:
                 case tptp_cnf:
                     FreeAnnotatedTSTPFormula(AnnotatedFormula);
