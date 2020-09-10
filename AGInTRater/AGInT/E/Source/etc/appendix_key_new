@@ -1,0 +1,12 @@
+S00  NoSelection
+S0Y  SelectMaxLComplexAvoidPosPred
+S0S  SelectComplexG
+S1S  SelectComplexAHP
+S1T  PSelectComplexAHP
+S2S  SelectNewComplexAHP
+S2T  PSelectNewComplexAHP
+S3S  SelectNewComplexAHPExceptUniqMaxHorn
+S3T  PSelectNewComplexAHPExceptUniqMaxHorn
+S1U  SelectComplexAHPExceptRRHorn
+S2U  SelectNewComplexAHPExceptRRHorn
+

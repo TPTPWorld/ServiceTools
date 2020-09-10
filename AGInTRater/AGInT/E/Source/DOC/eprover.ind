@@ -1,0 +1,70 @@
+\begin{theindex}
+
+  \item clause evaluation, 13
+  \item clause splitting, 7
+  \item contextual simplify-reflect, 6
+
+  \indexspace
+
+  \item DISCOUNT, 8
+
+  \indexspace
+
+  \item E (theorem prover), 6
+  \item eligible for paramodulation, \see{literals, eligible}{4}
+  \item eligible for resolution, \see{literals, eligible}{4}
+  \item eligible literals, \see{literals, eligible}{4}
+  \item equality      resolution, 7
+  \item equality factoring, 5
+  \item equality resolution, 5
+  \item equations, 3
+
+  \indexspace
+
+  \item GNU General Public License, 28
+  \item GPL, 28
+
+  \indexspace
+
+  \item literal, 3
+  \item literals
+    \subitem eligible, 4, 5
+
+  \indexspace
+
+  \item ordering, 4
+
+  \indexspace
+
+  \item proof procedure, 9
+
+  \indexspace
+
+  \item reduction ordering, 4
+  \item rewriting, 5, 6
+
+  \indexspace
+
+  \item selection functions, 4
+  \item simplify-reflect, 6
+  \item \textbf{SP} (calculus), 5
+  \item SPASS, 6, 8
+  \item subsumption, 6
+  \item subterm, 3
+  \item superposition, 5
+
+  \indexspace
+
+  \item tautology deletion, 7
+  \item term ordering, 14
+  \item terms, 3
+
+  \indexspace
+
+  \item variables, 3
+
+  \indexspace
+
+  \item xyzzy, 3
+
+\end{theindex}

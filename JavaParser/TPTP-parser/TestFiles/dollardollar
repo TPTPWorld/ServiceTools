@@ -1,0 +1,475 @@
+%------------------------------------------------------------------------------
+fof(6,axiom,(
+    ! [X0,X1] : 
+      ( subset(singleton(X0),X1)
+    <=> in(X0,X1) ) ),
+    file(input,l2_zfmisc_1)).
+
+fof(40,plain,(
+    ! [X0,X1] : 
+      ( in(X0,X1)
+    <=> subset(singleton(X0),X1) ) ),
+    inference(normalize,[],[6])).
+
+fof(70,plain,(
+    ! [X0,X1] : 
+      ( ( ~ in(X0,X1)
+        | subset(singleton(X0),X1) )
+      & ( ~ subset(singleton(X0),X1)
+        | in(X0,X1) ) ) ),
+    inference('NNF transformation',[],[40])).
+
+fof(71,plain,(
+    ! [X1,X0] : 
+      ( ( ~ in(X0,X1)
+        | subset(singleton(X0),X1) )
+      & ( ~ subset(singleton(X0),X1)
+        | in(X0,X1) ) ) ),
+    inference(skolemization,[],[70])).
+
+cnf(98,plain,
+    ( subset(singleton(X0),X1)
+    | ~ in(X0,X1) ),
+    inference('cnf transformation',[],[71])).
+
+cnf(99,plain,
+    ( in(X0,X1)
+    | ~ subset(singleton(X0),X1) ),
+    inference('cnf transformation',[],[71])).
+
+fof(10,axiom,(
+    ! [X0,X1] : 
+      ( ! [X2] : 
+          ( in(X2,X0)
+        <=> in(X2,X1) )
+     => X0 = X1 ) ),
+    file(input,t2_tarski)).
+
+fof(41,plain,(
+    ! [X0,X1] : 
+      ( ! [X2] : 
+          ( in(X2,X1)
+        <=> in(X2,X0) )
+     => X0 = X1 ) ),
+    inference(normalize,[],[10])).
+
+fof(46,plain,(
+    ! [X0,X1] : 
+      ( ? [X2] : 
+          ( in(X2,X1)
+        <~> in(X2,X0) )
+      | X0 = X1 ) ),
+    inference('ENNF transformation',[],[41])).
+
+fof(50,plain,(
+    ! [X0,X1] : 
+      ( ? [X2] : 
+          ( in(X2,X1)
+        <~> in(X2,X0) )
+      | X0 = X1 ) ),
+    inference('definition folding',[],[46])).
+
+fof(57,plain,(
+    ! [X0,X1] : 
+      ( ? [X2] : 
+          ( ( in(X2,X1)
+            | in(X2,X0) )
+          & ( ~ in(X2,X1)
+            | ~ in(X2,X0) ) )
+      | X0 = X1 ) ),
+    inference('NNF transformation',[],[50])).
+
+fof(58,plain,(
+    ! [X1,X0] : 
+      ( ( ( in($$s1(X0,X1),X1)
+          | in($$s1(X0,X1),X0) )
+        & ( ~ in($$s1(X0,X1),X1)
+          | ~ in($$s1(X0,X1),X0) ) )
+      | X0 = X1 ) ),
+    inference(skolemization,[],[57])).
+
+cnf(81,plain,
+    ( X0 = X1
+    | ~ in($$s1(X0,X1),X0)
+    | ~ in($$s1(X0,X1),X1) ),
+    inference('cnf transformation',[],[58])).
+
+cnf(108,plain,
+    ( $$e(X0,X1)
+    | ~ in($$s1(X0,X1),X0)
+    | ~ in($$s1(X0,X1),X1) ),
+    inference('equality proxy replacement',[],[81])).
+
+fof(12,negated_conjecture,(
+    ~ ! [X0] : union(powerset(X0)) = X0 ),
+    file(input,t99_zfmisc_1)).
+
+fof(43,negated_conjecture,(
+    ~ ! [X0] : X0 = union(powerset(X0)) ),
+    inference(normalize,[],[12])).
+
+fof(44,negated_conjecture,(
+    ? [X0] : X0 != union(powerset(X0)) ),
+    inference('ENNF transformation',[],[43])).
+
+fof(54,negated_conjecture,(
+    $$s0 != union(powerset($$s0)) ),
+    inference(skolemization,[],[44])).
+
+cnf(77,negated_conjecture,
+    ( $$s0 != union(powerset($$s0)) ),
+    inference('cnf transformation',[],[54])).
+
+cnf(110,negated_conjecture,
+    ( ~ $$e($$s0,union(powerset($$s0))) ),
+    inference('equality proxy replacement',[],[77])).
+
+cnf(171,negated_conjecture,
+    ( ~ in($$s1($$s0,union(powerset($$s0))),union(powerset($$s0)))
+    | ~ in($$s1($$s0,union(powerset($$s0))),$$s0) ),
+    inference(resolution,[],[108,110])).
+
+fof(3,axiom,(
+    ! [X0,X1] : 
+      ( X1 = powerset(X0)
+    <=> ! [X2] : 
+          ( in(X2,X1)
+        <=> subset(X2,X0) ) ) ),
+    file(input,d1_zfmisc_1)).
+
+fof(64,plain,(
+    ! [X0,X1] : 
+      ( ( X1 != powerset(X0)
+        | ! [X2] : 
+            ( ( ~ in(X2,X1)
+              | subset(X2,X0) )
+            & ( ~ subset(X2,X0)
+              | in(X2,X1) ) ) )
+      & ( ? [X2] : 
+            ( ( in(X2,X1)
+              | subset(X2,X0) )
+            & ( ~ in(X2,X1)
+              | ~ subset(X2,X0) ) )
+        | X1 = powerset(X0) ) ) ),
+    inference('NNF transformation',[],[3])).
+
+fof(65,plain,(
+    ! [X0,X1] : 
+      ( ( X1 != powerset(X0)
+        | ! [X2] : 
+            ( ( ~ in(X2,X1)
+              | subset(X2,X0) )
+            & ( ~ subset(X2,X0)
+              | in(X2,X1) ) ) )
+      & ( ? [X3] : 
+            ( ( in(X3,X1)
+              | subset(X3,X0) )
+            & ( ~ in(X3,X1)
+              | ~ subset(X3,X0) ) )
+        | X1 = powerset(X0) ) ) ),
+    inference(rectify,[],[64])).
+
+fof(66,plain,(
+    ! [X2,X0,X1] : 
+      ( ( X1 != powerset(X0)
+        | ( ( ~ in(X2,X1)
+            | subset(X2,X0) )
+          & ( ~ subset(X2,X0)
+            | in(X2,X1) ) ) )
+      & ( ( ( in($$s4(X0,X1),X1)
+            | subset($$s4(X0,X1),X0) )
+          & ( ~ in($$s4(X0,X1),X1)
+            | ~ subset($$s4(X0,X1),X0) ) )
+        | X1 = powerset(X0) ) ) ),
+    inference(skolemization,[],[65])).
+
+cnf(89,plain,
+    ( in(X2,X1)
+    | ~ subset(X2,X0)
+    | X1 != powerset(X0) ),
+    inference('cnf transformation',[],[66])).
+
+cnf(157,plain,
+    ( in(X1,powerset(X2))
+    | ~ subset(X1,X2) ),
+    inference('equality resolution',[],[89])).
+
+fof(9,axiom,(
+    ! [X0,X1] : subset(X0,X0) ),
+    file(input,reflexivity_r1_tarski)).
+
+fof(55,plain,(
+    ! [X0] : subset(X0,X0) ),
+    inference(skolemization,[],[9])).
+
+cnf(78,plain,
+    ( subset(X0,X0) ),
+    inference('cnf transformation',[],[55])).
+
+cnf(169,plain,
+    ( in(X1,singleton(X1)) ),
+    inference(resolution,[],[99,78])).
+
+fof(5,axiom,(
+    ! [X0,X1] : 
+      ( X1 = union(X0)
+    <=> ! [X2] : 
+          ( in(X2,X1)
+        <=> ? [X3] : 
+              ( in(X2,X3)
+              & in(X3,X0) ) ) ) ),
+    file(input,d4_tarski)).
+
+fof(39,plain,(
+    ! [X0,X1] : 
+      ( X1 = union(X0)
+    <=> ! [X2] : 
+          ( in(X2,X1)
+        <=> ? [X3] : 
+              ( in(X3,X0)
+              & in(X2,X3) ) ) ) ),
+    inference(normalize,[],[5])).
+
+fof(52,plain,(
+    ! [X0,X1] : 
+      ( X1 = union(X0)
+    <=> ! [X2] : 
+          ( in(X2,X1)
+        <=> ? [X3] : 
+              ( in(X3,X0)
+              & in(X2,X3) ) ) ) ),
+    inference('definition folding',[],[39])).
+
+fof(67,plain,(
+    ! [X0,X1] : 
+      ( ( X1 != union(X0)
+        | ! [X2] : 
+            ( ( ~ in(X2,X1)
+              | ? [X3] : 
+                  ( in(X3,X0)
+                  & in(X2,X3) ) )
+            & ( ! [X3] : 
+                  ( ~ in(X3,X0)
+                  | ~ in(X2,X3) )
+              | in(X2,X1) ) ) )
+      & ( ? [X2] : 
+            ( ( in(X2,X1)
+              | ? [X3] : 
+                  ( in(X3,X0)
+                  & in(X2,X3) ) )
+            & ( ~ in(X2,X1)
+              | ! [X3] : 
+                  ( ~ in(X3,X0)
+                  | ~ in(X2,X3) ) ) )
+        | X1 = union(X0) ) ) ),
+    inference('NNF transformation',[],[52])).
+
+fof(68,plain,(
+    ! [X0,X1] : 
+      ( ( X1 != union(X0)
+        | ! [X2] : 
+            ( ( ~ in(X2,X1)
+              | ? [X3] : 
+                  ( in(X3,X0)
+                  & in(X2,X3) ) )
+            & ( ! [X4] : 
+                  ( ~ in(X4,X0)
+                  | ~ in(X2,X4) )
+              | in(X2,X1) ) ) )
+      & ( ? [X5] : 
+            ( ( in(X5,X1)
+              | ? [X6] : 
+                  ( in(X6,X0)
+                  & in(X5,X6) ) )
+            & ( ~ in(X5,X1)
+              | ! [X7] : 
+                  ( ~ in(X7,X0)
+                  | ~ in(X5,X7) ) ) )
+        | X1 = union(X0) ) ) ),
+    inference(rectify,[],[67])).
+
+fof(69,plain,(
+    ! [X7,X5,X4,X2,X0,X1] : 
+      ( ( X1 != union(X0)
+        | ( ( ~ in(X2,X1)
+            | ( in($$s5(X2,X0),X0)
+              & in(X2,$$s5(X2,X0)) ) )
+          & ( ~ in(X4,X0)
+            | ~ in(X2,X4)
+            | in(X2,X1) ) ) )
+      & ( ( ( in($$s6(X0,X1),X1)
+            | ( in($$s7(X5,X0),X0)
+              & in($$s6(X0,X1),$$s7(X5,X0)) ) )
+          & ( ~ in($$s6(X0,X1),X1)
+            | ~ in(X7,X0)
+            | ~ in($$s6(X0,X1),X7) ) )
+        | X1 = union(X0) ) ) ),
+    inference(skolemization,[],[68])).
+
+cnf(94,plain,
+    ( in(X2,X1)
+    | ~ in(X2,X4)
+    | ~ in(X4,X0)
+    | X1 != union(X0) ),
+    inference('cnf transformation',[],[69])).
+
+cnf(153,plain,
+    ( ~ in(X1,X2)
+    | in(X1,union(X3))
+    | ~ in(X2,X3) ),
+    inference('equality resolution',[],[94])).
+
+cnf(235,plain,
+    ( ~ in(singleton(X1),X2)
+    | in(X1,union(X2)) ),
+    inference(resolution,[],[169,153])).
+
+cnf(341,plain,
+    ( in(X1,union(powerset(X2)))
+    | ~ subset(singleton(X1),X2) ),
+    inference(resolution,[],[157,235])).
+
+cnf(2212,negated_conjecture,
+    ( ~ subset(singleton($$s1($$s0,union(powerset($$s0)))),$$s0) ),
+    inference('resolution, forward subsumption resolution',[],[99,171,341])).
+
+cnf(2373,negated_conjecture,
+    ( ~ in($$s1($$s0,union(powerset($$s0))),$$s0) ),
+    inference(resolution,[],[98,2212])).
+
+cnf(80,plain,
+    ( X0 = X1
+    | in($$s1(X0,X1),X0)
+    | in($$s1(X0,X1),X1) ),
+    inference('cnf transformation',[],[58])).
+
+cnf(109,plain,
+    ( $$e(X0,X1)
+    | in($$s1(X0,X1),X0)
+    | in($$s1(X0,X1),X1) ),
+    inference('equality proxy replacement',[],[80])).
+
+cnf(170,negated_conjecture,
+    ( in($$s1($$s0,union(powerset($$s0))),union(powerset($$s0)))
+    | in($$s1($$s0,union(powerset($$s0))),$$s0) ),
+    inference(resolution,[],[109,110])).
+
+cnf(92,plain,
+    ( in($$s5(X2,X0),X0)
+    | ~ in(X2,X1)
+    | X1 != union(X0) ),
+    inference('cnf transformation',[],[69])).
+
+cnf(155,plain,
+    ( in($$s5(X1,X2),X2)
+    | ~ in(X1,union(X2)) ),
+    inference('equality resolution',[],[92])).
+
+cnf(88,plain,
+    ( subset(X2,X0)
+    | ~ in(X2,X1)
+    | X1 != powerset(X0) ),
+    inference('cnf transformation',[],[66])).
+
+cnf(158,plain,
+    ( ~ in(X1,powerset(X2))
+    | subset(X1,X2) ),
+    inference('equality resolution',[],[88])).
+
+cnf(271,plain,
+    ( subset($$s5(X1,powerset(X2)),X2)
+    | ~ in(X1,union(powerset(X2))) ),
+    inference(resolution,[],[155,158])).
+
+fof(4,axiom,(
+    ! [X0,X1] : 
+      ( subset(X0,X1)
+    <=> ! [X2] : 
+          ( in(X2,X0)
+         => in(X2,X1) ) ) ),
+    file(input,d3_tarski)).
+
+fof(48,plain,(
+    ! [X0,X1] : 
+      ( subset(X0,X1)
+    <=> ! [X2] : 
+          ( ~ in(X2,X0)
+          | in(X2,X1) ) ) ),
+    inference('ENNF transformation',[],[4])).
+
+fof(53,plain,(
+    ! [X0,X1] : 
+      ( subset(X0,X1)
+    <=> ! [X2] : 
+          ( ~ in(X2,X0)
+          | in(X2,X1) ) ) ),
+    inference('definition folding',[],[48])).
+
+fof(72,plain,(
+    ! [X0,X1] : 
+      ( ( ~ subset(X0,X1)
+        | ! [X2] : 
+            ( ~ in(X2,X0)
+            | in(X2,X1) ) )
+      & ( ? [X2] : 
+            ( in(X2,X0)
+            & ~ in(X2,X1) )
+        | subset(X0,X1) ) ) ),
+    inference('NNF transformation',[],[53])).
+
+fof(73,plain,(
+    ! [X0,X1] : 
+      ( ( ~ subset(X0,X1)
+        | ! [X2] : 
+            ( ~ in(X2,X0)
+            | in(X2,X1) ) )
+      & ( ? [X3] : 
+            ( in(X3,X0)
+            & ~ in(X3,X1) )
+        | subset(X0,X1) ) ) ),
+    inference(rectify,[],[72])).
+
+fof(74,plain,(
+    ! [X2,X1,X0] : 
+      ( ( ~ subset(X0,X1)
+        | ~ in(X2,X0)
+        | in(X2,X1) )
+      & ( ( in($$s8(X1,X0),X0)
+          & ~ in($$s8(X1,X0),X1) )
+        | subset(X0,X1) ) ) ),
+    inference(skolemization,[],[73])).
+
+cnf(100,plain,
+    ( in(X2,X1)
+    | ~ in(X2,X0)
+    | ~ subset(X0,X1) ),
+    inference('cnf transformation',[],[74])).
+
+cnf(93,plain,
+    ( in(X2,$$s5(X2,X0))
+    | ~ in(X2,X1)
+    | X1 != union(X0) ),
+    inference('cnf transformation',[],[69])).
+
+cnf(154,plain,
+    ( in(X1,$$s5(X1,X2))
+    | ~ in(X1,union(X2)) ),
+    inference('equality resolution',[],[93])).
+
+cnf(238,plain,
+    ( ~ in(X1,union(X2))
+    | ~ subset($$s5(X1,X2),X3)
+    | in(X1,X3) ),
+    inference(resolution,[],[100,154])).
+
+cnf(932,negated_conjecture,
+    ( ~ subset($$s5($$s1($$s0,union(powerset($$s0))),powerset($$s0)),X1)
+    | in($$s1($$s0,union(powerset($$s0))),$$s0)
+    | in($$s1($$s0,union(powerset($$s0))),X1) ),
+    inference(resolution,[],[170,238])).
+
+cnf(21779,negated_conjecture,
+    ( $false ),
+    inference('resolution, forward subsumption resolution',[],[2373,170,271,932])).
+%------------------------------------------------------------------------------
+

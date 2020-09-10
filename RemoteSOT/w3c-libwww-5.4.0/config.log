@@ -1,0 +1,219 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:782: checking host system type
+configure:803: checking target system type
+configure:821: checking build system type
+configure:893: checking for a BSD compatible install
+configure:946: checking whether build environment is sane
+configure:984: checking whether make sets ${MAKE}
+configure:1030: checking for working aclocal
+configure:1043: checking for working autoconf
+configure:1056: checking for working automake
+configure:1069: checking for working autoheader
+configure:1082: checking for working makeinfo
+configure:1103: checking for gcc
+configure:1216: checking whether the C compiler (gcc  ) works
+configure:1232: gcc -o conftest    conftest.c  1>&5
+configure:1258: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:1263: checking whether we are using GNU C
+configure:1291: checking whether gcc accepts -g
+configure:1324: checking for POSIXized ISC
+configure:1345: checking for Cygwin environment
+configure:1378: checking for mingw32 environment
+configure:1409: checking for executable suffix
+configure:1520: checking for ranlib
+configure:1559: checking for ld used by GCC
+configure:1622: checking if the linker (/usr/bin/ld) is GNU ld
+configure:1638: checking for BSD-compatible nm
+configure:1675: checking whether ln -s works
+ltconfig:603: checking for object suffix
+ltconfig:604: gcc -c -g -O2 -Wall  conftest.c 1>&5
+ltconfig:776: checking if gcc PIC flag -fPIC works
+ltconfig:777: gcc -c -g -O2 -Wall -fPIC -DPIC  conftest.c 1>&5
+ltconfig:829: checking if gcc supports -c -o file.o
+ltconfig:830: gcc -c -g -O2 -Wall -o out/conftest2.o  conftest.c 1>&5
+ltconfig:862: checking if gcc supports -c -o file.lo
+ltconfig:863: gcc -c -g -O2 -Wall -c -o conftest.lo  conftest.c 1>&5
+ltconfig:914: checking if gcc supports -fno-rtti -fno-exceptions
+ltconfig:915: gcc -c -g -O2 -Wall -fno-rtti -fno-exceptions -c conftest.c  conftest.c 1>&5
+ltconfig:958: checking if gcc static flag -static works
+ltconfig:959: gcc -o conftest -g -O2 -Wall   -static conftest.c  1>&5
+conftest.c:1: warning: return type defaults to 'int'
+GNU ld version 2.17.50.0.18-1 20070731
+ltconfig:1592: checking if global_symbol_pipe works
+ltconfig:1593: gcc -c -g -O2 -Wall  conftest.c 1>&5
+conftest.c:9: warning: return type defaults to 'int'
+ltconfig:1596: eval "/usr/bin/nm -B conftest.o | sed -n -e 's/^.*[ 	]\([ABCDGISTW]\)[ 	][ 	]*\(\)\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2\3 \3/p' > conftest.nm"
+ltconfig:1648: gcc -o conftest -g -O2 -Wall -fno-builtin   conftest.c conftstm.o 1>&5
+conftest.c:6: warning: 'main' is usually a function
+configure:2079: checking whether make sets ${MAKE}
+configure:2117: checking for a BSD compatible install
+configure:2171: checking how to run the C preprocessor
+configure:2255: checking for X
+configure:2492: checking whether to define additional compiler specific flags
+configure:2520: checking for telnet
+configure:2560: checking for rlogin
+configure:2600: checking for tn3270
+configure:2600: checking for x3270
+configure:2640: checking for perl
+configure:2676: checking for rm
+configure:2712: checking for ar
+configure:2748: checking for mkdir
+configure:2784: checking for chmod
+configure:2820: checking for cp
+configure:2856: checking for tar
+configure:2892: checking for cvs
+configure:2928: checking for sed
+configure:2966: checking for gzip
+configure:3003: checking whether ln -s works
+configure:3027: checking for resolv.conf
+configure:3072: checking for socket in -lsocket
+configure:3119: checking for connect in -linet
+configure:3166: checking for t_accept in -lnsl
+configure:3213: checking for dlopen in -ldl
+configure:3264: checking for appkit/appkit.h
+configure:3264: checking for appkit.h
+configure:3304: checking for arpa/inet.h
+configure:3304: checking for inet.h
+configure:3344: checking for net/errno.h
+configure:3344: checking for sys/errno.h
+configure:3344: checking for errno.h
+configure:3384: checking for netinet/in.h
+configure:3384: checking for in.h
+configure:3424: checking for netinet/tcp.h
+configure:3424: checking for tcp.h
+configure:3464: checking for sys/fcntl.h
+configure:3464: checking for fcntl.h
+configure:3504: checking for sys/file.h
+configure:3544: checking for sys/ioctl.h
+configure:3584: checking for sys/ipc.h
+configure:3624: checking for sys/limits.h
+configure:3624: checking for limits.h
+configure:3664: checking for sys/machine.h
+configure:3704: checking for sys/resource.h
+configure:3704: checking for resource.h
+configure:3744: checking for sys/select.h
+configure:3744: checking for select.h
+configure:3784: checking for sys/socket.h
+configure:3784: checking for socket.h
+configure:3824: checking for sys/stat.h
+configure:3824: checking for stat.h
+configure:3864: checking for sys/syslog
+configure:3864: checking for syslog.h
+configure:3904: checking for sys/systeminfo.h
+configure:3944: checking for sys/time.h
+configure:3944: checking for time.h
+configure:3984: checking for sys/types.h
+configure:3984: checking for types.h
+configure:4024: checking for sys/unistd.h
+configure:4024: checking for unistd.h
+configure:4064: checking for wais/wais.h
+configure:4064: checking for wais.h
+configure:4104: checking for bsdtime.h
+configure:4144: checking for bsdtypes.h
+configure:4184: checking for ctype.h
+configure:4224: checking for cursesX.h
+configure:4224: checking for curses.h
+configure:4264: checking for dn.h
+configure:4304: checking for dnetdb.h
+configure:4344: checking for grp.h
+configure:4384: checking for libc.h
+configure:4424: checking for malloc.h
+configure:4464: checking for manifest.h
+configure:4504: checking for memory.h
+configure:4544: checking for netdb.h
+configure:4584: checking for pwd.h
+configure:4624: checking for rxposix.h
+configure:4624: checking for regex.h
+configure:4664: checking for stdefs.h
+configure:4704: checking for stdio.h
+configure:4744: checking for stdlib.h
+configure:4784: checking for string.h
+configure:4784: checking for strings.h
+configure:4824: checking for termios.h
+configure:4864: checking for unixlib.h
+configure:4905: checking for dirent.h that defines DIR
+configure:4943: checking for opendir in -ldir
+configure:5029: checking for dir.h
+configure:5029: checking for direct.h
+configure:5065: checking for ANSI C header files
+configure:5169: checking for sys/wait.h that is POSIX.1 compatible
+configure:5211: checking whether time.h and sys/time.h may both be included
+configure:5246: checking whether stat file-mode macros are broken
+configure:5303: checking for uid_t in sys/types.h
+configure:5337: checking for pid_t
+configure:5370: checking type of array argument to getgroups
+configure:5441: checking for mode_t
+configure:5474: checking for size_t
+configure:5507: checking return type of signal handlers
+configure:5550: checking for BOOLEAN
+configure:5583: checking for u_char
+configure:5616: checking for u_short
+configure:5649: checking for u_long
+configure:5684: checking size of char
+configure:5723: checking size of char *
+configure:5762: checking size of int
+configure:5801: checking size of long
+configure:5840: checking for whether time_t is long
+configure:5878: checking for whether size_t is long
+configure:5917: checking for working const
+configure:5992: checking whether byte ordering is bigendian
+configure:6082: checking whether char is unsigned
+configure:6145: checking for long double
+configure:6189: checking whether struct tm is in sys/time.h or time.h
+configure:6223: checking for tm_gmtoff in struct tm
+configure:6257: checking for time.h that defines timezone
+configure:6290: checking for time.h that defines altzone
+configure:6323: checking for time.h that defines daylight
+configure:6357: checking if timezone is backwards
+configure:6408: checking for tm_zone in struct tm
+configure:6478: checking for winsize structure
+configure:6519: checking for vprintf
+configure:6624: checking for strftime
+configure:6726: checking for getcwd
+configure:6726: checking for gethostname
+configure:6726: checking for getdomainname
+configure:6726: checking for getwd
+configure:6726: checking for select
+configure:6726: checking for socket
+configure:6726: checking for strerror
+configure:6726: checking for strtol
+configure:6726: checking for opendir
+configure:6726: checking for getpid
+configure:6726: checking for strchr
+configure:6726: checking for memcpy
+configure:6726: checking for getlogin
+configure:6726: checking for getpass
+configure:6726: checking for fcntl
+configure:6726: checking for readdir
+configure:6726: checking for sysinfo
+configure:6726: checking for ioctl
+configure:6726: checking for chdir
+configure:6726: checking for tempnam
+configure:6726: checking for getsockopt
+configure:6726: checking for setsockopt
+configure:6726: checking for gettimeofday
+configure:6726: checking for mktime
+configure:6726: checking for timegm
+configure:6726: checking for tzset
+configure:6781: checking for unlink
+configure:6886: checking whether to support direct WAIS access.
+configure:6946: checking whether to support zlib compress/decompress
+configure:7014: checking whether to support POSIX regex
+configure:7105: checking whether to support SOCKS
+configure:7212: checking whether to support SOCKS5
+configure:7263: checking whether to support SOCKS4
+configure:7335: checking whether to support mysql access.
+configure:7411: checking whether we include the Expat XML parser.
+configure:7470: checking whether we include MD5 support for HTTP Digest Authentication.
+configure:7509: checking whether we include WebDAV support.
+configure:7551: checking whether we include extension methods.
+configure:7580: checking whether we can find OpenSSL
+configure:7653: checking whether to use internal signal handlers
+configure:7676: checking whether to disable Nagle's algorithm
+configure:7703: checking whether to accept new rule files without asking an end user.
+configure:7726: checking whether to disable HTTP/1.1 pipelining
+configure:7750: checking whether to use MUX as transport for HTTP.
+configure:7773: checking whether to define _REENTRANT
+configure:8277: checking whether to define _POSIX_SOURCE

@@ -1,0 +1,19 @@
+% SZS output start Proof
+cnf(associativity,axiom,( multiply(multiply(X1,X2,X3),X4,multiply(X1,X2,X5)) = multiply(X1,X2,multiply(X3,X4,X5)) ),file('/export/starexec/sandbox/benchmark/Axioms/BOO001-0.ax',associativity)).
+cnf(ternary_multiply_1,axiom,( multiply(X1,X2,X2) = X2 ),file('/export/starexec/sandbox/benchmark/Axioms/BOO001-0.ax',ternary_multiply_1)).
+cnf(right_inverse,axiom,( multiply(X1,X2,inverse(X2)) = X1 ),file('/export/starexec/sandbox/benchmark/Axioms/BOO001-0.ax',right_inverse)).
+cnf(ternary_multiply_2,axiom,( multiply(X1,X1,X2) = X1 ),file('/export/starexec/sandbox/benchmark/Axioms/BOO001-0.ax',ternary_multiply_2)).
+cnf(left_inverse,axiom,( multiply(inverse(X1),X1,X2) = X2 ),file('/export/starexec/sandbox/benchmark/Axioms/BOO001-0.ax',left_inverse)).
+cnf(prove_inverse_is_self_cancelling,negated_conjecture,( inverse(inverse(a)) != a ),file('/export/starexec/sandbox/benchmark/theBenchmark.p',prove_inverse_is_self_cancelling)).
+cnf(c_0_6,axiom,( multiply(multiply(X1,X2,X3),X4,multiply(X1,X2,X5)) = multiply(X1,X2,multiply(X3,X4,X5)) ),associativity).
+cnf(c_0_7,axiom,( multiply(X1,X2,X2) = X2 ),ternary_multiply_1).
+cnf(c_0_8,plain,( multiply(multiply(X1,X2,X3),X4,X2) = multiply(X1,X2,multiply(X3,X4,X2)) ),inference(spm,[status(thm)],[c_0_6,c_0_7])).
+cnf(c_0_9,axiom,( multiply(X1,X2,inverse(X2)) = X1 ),right_inverse).
+cnf(c_0_10,plain,( multiply(X1,X2,X3) = multiply(X1,X3,multiply(inverse(X3),X2,X3)) ),inference(spm,[status(thm)],[c_0_8,c_0_9])).
+cnf(c_0_11,axiom,( multiply(X1,X1,X2) = X1 ),ternary_multiply_2).
+cnf(c_0_12,axiom,( multiply(inverse(X1),X1,X2) = X2 ),left_inverse).
+cnf(c_0_13,plain,( multiply(X1,inverse(X2),X2) = X1 ),inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10,c_0_11]),c_0_9])).
+cnf(c_0_14,negated_conjecture,( inverse(inverse(a)) != a ),prove_inverse_is_self_cancelling).
+cnf(c_0_15,plain,( inverse(inverse(X1)) = X1 ),inference(spm,[status(thm)],[c_0_12,c_0_13])).
+cnf(c_0_16,negated_conjecture,( $false ),inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_14,c_0_15])]),[proof]).
+% SZS output end Proof

@@ -1,0 +1,142 @@
+cnf(2,initial,
+    ( lives(butler) ),
+    unknown).
+
+cnf(4,initial,
+    ( ~ killed(X1,X2)
+    | ~ richer(X1,X2) ),
+    unknown).
+
+cnf(5,initial,
+    ( ~ hates(agatha,X1)
+    | ~ hates(charles,X1) ),
+    unknown).
+
+cnf(6,initial,
+    ( ~ hates(X1,agatha)
+    | ~ hates(X1,butler)
+    | ~ hates(X1,charles) ),
+    unknown).
+
+cnf(7,initial,
+    ( hates(agatha,agatha) ),
+    unknown).
+
+cnf(8,initial,
+    ( hates(agatha,charles) ),
+    unknown).
+
+cnf(9,initial,
+    ( hates(X1,X2)
+    | ~ killed(X1,X2) ),
+    unknown).
+
+cnf(10,initial,
+    ( hates(butler,X1)
+    | ~ hates(agatha,X1) ),
+    unknown).
+
+cnf(11,initial,
+    ( richer(X1,agatha)
+    | hates(butler,X1)
+    | ~ lives(X1) ),
+    unknown).
+
+cnf(12,initial,
+    ( killed(butler,agatha)
+    | killed(charles,agatha) ),
+    unknown).
+
+cnf(13,derived,
+    ( hates(butler,X1)
+    | ~ killed(X1,agatha)
+    | ~ lives(X1) ),
+    inference(pm,[status(thm)],[4,11,theory(equality)])).
+
+cnf(14,derived,
+    ( hates(charles,agatha)
+    | killed(butler,agatha) ),
+    inference(pm,[status(thm)],[9,12,theory(equality)])).
+
+cnf(18,derived,
+    ( ~ hates(butler,agatha)
+    | ~ hates(butler,butler)
+    | ~ hates(agatha,charles) ),
+    inference(pm,[status(thm)],[6,10,theory(equality)])).
+
+cnf(19,derived,
+    ( ~ hates(butler,agatha)
+    | ~ hates(butler,butler)
+    | ~ true ),
+    inference(rw,[status(thm)],[18,8,theory(equality)])).
+
+cnf(20,derived,
+    ( ~ hates(butler,agatha)
+    | ~ hates(butler,butler) ),
+    inference(cn,[status(thm)],[19,theory(equality)])).
+
+cnf(24,derived,
+    ( hates(butler,agatha)
+    | hates(charles,agatha) ),
+    inference(pm,[status(thm)],[9,14,theory(equality)])).
+
+cnf(25,derived,
+    ( hates(butler,butler)
+    | hates(charles,agatha)
+    | ~ lives(butler) ),
+    inference(pm,[status(thm)],[13,14,theory(equality)])).
+
+cnf(26,derived,
+    ( hates(butler,butler)
+    | hates(charles,agatha)
+    | ~ true ),
+    inference(rw,[status(thm)],[25,2,theory(equality)])).
+
+cnf(27,derived,
+    ( hates(butler,butler)
+    | hates(charles,agatha) ),
+    inference(cn,[status(thm)],[26,theory(equality)])).
+
+cnf(33,derived,
+    ( hates(butler,agatha)
+    | ~ hates(agatha,agatha) ),
+    inference(pm,[status(thm)],[5,24,theory(equality)])).
+
+cnf(34,derived,
+    ( hates(butler,agatha)
+    | ~ true ),
+    inference(rw,[status(thm)],[33,7,theory(equality)])).
+
+cnf(35,derived,
+    ( hates(butler,agatha) ),
+    inference(cn,[status(thm)],[34,theory(equality)])).
+
+cnf(37,derived,
+    ( ~ true
+    | ~ hates(butler,butler) ),
+    inference(rw,[status(thm)],[20,35,theory(equality)])).
+
+cnf(38,derived,
+    ( ~ hates(butler,butler) ),
+    inference(cn,[status(thm)],[37,theory(equality)])).
+
+cnf(40,derived,
+    ( hates(charles,agatha) ),
+    inference(sr,[status(thm)],[27,38,theory(equality)])).
+
+cnf(41,derived,
+    ( ~ hates(agatha,agatha) ),
+    inference(pm,[status(thm)],[5,40,theory(equality)])).
+
+cnf(43,derived,
+    ( ~ true ),
+    inference(rw,[status(thm)],[41,7,theory(equality)])).
+
+cnf(44,derived,
+    ( false ),
+    inference(cn,[status(thm)],[43,theory(equality)])).
+
+cnf(45,derived,
+    ( false ),
+    44,
+    ['proof']).

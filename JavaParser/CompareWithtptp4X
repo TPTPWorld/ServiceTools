@@ -1,0 +1,7 @@
+#!/bin/tcsh
+
+java -cp .:THFTPTP-parser/antlr-2.7.5.jar:THFTPTP-parser/TptpParser.jar:THFTPTP-parser tptp_tester -o "--" $1 | tptp4X -- > `basename $1`.jp
+tptp4X -c $1 >! `basename $1`.tptp4X
+echo Compare `basename $1`.jp `basename $1`.tptp4X
+diff -B -q `basename $1`.jp `basename $1`.tptp4X
+rm `basename $1`.jp `basename $1`.tptp4X

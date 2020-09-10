@@ -1,0 +1,30 @@
+
+DYNAMIC
+
+Hashes for a formula
+1. obviousness (depth)
+2. parents
+3. leaf's plurality (or it's own plurality, if it is the leaf)
+4. complexity (number of unique symbols)
+5. plurality (total number of symbols / number of unique symbols)
+6. intensity (leaf's plurality / own plurality)
+
+Arrays
+1. intensity
+2. comlexity
+3. obviousness
+when maximum 
+
+SET055-1		assert fails
+some files		satisfiable
+
+shave puzzle		subsumption problems
+$fail is kept around
+
+nice results:
+PUZ003-1
+RNG001-1
+PUZ002-1
+PUZ004-1
+
+the E speed is so great that checking it with otter is useless. in 1 sec. E outperforms otter's many seconds of effort

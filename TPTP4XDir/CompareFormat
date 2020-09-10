@@ -1,0 +1,11 @@
+#! /bin/tcsh
+
+/home/tptp/ServiceTools/TPTP4XDir/tptp4X $1 > `basename $1`.new
+/home/tptp/ServiceTools/tptp4X $1 > `basename $1`.old
+# echo compare original and new
+# diff -bq $1 `basename $1`.new
+# echo compare old and new
+diff -bq `basename $1`.old `basename $1`.new
+diff -b `basename $1`.old `basename $1`.new
+rm `basename $1`.new
+rm `basename $1`.old

@@ -1,0 +1,2683 @@
+fof(l1_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( reflexive(A)
+      <=> ! [B] : 
+            ( in(B,relation_field(A))
+           => in(ordered_pair(B,B),A) ) ) ) ),
+    file(wellord1,l1_wellord1),
+    []).
+
+fof(l1_zfmisc_1,lemma,(
+    ! [A] : singleton(A) != empty_set ),
+    file(zfmisc_1,l1_zfmisc_1),
+    []).
+
+fof(l23_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( in(A,B)
+     => set_union2(singleton(A),B) = B ) ),
+    file(zfmisc_1,l23_zfmisc_1),
+    []).
+
+fof(l25_zfmisc_1,lemma,(
+    ! [A,B] : ~ ( disjoint(singleton(A),B)
+      & in(A,B) ) ),
+    file(zfmisc_1,l25_zfmisc_1),
+    []).
+
+fof(l28_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( ~ in(A,B)
+     => disjoint(singleton(A),B) ) ),
+    file(zfmisc_1,l28_zfmisc_1),
+    []).
+
+fof(l29_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_dom(relation_rng_restriction(A,B)),relation_dom(B)) ) ),
+    file(wellord1,l29_wellord1),
+    []).
+
+fof(l2_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( transitive(A)
+      <=> ! [B,C,D] : 
+            ( ( in(ordered_pair(B,C),A)
+              & in(ordered_pair(C,D),A) )
+           => in(ordered_pair(B,D),A) ) ) ) ),
+    file(wellord1,l2_wellord1),
+    []).
+
+fof(l2_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( subset(singleton(A),B)
+    <=> in(A,B) ) ),
+    file(zfmisc_1,l2_zfmisc_1),
+    []).
+
+fof(l30_wellord2,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ~ ( well_ordering(B)
+          & equipotent(A,relation_field(B))
+          & ! [C] : 
+              ( relation(C)
+             => ~ well_orders(C,A) ) ) ) ),
+    file(wellord2,l30_wellord2),
+    []).
+
+fof(l32_xboole_1,lemma,(
+    ! [A,B] : 
+      ( set_difference(A,B) = empty_set
+    <=> subset(A,B) ) ),
+    file(xboole_1,l32_xboole_1),
+    []).
+
+fof(l37_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ~ ( compact_top_space(A)
+          & ~ ! [B] : 
+                ( ( ~ empty_carrier(B)
+                  & transitive_relstr(B)
+                  & directed_relstr(B)
+                  & net_str(B,A) )
+               => ~ ! [C] : 
+                      ( element(C,the_carrier(A))
+                     => ~ is_a_cluster_point_of_netstr(A,B,C) ) ) ) ) ),
+    file(yellow19,l37_yellow19),
+    []).
+
+fof(l3_subset_1,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(A))
+     => ! [C] : 
+          ( in(C,B)
+         => in(C,A) ) ) ),
+    file(subset_1,l3_subset_1),
+    []).
+
+fof(l3_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( antisymmetric(A)
+      <=> ! [B,C] : 
+            ( ( in(ordered_pair(B,C),A)
+              & in(ordered_pair(C,B),A) )
+           => B = C ) ) ) ),
+    file(wellord1,l3_wellord1),
+    []).
+
+fof(l3_zfmisc_1,lemma,(
+    ! [A,B,C] : 
+      ( subset(A,B)
+     => ( in(C,A)
+        | subset(A,set_difference(B,singleton(C))) ) ) ),
+    file(zfmisc_1,l3_zfmisc_1),
+    []).
+
+fof(l40_tops_1,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(C,subset_complement(the_carrier(A),B))
+                    & in(C,B) )
+                & ~ ( ~ in(C,B)
+                    & ~ in(C,subset_complement(the_carrier(A),B)) ) ) ) ) ) ),
+    file(tops_1,l40_tops_1),
+    []).
+
+fof(l4_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( connected(A)
+      <=> ! [B,C] : ~ ( in(B,relation_field(A))
+            & in(C,relation_field(A))
+            & B != C
+            & ~ in(ordered_pair(B,C),A)
+            & ~ in(ordered_pair(C,B),A) ) ) ) ),
+    file(wellord1,l4_wellord1),
+    []).
+
+fof(l4_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( subset(A,singleton(B))
+    <=> ( A = empty_set
+        | A = singleton(B) ) ) ),
+    file(zfmisc_1,l4_zfmisc_1),
+    []).
+
+fof(l50_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( in(A,B)
+     => subset(A,union(B)) ) ),
+    file(zfmisc_1,l50_zfmisc_1),
+    []).
+
+fof(l55_zfmisc_1,lemma,(
+    ! [A,B,C,D] : 
+      ( in(ordered_pair(A,B),cartesian_product2(C,D))
+    <=> ( in(A,C)
+        & in(B,D) ) ) ),
+    file(zfmisc_1,l55_zfmisc_1),
+    []).
+
+fof(l71_subset_1,lemma,(
+    ! [A,B] : 
+      ( ! [C] : 
+          ( in(C,A)
+         => in(C,B) )
+     => element(A,powerset(B)) ) ),
+    file(subset_1,l71_subset_1),
+    []).
+
+fof(l82_funct_1,lemma,(
+    ! [A,B,C] : 
+      ( ( relation(C)
+        & function(C) )
+     => ( in(B,relation_dom(relation_dom_restriction(C,A)))
+      <=> ( in(B,relation_dom(C))
+          & in(B,A) ) ) ) ),
+    file(funct_1,l82_funct_1),
+    []).
+
+fof(t106_zfmisc_1,lemma,(
+    ! [A,B,C,D] : 
+      ( in(ordered_pair(A,B),cartesian_product2(C,D))
+    <=> ( in(A,C)
+        & in(B,D) ) ) ),
+    file(zfmisc_1,t106_zfmisc_1),
+    []).
+
+fof(t10_ordinal1,lemma,(
+    ! [A] : in(A,succ(A)) ),
+    file(ordinal1,t10_ordinal1),
+    []).
+
+fof(t10_tops_2,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ( ~ ( B != empty_set
+            & complements_of_subsets(A,B) = empty_set )
+        & ~ ( complements_of_subsets(A,B) != empty_set
+            & B = empty_set ) ) ) ),
+    file(tops_2,t10_tops_2),
+    []).
+
+fof(t10_zfmisc_1,lemma,(
+    ! [A,B,C,D] : ~ ( unordered_pair(A,B) = unordered_pair(C,D)
+      & A != C
+      & A != D ) ),
+    file(zfmisc_1,t10_zfmisc_1),
+    []).
+
+fof(t115_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_rng(relation_rng_restriction(B,C)))
+      <=> ( in(A,B)
+          & in(A,relation_rng(C)) ) ) ) ),
+    file(relat_1,t115_relat_1),
+    []).
+
+fof(t116_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_rng(relation_rng_restriction(A,B)),A) ) ),
+    file(relat_1,t116_relat_1),
+    []).
+
+fof(t117_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_rng_restriction(A,B),B) ) ),
+    file(relat_1,t117_relat_1),
+    []).
+
+fof(t118_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_rng(relation_rng_restriction(A,B)),relation_rng(B)) ) ),
+    file(relat_1,t118_relat_1),
+    []).
+
+fof(t118_zfmisc_1,lemma,(
+    ! [A,B,C] : 
+      ( subset(A,B)
+     => ( subset(cartesian_product2(A,C),cartesian_product2(B,C))
+        & subset(cartesian_product2(C,A),cartesian_product2(C,B)) ) ) ),
+    file(zfmisc_1,t118_zfmisc_1),
+    []).
+
+fof(t119_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_rng(relation_rng_restriction(A,B)) = set_intersection2(relation_rng(B),A) ) ),
+    file(relat_1,t119_relat_1),
+    []).
+
+fof(t119_zfmisc_1,lemma,(
+    ! [A,B,C,D] : 
+      ( ( subset(A,B)
+        & subset(C,D) )
+     => subset(cartesian_product2(A,C),cartesian_product2(B,D)) ) ),
+    file(zfmisc_1,t119_zfmisc_1),
+    []).
+
+fof(t11_tops_2,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ~ ( B != empty_set
+          & meet_of_subsets(A,complements_of_subsets(A,B)) != subset_complement(A,union_of_subsets(A,B)) ) ) ),
+    file(tops_2,t11_tops_2),
+    []).
+
+fof(t11_waybel_7,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(the_carrier(boole_POSet(A))))
+     => ( ~ ( upper_relstr_subset(B,boole_POSet(A))
+            & ~ ! [C,D] : ~ ( subset(C,D)
+                  & subset(D,A)
+                  & in(C,B)
+                  & ~ in(D,B) ) )
+        & ~ ( ! [C,D] : ~ ( subset(C,D)
+                & subset(D,A)
+                & in(C,B)
+                & ~ in(D,B) )
+            & ~ upper_relstr_subset(B,boole_POSet(A)) ) ) ) ),
+    file(waybel_7,t11_waybel_7),
+    []).
+
+fof(t11_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( ~ ( in(C,filter_of_net_str(A,B))
+                  & ~ ( is_eventually_in(A,B,C)
+                      & element(C,powerset(the_carrier(A))) ) )
+              & ~ ( is_eventually_in(A,B,C)
+                  & element(C,powerset(the_carrier(A)))
+                  & ~ in(C,filter_of_net_str(A,B)) ) ) ) ) ),
+    file(yellow19,t11_yellow19),
+    []).
+
+fof(t12_pre_topc,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => cast_as_carrier_subset(A) = the_carrier(A) ) ),
+    file(pre_topc,t12_pre_topc),
+    []).
+
+fof(t12_relset_1,lemma,(
+    ! [A,B,C] : 
+      ( relation_of2_as_subset(C,A,B)
+     => ( subset(relation_dom(C),A)
+        & subset(relation_rng(C),B) ) ) ),
+    file(relset_1,t12_relset_1),
+    []).
+
+fof(t12_tops_2,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ~ ( B != empty_set
+          & union_of_subsets(A,complements_of_subsets(A,B)) != subset_complement(A,meet_of_subsets(A,B)) ) ) ),
+    file(tops_2,t12_tops_2),
+    []).
+
+fof(t12_waybel_9,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(B))
+             => the_carrier(netstr_restr_to_element(A,B,C)) = a_3_0_waybel_9(A,B,C) ) ) ) ),
+    file(waybel_9,t12_waybel_9),
+    []).
+
+fof(t12_xboole_1,lemma,(
+    ! [A,B] : 
+      ( subset(A,B)
+     => set_union2(A,B) = B ) ),
+    file(xboole_1,t12_xboole_1),
+    []).
+
+fof(t136_zfmisc_1,lemma,(
+    ! [A] : 
+    ? [B] : 
+      ( in(A,B)
+      & ! [C,D] : 
+          ( ( in(C,B)
+            & subset(D,C) )
+         => in(D,B) )
+      & ! [C] : 
+          ( in(C,B)
+         => in(powerset(C),B) )
+      & ! [C] : ~ ( subset(C,B)
+          & ~ are_equipotent(C,B)
+          & ~ in(C,B) ) ) ),
+    file(zfmisc_1,t136_zfmisc_1),
+    []).
+
+fof(t13_compts_1,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ( ~ ( compact_top_space(A)
+            & ~ ! [B] : 
+                  ( element(B,powerset(powerset(the_carrier(A))))
+                 => ~ ( centered(B)
+                      & closed_subsets(B,A)
+                      & meet_of_subsets(the_carrier(A),B) = empty_set ) ) )
+        & ~ ( ! [B] : 
+                ( element(B,powerset(powerset(the_carrier(A))))
+               => ~ ( centered(B)
+                    & closed_subsets(B,A)
+                    & meet_of_subsets(the_carrier(A),B) = empty_set ) )
+            & ~ compact_top_space(A) ) ) ) ),
+    file(compts_1,t13_compts_1),
+    []).
+
+fof(t13_finset_1,lemma,(
+    ! [A,B] : 
+      ( ( subset(A,B)
+        & finite(B) )
+     => finite(A) ) ),
+    file(finset_1,t13_finset_1),
+    []).
+
+fof(t13_tops_2,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( element(B,powerset(powerset(the_carrier(A))))
+         => ( ~ ( finite(complements_of_subsets(the_carrier(A),B))
+                & ~ finite(B) )
+            & ~ ( finite(B)
+                & ~ finite(complements_of_subsets(the_carrier(A),B)) ) ) ) ) ),
+    file(tops_2,t13_tops_2),
+    []).
+
+fof(t13_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(C,lim_points_of_net(A,B))
+                    & ~ is_a_convergence_point_of_set(A,filter_of_net_str(A,B),C) )
+                & ~ ( is_a_convergence_point_of_set(A,filter_of_net_str(A,B),C)
+                    & ~ in(C,lim_points_of_net(A,B)) ) ) ) ) ) ),
+    file(yellow19,t13_yellow19),
+    []).
+
+fof(t140_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => relation_dom_restriction(relation_rng_restriction(A,C),B) = relation_rng_restriction(A,relation_dom_restriction(C,B)) ) ),
+    file(relat_1,t140_relat_1),
+    []).
+
+fof(t143_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_image(C,B))
+      <=> ? [D] : 
+            ( in(D,relation_dom(C))
+            & in(ordered_pair(D,A),C)
+            & in(D,B) ) ) ) ),
+    file(relat_1,t143_relat_1),
+    []).
+
+fof(t144_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_image(B,A),relation_rng(B)) ) ),
+    file(relat_1,t144_relat_1),
+    []).
+
+fof(t145_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => subset(relation_image(B,relation_inverse_image(B,A)),A) ) ),
+    file(funct_1,t145_funct_1),
+    []).
+
+fof(t145_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_image(B,A) = relation_image(B,set_intersection2(relation_dom(B),A)) ) ),
+    file(relat_1,t145_relat_1),
+    []).
+
+fof(t146_funct_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( subset(A,relation_dom(B))
+       => subset(A,relation_inverse_image(B,relation_image(B,A))) ) ) ),
+    file(funct_1,t146_funct_1),
+    []).
+
+fof(t146_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => relation_image(A,relation_dom(A)) = relation_rng(A) ) ),
+    file(relat_1,t146_relat_1),
+    []).
+
+fof(t147_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ( subset(A,relation_rng(B))
+       => relation_image(B,relation_inverse_image(B,A)) = A ) ) ),
+    file(funct_1,t147_funct_1),
+    []).
+
+fof(t14_relset_1,lemma,(
+    ! [A,B,C,D] : 
+      ( relation_of2_as_subset(D,C,A)
+     => ( subset(relation_rng(D),B)
+       => relation_of2_as_subset(D,C,B) ) ) ),
+    file(relset_1,t14_relset_1),
+    []).
+
+fof(t14_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty(B)
+            & filtered_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & upper_relstr_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & element(B,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A))))) )
+         => set_difference(B,singleton(empty_set)) = filter_of_net_str(A,net_of_bool_filter(A,cast_as_carrier_subset(A),B)) ) ) ),
+    file(yellow19,t14_yellow19),
+    []).
+
+fof(t15_finset_1,lemma,(
+    ! [A,B] : 
+      ( finite(A)
+     => finite(set_intersection2(A,B)) ) ),
+    file(finset_1,t15_finset_1),
+    []).
+
+fof(t15_pre_topc,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => subset_intersection2(the_carrier(A),B,cast_as_carrier_subset(A)) = B ) ) ),
+    file(pre_topc,t15_pre_topc),
+    []).
+
+fof(t15_yellow_0,lemma,(
+    ! [A] : 
+      ( ( antisymmetric_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( ~ ( ex_sup_of_relstr_set(A,B)
+              & ! [C] : 
+                  ( element(C,the_carrier(A))
+                 => ~ ( relstr_set_smaller(A,B,C)
+                      & ! [D] : 
+                          ( element(D,the_carrier(A))
+                         => ~ ( relstr_set_smaller(A,B,D)
+                              & ~ related(A,C,D) ) ) ) ) )
+          & ~ ( ~ ! [C] : 
+                    ( element(C,the_carrier(A))
+                   => ~ ( relstr_set_smaller(A,B,C)
+                        & ! [D] : 
+                            ( element(D,the_carrier(A))
+                           => ~ ( relstr_set_smaller(A,B,D)
+                                & ~ related(A,C,D) ) ) ) )
+              & ~ ex_sup_of_relstr_set(A,B) ) ) ) ),
+    file(yellow_0,t15_yellow_0),
+    []).
+
+fof(t15_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty(B)
+            & filtered_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & upper_relstr_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & proper_element(B,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A)))))
+            & element(B,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A))))) )
+         => B = filter_of_net_str(A,net_of_bool_filter(A,cast_as_carrier_subset(A),B)) ) ) ),
+    file(yellow19,t15_yellow19),
+    []).
+
+fof(t160_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => relation_rng(relation_composition(A,B)) = relation_image(B,relation_rng(A)) ) ) ),
+    file(relat_1,t160_relat_1),
+    []).
+
+fof(t166_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_inverse_image(C,B))
+      <=> ? [D] : 
+            ( in(D,relation_rng(C))
+            & in(ordered_pair(A,D),C)
+            & in(D,B) ) ) ) ),
+    file(relat_1,t166_relat_1),
+    []).
+
+fof(t167_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_inverse_image(B,A),relation_dom(B)) ) ),
+    file(relat_1,t167_relat_1),
+    []).
+
+fof(t16_relset_1,lemma,(
+    ! [A,B,C,D] : 
+      ( relation_of2_as_subset(D,C,A)
+     => ( subset(A,B)
+       => relation_of2_as_subset(D,C,B) ) ) ),
+    file(relset_1,t16_relset_1),
+    []).
+
+fof(t16_tops_2,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(powerset(the_carrier(A))))
+         => ( ~ ( closed_subsets(B,A)
+                & ~ open_subsets(complements_of_subsets(the_carrier(A),B),A) )
+            & ~ ( open_subsets(complements_of_subsets(the_carrier(A),B),A)
+                & ~ closed_subsets(B,A) ) ) ) ) ),
+    file(tops_2,t16_tops_2),
+    []).
+
+fof(t16_waybel_9,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(B))
+             => ! [D] : 
+                  ( element(D,the_carrier(B))
+                 => ! [E] : 
+                      ( element(E,the_carrier(netstr_restr_to_element(A,B,C)))
+                     => ~ ( D = E
+                          & apply_netmap(A,B,D) != apply_netmap(A,netstr_restr_to_element(A,B,C),E) ) ) ) ) ) ) ),
+    file(waybel_9,t16_waybel_9),
+    []).
+
+fof(t16_wellord1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_restriction(C,B))
+      <=> ( in(A,C)
+          & in(A,cartesian_product2(B,B)) ) ) ) ),
+    file(wellord1,t16_wellord1),
+    []).
+
+fof(t16_yellow_0,lemma,(
+    ! [A] : 
+      ( ( antisymmetric_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( ~ ( ex_inf_of_relstr_set(A,B)
+              & ! [C] : 
+                  ( element(C,the_carrier(A))
+                 => ~ ( relstr_element_smaller(A,B,C)
+                      & ! [D] : 
+                          ( element(D,the_carrier(A))
+                         => ~ ( relstr_element_smaller(A,B,D)
+                              & ~ related(A,D,C) ) ) ) ) )
+          & ~ ( ~ ! [C] : 
+                    ( element(C,the_carrier(A))
+                   => ~ ( relstr_element_smaller(A,B,C)
+                        & ! [D] : 
+                            ( element(D,the_carrier(A))
+                           => ~ ( relstr_element_smaller(A,B,D)
+                                & ~ related(A,D,C) ) ) ) )
+              & ~ ex_inf_of_relstr_set(A,B) ) ) ) ),
+    file(yellow_0,t16_yellow_0),
+    []).
+
+fof(t174_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ~ ( A != empty_set
+          & subset(A,relation_rng(B))
+          & relation_inverse_image(B,A) = empty_set ) ) ),
+    file(relat_1,t174_relat_1),
+    []).
+
+fof(t178_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( subset(A,B)
+       => subset(relation_inverse_image(C,A),relation_inverse_image(C,B)) ) ) ),
+    file(relat_1,t178_relat_1),
+    []).
+
+fof(t17_finset_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ( finite(A)
+       => finite(relation_image(B,A)) ) ) ),
+    file(finset_1,t17_finset_1),
+    []).
+
+fof(t17_pre_topc,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => subset_complement(the_carrier(A),B) = subset_difference(the_carrier(A),cast_as_carrier_subset(A),B) ) ) ),
+    file(pre_topc,t17_pre_topc),
+    []).
+
+fof(t17_tops_2,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(powerset(the_carrier(A))))
+         => ( ~ ( open_subsets(B,A)
+                & ~ closed_subsets(complements_of_subsets(the_carrier(A),B),A) )
+            & ~ ( closed_subsets(complements_of_subsets(the_carrier(A),B),A)
+                & ~ open_subsets(B,A) ) ) ) ) ),
+    file(tops_2,t17_tops_2),
+    []).
+
+fof(t17_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_restriction(B,A) = relation_dom_restriction(relation_rng_restriction(A,B),A) ) ),
+    file(wellord1,t17_wellord1),
+    []).
+
+fof(t17_xboole_1,lemma,(
+    ! [A,B] : subset(set_intersection2(A,B),A) ),
+    file(xboole_1,t17_xboole_1),
+    []).
+
+fof(t18_finset_1,lemma,(
+    ! [A] : 
+      ( finite(A)
+     => ! [B] : 
+          ( element(B,powerset(powerset(A)))
+         => ~ ( B != empty_set
+              & ! [C] : ~ ( in(C,B)
+                  & ! [D] : 
+                      ( ( in(D,B)
+                        & subset(C,D) )
+                     => D = C ) ) ) ) ) ),
+    file(finset_1,t18_finset_1),
+    []).
+
+fof(t18_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_restriction(B,A) = relation_rng_restriction(A,relation_dom_restriction(B,A)) ) ),
+    file(wellord1,t18_wellord1),
+    []).
+
+fof(t18_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( ( ~ empty(B)
+            & filtered_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & upper_relstr_subset(B,boole_POSet(cast_as_carrier_subset(A)))
+            & proper_element(B,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A)))))
+            & element(B,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A))))) )
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(C,lim_points_of_net(A,net_of_bool_filter(A,cast_as_carrier_subset(A),B)))
+                    & ~ is_a_convergence_point_of_set(A,B,C) )
+                & ~ ( is_a_convergence_point_of_set(A,B,C)
+                    & ~ in(C,lim_points_of_net(A,net_of_bool_filter(A,cast_as_carrier_subset(A),B))) ) ) ) ) ) ),
+    file(yellow19,t18_yellow19),
+    []).
+
+fof(t18_yellow_1,lemma,(
+    ! [A] : bottom_of_relstr(boole_POSet(A)) = empty_set ),
+    file(yellow_1,t18_yellow_1),
+    []).
+
+fof(t19_wellord1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_field(relation_restriction(C,B)))
+       => ( in(A,relation_field(C))
+          & in(A,B) ) ) ) ),
+    file(wellord1,t19_wellord1),
+    []).
+
+fof(t19_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( ( subset(A,B)
+        & subset(A,C) )
+     => subset(A,set_intersection2(B,C)) ) ),
+    file(xboole_1,t19_xboole_1),
+    []).
+
+fof(t19_yellow_6,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( net_str(B,A)
+         => ! [C] : 
+              ( subnetstr(C,A,B)
+             => subset(the_carrier(C),the_carrier(B)) ) ) ) ),
+    file(yellow_6,t19_yellow_6),
+    []).
+
+fof(t1_lattice3,lemma,(
+    ! [A,B] : 
+      ( element(B,the_carrier(boole_lattice(A)))
+     => ! [C] : 
+          ( element(C,the_carrier(boole_lattice(A)))
+         => ( join(boole_lattice(A),B,C) = set_union2(B,C)
+            & meet(boole_lattice(A),B,C) = set_intersection2(B,C) ) ) ) ),
+    file(lattice3,t1_lattice3),
+    []).
+
+fof(t1_waybel_0,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & transitive_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ( ~ ( ~ empty(B)
+                & directed_subset(B,A)
+                & ~ ! [C] : 
+                      ( ( finite(C)
+                        & element(C,powerset(B)) )
+                     => ~ ! [D] : 
+                            ( element(D,the_carrier(A))
+                           => ~ ( in(D,B)
+                                & relstr_set_smaller(A,C,D) ) ) ) )
+            & ~ ( ! [C] : 
+                    ( ( finite(C)
+                      & element(C,powerset(B)) )
+                   => ~ ! [D] : 
+                          ( element(D,the_carrier(A))
+                         => ~ ( in(D,B)
+                              & relstr_set_smaller(A,C,D) ) ) )
+                & ~ ( ~ empty(B)
+                    & directed_subset(B,A) ) ) ) ) ) ),
+    file(waybel_0,t1_waybel_0),
+    []).
+
+fof(t1_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( ( subset(A,B)
+        & subset(B,C) )
+     => subset(A,C) ) ),
+    file(xboole_1,t1_xboole_1),
+    []).
+
+fof(t1_yellow_1,lemma,(
+    ! [A] : 
+      ( the_carrier(incl_POSet(A)) = A
+      & the_InternalRel(incl_POSet(A)) = inclusion_order(A) ) ),
+    file(yellow_1,t1_yellow_1),
+    []).
+
+fof(t1_zfmisc_1,lemma,(
+    powerset(empty_set) = singleton(empty_set) ),
+    file(zfmisc_1,t1_zfmisc_1),
+    []).
+
+fof(t20_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(ordered_pair(A,B),C)
+       => ( in(A,relation_dom(C))
+          & in(B,relation_rng(C)) ) ) ) ),
+    file(relat_1,t20_relat_1),
+    []).
+
+fof(t20_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( subset(relation_field(relation_restriction(B,A)),relation_field(B))
+        & subset(relation_field(relation_restriction(B,A)),A) ) ) ),
+    file(wellord1,t20_wellord1),
+    []).
+
+fof(t20_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,powerset(the_carrier(A)))
+             => ~ ( in(B,topstr_closure(A,C))
+                  & ~ ! [D] : 
+                        ( ( ~ empty(D)
+                          & filtered_subset(D,boole_POSet(cast_as_carrier_subset(A)))
+                          & upper_relstr_subset(D,boole_POSet(cast_as_carrier_subset(A)))
+                          & proper_element(D,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A)))))
+                          & element(D,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A))))) )
+                       => ~ ( D = neighborhood_system(A,B)
+                            & ~ is_often_in(A,net_of_bool_filter(A,cast_as_carrier_subset(A),D),C) ) ) ) ) ) ) ),
+    file(yellow19,t20_yellow19),
+    []).
+
+fof(t20_yellow_6,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( net_str(B,A)
+         => ! [C] : 
+              ( subnetstr(C,A,B)
+             => ! [D] : 
+                  ( element(D,the_carrier(B))
+                 => ! [E] : 
+                      ( element(E,the_carrier(B))
+                     => ! [F] : 
+                          ( element(F,the_carrier(C))
+                         => ! [G] : 
+                              ( element(G,the_carrier(C))
+                             => ~ ( D = F
+                                  & E = G
+                                  & related(C,F,G)
+                                  & ~ related(B,D,E) ) ) ) ) ) ) ) ) ),
+    file(yellow_6,t20_yellow_6),
+    []).
+
+fof(t21_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ! [C] : 
+          ( ( relation(C)
+            & function(C) )
+         => ( in(A,relation_dom(relation_composition(C,B)))
+          <=> ( in(A,relation_dom(C))
+              & in(apply(C,A),relation_dom(B)) ) ) ) ) ),
+    file(funct_1,t21_funct_1),
+    []).
+
+fof(t21_funct_2,lemma,(
+    ! [A,B,C,D] : 
+      ( ( function(D)
+        & quasi_total(D,A,B)
+        & relation_of2_as_subset(D,A,B) )
+     => ! [E] : 
+          ( ( relation(E)
+            & function(E) )
+         => ( in(C,A)
+           => ( B = empty_set
+              | apply(relation_composition(D,E),C) = apply(E,apply(D,C)) ) ) ) ) ),
+    file(funct_2,t21_funct_2),
+    []).
+
+fof(t21_ordinal1,lemma,(
+    ! [A] : 
+      ( epsilon_transitive(A)
+     => ! [B] : 
+          ( ordinal(B)
+         => ( proper_subset(A,B)
+           => in(A,B) ) ) ) ),
+    file(ordinal1,t21_ordinal1),
+    []).
+
+fof(t21_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => subset(A,cartesian_product2(relation_dom(A),relation_rng(A))) ) ),
+    file(relat_1,t21_relat_1),
+    []).
+
+fof(t21_wellord1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => subset(fiber(relation_restriction(C,A),B),fiber(C,B)) ) ),
+    file(wellord1,t21_wellord1),
+    []).
+
+fof(t21_yellow_6,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( ( ~ empty_carrier(C)
+                & full_subnetstr(C,A,B)
+                & subnetstr(C,A,B) )
+             => ! [D] : 
+                  ( element(D,the_carrier(B))
+                 => ! [E] : 
+                      ( element(E,the_carrier(B))
+                     => ! [F] : 
+                          ( element(F,the_carrier(C))
+                         => ! [G] : 
+                              ( element(G,the_carrier(C))
+                             => ~ ( D = F
+                                  & E = G
+                                  & related(B,D,E)
+                                  & ~ related(C,F,G) ) ) ) ) ) ) ) ) ),
+    file(yellow_6,t21_yellow_6),
+    []).
+
+fof(t22_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ! [C] : 
+          ( ( relation(C)
+            & function(C) )
+         => ( in(A,relation_dom(relation_composition(C,B)))
+           => apply(relation_composition(C,B),A) = apply(B,apply(C,A)) ) ) ) ),
+    file(funct_1,t22_funct_1),
+    []).
+
+fof(t22_pre_topc,lemma,(
+    ! [A] : 
+      ( one_sorted_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => subset_difference(the_carrier(A),cast_as_carrier_subset(A),subset_difference(the_carrier(A),cast_as_carrier_subset(A),B)) = B ) ) ),
+    file(pre_topc,t22_pre_topc),
+    []).
+
+fof(t22_relset_1,lemma,(
+    ! [A,B,C] : 
+      ( relation_of2_as_subset(C,B,A)
+     => ( ! [D] : ~ ( in(D,B)
+            & ! [E] : ~ in(ordered_pair(D,E),C) )
+      <=> relation_dom_as_subset(B,A,C) = B ) ) ),
+    file(relset_1,t22_relset_1),
+    []).
+
+fof(t22_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( reflexive(B)
+       => reflexive(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t22_wellord1),
+    []).
+
+fof(t23_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ! [C] : 
+          ( ( relation(C)
+            & function(C) )
+         => ( in(A,relation_dom(B))
+           => apply(relation_composition(B,C),A) = apply(C,apply(B,A)) ) ) ) ),
+    file(funct_1,t23_funct_1),
+    []).
+
+fof(t23_lattices,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & meet_commutative(A)
+        & meet_absorbing(A)
+        & latt_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => below(A,meet_commut(A,B,C),B) ) ) ) ),
+    file(lattices,t23_lattices),
+    []).
+
+fof(t23_ordinal1,lemma,(
+    ! [A,B] : 
+      ( ordinal(B)
+     => ( in(A,B)
+       => ordinal(A) ) ) ),
+    file(ordinal1,t23_ordinal1),
+    []).
+
+fof(t23_relset_1,lemma,(
+    ! [A,B,C] : 
+      ( relation_of2_as_subset(C,A,B)
+     => ( ! [D] : ~ ( in(D,B)
+            & ! [E] : ~ in(ordered_pair(E,D),C) )
+      <=> relation_rng_as_subset(A,B,C) = B ) ) ),
+    file(relset_1,t23_relset_1),
+    []).
+
+fof(t23_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( connected(B)
+       => connected(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t23_wellord1),
+    []).
+
+fof(t23_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(C,topstr_closure(A,B))
+                    & ! [D] : 
+                        ( ( ~ empty_carrier(D)
+                          & transitive_relstr(D)
+                          & directed_relstr(D)
+                          & net_str(D,A) )
+                       => ~ ( is_eventually_in(A,D,B)
+                            & is_a_cluster_point_of_netstr(A,D,C) ) ) )
+                & ~ ( ~ ! [D] : 
+                          ( ( ~ empty_carrier(D)
+                            & transitive_relstr(D)
+                            & directed_relstr(D)
+                            & net_str(D,A) )
+                         => ~ ( is_eventually_in(A,D,B)
+                              & is_a_cluster_point_of_netstr(A,D,C) ) )
+                    & ~ in(C,topstr_closure(A,B)) ) ) ) ) ) ),
+    file(yellow19,t23_yellow19),
+    []).
+
+fof(t24_ordinal1,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => ! [B] : 
+          ( ordinal(B)
+         => ~ ( ~ in(A,B)
+              & A != B
+              & ~ in(B,A) ) ) ) ),
+    file(ordinal1,t24_ordinal1),
+    []).
+
+fof(t24_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( transitive(B)
+       => transitive(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t24_wellord1),
+    []).
+
+fof(t25_orders_2,lemma,(
+    ! [A] : 
+      ( ( antisymmetric_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ~ ( related(A,B,C)
+                  & related(A,C,B)
+                  & B != C ) ) ) ) ),
+    file(orders_2,t25_orders_2),
+    []).
+
+fof(t25_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ( subset(A,B)
+           => ( subset(relation_dom(A),relation_dom(B))
+              & subset(relation_rng(A),relation_rng(B)) ) ) ) ) ),
+    file(relat_1,t25_relat_1),
+    []).
+
+fof(t25_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( antisymmetric(B)
+       => antisymmetric(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t25_wellord1),
+    []).
+
+fof(t25_wellord2,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( well_orders(B,A)
+       => ( relation_field(relation_restriction(B,A)) = A
+          & well_ordering(relation_restriction(B,A)) ) ) ) ),
+    file(wellord2,t25_wellord2),
+    []).
+
+fof(t26_finset_1,lemma,(
+    ! [A] : 
+      ( ( relation(A)
+        & function(A) )
+     => ( finite(relation_dom(A))
+       => finite(relation_rng(A)) ) ) ),
+    file(finset_1,t26_finset_1),
+    []).
+
+fof(t26_lattices,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & join_commutative(A)
+        & join_semilatt_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ~ ( below(A,B,C)
+                  & below(A,C,B)
+                  & B != C ) ) ) ) ),
+    file(lattices,t26_lattices),
+    []).
+
+fof(t26_orders_2,lemma,(
+    ! [A] : 
+      ( ( transitive_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ! [D] : 
+                  ( element(D,the_carrier(A))
+                 => ~ ( related(A,B,C)
+                      & related(A,C,D)
+                      & ~ related(A,B,D) ) ) ) ) ) ),
+    file(orders_2,t26_orders_2),
+    []).
+
+fof(t26_wellord2,lemma,(
+    ! [A] : 
+    ? [B] : 
+      ( relation(B)
+      & well_orders(B,A) ) ),
+    file(wellord2,t26_wellord2),
+    []).
+
+fof(t26_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( subset(A,B)
+     => subset(set_intersection2(A,C),set_intersection2(B,C)) ) ),
+    file(xboole_1,t26_xboole_1),
+    []).
+
+fof(t28_lattice3,lemma,(
+    ! [A,B] : 
+      ( ( ~ empty_carrier(B)
+        & lattice(B)
+        & latt_str(B) )
+     => ! [C] : 
+          ( element(C,the_carrier(B))
+         => ( ~ ( latt_set_smaller(B,C,A)
+                & ~ relstr_element_smaller(poset_of_lattice(B),A,cast_to_el_of_LattPOSet(B,C)) )
+            & ~ ( relstr_element_smaller(poset_of_lattice(B),A,cast_to_el_of_LattPOSet(B,C))
+                & ~ latt_set_smaller(B,C,A) ) ) ) ) ),
+    file(lattice3,t28_lattice3),
+    []).
+
+fof(t28_wellord2,lemma,(
+    ! [A] : 
+      ( ~ empty(A)
+     => ~ ( ! [B] : ~ ( in(B,A)
+              & B = empty_set )
+          & ! [B] : 
+              ( ( relation(B)
+                & function(B) )
+             => ~ ( relation_dom(B) = A
+                  & ! [C] : 
+                      ( in(C,A)
+                     => in(apply(B,C),C) ) ) ) ) ) ),
+    file(wellord2,t28_wellord2),
+    []).
+
+fof(t28_xboole_1,lemma,(
+    ! [A,B] : 
+      ( subset(A,B)
+     => set_intersection2(A,B) = A ) ),
+    file(xboole_1,t28_xboole_1),
+    []).
+
+fof(t28_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : ~ ( is_eventually_in(A,B,C)
+              & ~ is_often_in(A,B,C) ) ) ) ),
+    file(yellow_6,t28_yellow_6),
+    []).
+
+fof(t29_lattice3,lemma,(
+    ! [A,B] : 
+      ( ( ~ empty_carrier(B)
+        & lattice(B)
+        & latt_str(B) )
+     => ! [C] : 
+          ( element(C,the_carrier(poset_of_lattice(B)))
+         => ( ~ ( relstr_element_smaller(poset_of_lattice(B),A,C)
+                & ~ latt_set_smaller(B,cast_to_el_of_lattice(B,C),A) )
+            & ~ ( latt_set_smaller(B,cast_to_el_of_lattice(B,C),A)
+                & ~ relstr_element_smaller(poset_of_lattice(B),A,C) ) ) ) ) ),
+    file(lattice3,t29_lattice3),
+    []).
+
+fof(t29_tops_1,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ( ~ ( closed_subset(B,A)
+                & ~ open_subset(subset_complement(the_carrier(A),B),A) )
+            & ~ ( open_subset(subset_complement(the_carrier(A),B),A)
+                & ~ closed_subset(B,A) ) ) ) ) ),
+    file(tops_1,t29_tops_1),
+    []).
+
+fof(t29_waybel_9,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ~ ( in(C,lim_points_of_net(A,B))
+                  & ~ is_a_cluster_point_of_netstr(A,B,C) ) ) ) ) ),
+    file(waybel_9,t29_waybel_9),
+    []).
+
+fof(t29_yellow_0,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & lattice(A)
+        & complete_latt_str(A)
+        & latt_str(A) )
+     => ! [B] : 
+          ( join_of_latt_set(A,B) = join_on_relstr(poset_of_lattice(A),B)
+          & meet_of_latt_set(A,B) = meet_on_relstr(poset_of_lattice(A),B) ) ) ),
+    file(yellow_0,t29_yellow_0),
+    []).
+
+fof(t2_lattice3,lemma,(
+    ! [A,B] : 
+      ( element(B,the_carrier(boole_lattice(A)))
+     => ! [C] : 
+          ( element(C,the_carrier(boole_lattice(A)))
+         => ( ~ ( below(boole_lattice(A),B,C)
+                & ~ subset(B,C) )
+            & ~ ( subset(B,C)
+                & ~ below(boole_lattice(A),B,C) ) ) ) ) ),
+    file(lattice3,t2_lattice3),
+    []).
+
+fof(t2_wellord2,lemma,(
+    ! [A] : reflexive(inclusion_relation(A)) ),
+    file(wellord2,t2_wellord2),
+    []).
+
+fof(t2_xboole_1,lemma,(
+    ! [A] : subset(empty_set,A) ),
+    file(xboole_1,t2_xboole_1),
+    []).
+
+fof(t2_yellow19,lemma,(
+    ! [A] : 
+      ( ~ empty(A)
+     => ! [B] : 
+          ( ( ~ empty(B)
+            & filtered_subset(B,boole_POSet(A))
+            & upper_relstr_subset(B,boole_POSet(A))
+            & proper_element(B,powerset(the_carrier(boole_POSet(A))))
+            & element(B,powerset(the_carrier(boole_POSet(A)))) )
+         => ! [C] : ~ ( in(C,B)
+              & empty(C) ) ) ) ),
+    file(yellow19,t2_yellow19),
+    []).
+
+fof(t2_yellow_1,lemma,(
+    ! [A,B] : 
+      ( element(B,the_carrier(boole_POSet(A)))
+     => ! [C] : 
+          ( element(C,the_carrier(boole_POSet(A)))
+         => ( ~ ( related_reflexive(boole_POSet(A),B,C)
+                & ~ subset(B,C) )
+            & ~ ( subset(B,C)
+                & ~ related_reflexive(boole_POSet(A),B,C) ) ) ) ) ),
+    file(yellow_1,t2_yellow_1),
+    []).
+
+fof(t30_lattice3,lemma,(
+    ! [A,B] : 
+      ( ( ~ empty_carrier(B)
+        & lattice(B)
+        & latt_str(B) )
+     => ! [C] : 
+          ( element(C,the_carrier(B))
+         => ( ~ ( latt_element_smaller(B,C,A)
+                & ~ relstr_set_smaller(poset_of_lattice(B),A,cast_to_el_of_LattPOSet(B,C)) )
+            & ~ ( relstr_set_smaller(poset_of_lattice(B),A,cast_to_el_of_LattPOSet(B,C))
+                & ~ latt_element_smaller(B,C,A) ) ) ) ) ),
+    file(lattice3,t30_lattice3),
+    []).
+
+fof(t30_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(ordered_pair(A,B),C)
+       => ( in(A,relation_field(C))
+          & in(B,relation_field(C)) ) ) ) ),
+    file(relat_1,t30_relat_1),
+    []).
+
+fof(t30_tops_1,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ( ~ ( open_subset(B,A)
+                & ~ closed_subset(subset_complement(the_carrier(A),B),A) )
+            & ~ ( closed_subset(subset_complement(the_carrier(A),B),A)
+                & ~ open_subset(B,A) ) ) ) ) ),
+    file(tops_1,t30_tops_1),
+    []).
+
+fof(t30_yellow_0,lemma,(
+    ! [A] : 
+      ( ( antisymmetric_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( ~ ( B = join_on_relstr(A,C)
+                  & ex_sup_of_relstr_set(A,C)
+                  & ~ ( relstr_set_smaller(A,C,B)
+                      & ! [D] : 
+                          ( element(D,the_carrier(A))
+                         => ~ ( relstr_set_smaller(A,C,D)
+                              & ~ related(A,B,D) ) ) ) )
+              & ~ ( relstr_set_smaller(A,C,B)
+                  & ! [D] : 
+                      ( element(D,the_carrier(A))
+                     => ~ ( relstr_set_smaller(A,C,D)
+                          & ~ related(A,B,D) ) )
+                  & ~ ( B = join_on_relstr(A,C)
+                      & ex_sup_of_relstr_set(A,C) ) ) ) ) ) ),
+    file(yellow_0,t30_yellow_0),
+    []).
+
+fof(t30_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : ~ ( is_often_in(A,B,C)
+              & ~ ( ~ empty_carrier(preimage_subnetstr(A,B,C))
+                  & directed_relstr(preimage_subnetstr(A,B,C)) ) ) ) ) ),
+    file(yellow_6,t30_yellow_6),
+    []).
+
+fof(t31_lattice3,lemma,(
+    ! [A,B] : 
+      ( ( ~ empty_carrier(B)
+        & lattice(B)
+        & latt_str(B) )
+     => ! [C] : 
+          ( element(C,the_carrier(poset_of_lattice(B)))
+         => ( ~ ( relstr_set_smaller(poset_of_lattice(B),A,C)
+                & ~ latt_element_smaller(B,cast_to_el_of_lattice(B,C),A) )
+            & ~ ( latt_element_smaller(B,cast_to_el_of_lattice(B,C),A)
+                & ~ relstr_set_smaller(poset_of_lattice(B),A,C) ) ) ) ) ),
+    file(lattice3,t31_lattice3),
+    []).
+
+fof(t31_ordinal1,lemma,(
+    ! [A] : 
+      ( ! [B] : 
+          ( in(B,A)
+         => ( ordinal(B)
+            & subset(B,A) ) )
+     => ordinal(A) ) ),
+    file(ordinal1,t31_ordinal1),
+    []).
+
+fof(t31_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( well_founded_relation(B)
+       => well_founded_relation(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t31_wellord1),
+    []).
+
+fof(t31_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( is_a_cluster_point_of_netstr(A,B,C)
+                    & ~ ! [D] : 
+                          ( netstr_induced_subset(D,A,B)
+                         => in(C,topstr_closure(A,D)) ) )
+                & ~ ( ! [D] : 
+                        ( netstr_induced_subset(D,A,B)
+                       => in(C,topstr_closure(A,D)) )
+                    & ~ is_a_cluster_point_of_netstr(A,B,C) ) ) ) ) ) ),
+    file(yellow19,t31_yellow19),
+    []).
+
+fof(t31_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : ~ ( is_often_in(A,B,C)
+              & ~ subnet(preimage_subnetstr(A,B,C),A,B) ) ) ) ),
+    file(yellow_6,t31_yellow_6),
+    []).
+
+fof(t32_filter_1,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & lattice(A)
+        & latt_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(ordered_pair_as_product_element(the_carrier(A),the_carrier(A),B,C),relation_of_lattice(A))
+                    & ~ below_refl(A,B,C) )
+                & ~ ( below_refl(A,B,C)
+                    & ~ in(ordered_pair_as_product_element(the_carrier(A),the_carrier(A),B,C),relation_of_lattice(A)) ) ) ) ) ) ),
+    file(filter_1,t32_filter_1),
+    []).
+
+fof(t32_ordinal1,lemma,(
+    ! [A,B] : 
+      ( ordinal(B)
+     => ~ ( subset(A,B)
+          & A != empty_set
+          & ! [C] : 
+              ( ordinal(C)
+             => ~ ( in(C,A)
+                  & ! [D] : 
+                      ( ordinal(D)
+                     => ( in(D,A)
+                       => ordinal_subset(C,D) ) ) ) ) ) ) ),
+    file(ordinal1,t32_ordinal1),
+    []).
+
+fof(t32_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( well_ordering(B)
+       => well_ordering(relation_restriction(B,A)) ) ) ),
+    file(wellord1,t32_wellord1),
+    []).
+
+fof(t32_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C,D] : 
+              ( subnet(D,A,B)
+             => ~ ( D = preimage_subnetstr(A,B,C)
+                  & ~ is_eventually_in(A,D,C) ) ) ) ) ),
+    file(yellow_6,t32_yellow_6),
+    []).
+
+fof(t33_ordinal1,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => ! [B] : 
+          ( ordinal(B)
+         => ( in(A,B)
+          <=> ordinal_subset(succ(A),B) ) ) ) ),
+    file(ordinal1,t33_ordinal1),
+    []).
+
+fof(t33_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( subset(A,B)
+     => subset(set_difference(A,C),set_difference(B,C)) ) ),
+    file(xboole_1,t33_xboole_1),
+    []).
+
+fof(t33_zfmisc_1,lemma,(
+    ! [A,B,C,D] : 
+      ( ordered_pair(A,B) = ordered_pair(C,D)
+     => ( A = C
+        & B = D ) ) ),
+    file(zfmisc_1,t33_zfmisc_1),
+    []).
+
+fof(t34_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ( B = identity_relation(A)
+      <=> ( relation_dom(B) = A
+          & ! [C] : 
+              ( in(C,A)
+             => apply(B,C) = C ) ) ) ) ),
+    file(funct_1,t34_funct_1),
+    []).
+
+fof(t34_lattice3,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & lattice(A)
+        & complete_latt_str(A)
+        & latt_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( ~ ( B = meet_of_latt_set(A,C)
+                  & ~ ( latt_set_smaller(A,B,C)
+                      & ! [D] : 
+                          ( element(D,the_carrier(A))
+                         => ~ ( latt_set_smaller(A,D,C)
+                              & ~ below_refl(A,D,B) ) ) ) )
+              & ~ ( latt_set_smaller(A,B,C)
+                  & ! [D] : 
+                      ( element(D,the_carrier(A))
+                     => ~ ( latt_set_smaller(A,D,C)
+                          & ~ below_refl(A,D,B) ) )
+                  & B != meet_of_latt_set(A,C) ) ) ) ) ),
+    file(lattice3,t34_lattice3),
+    []).
+
+fof(t35_funct_1,lemma,(
+    ! [A,B] : 
+      ( in(B,A)
+     => apply(identity_relation(A),B) = B ) ),
+    file(funct_1,t35_funct_1),
+    []).
+
+fof(t36_xboole_1,lemma,(
+    ! [A,B] : subset(set_difference(A,B),A) ),
+    file(xboole_1,t36_xboole_1),
+    []).
+
+fof(t37_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( relation_rng(A) = relation_dom(relation_inverse(A))
+        & relation_dom(A) = relation_rng(relation_inverse(A)) ) ) ),
+    file(relat_1,t37_relat_1),
+    []).
+
+fof(t37_xboole_1,lemma,(
+    ! [A,B] : 
+      ( set_difference(A,B) = empty_set
+    <=> subset(A,B) ) ),
+    file(xboole_1,t37_xboole_1),
+    []).
+
+fof(t37_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( subset(singleton(A),B)
+    <=> in(A,B) ) ),
+    file(zfmisc_1,t37_zfmisc_1),
+    []).
+
+fof(t38_zfmisc_1,lemma,(
+    ! [A,B,C] : 
+      ( subset(unordered_pair(A,B),C)
+    <=> ( in(A,C)
+        & in(B,C) ) ) ),
+    file(zfmisc_1,t38_zfmisc_1),
+    []).
+
+fof(t39_wellord1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => ( ( well_ordering(B)
+          & subset(A,relation_field(B)) )
+       => relation_field(relation_restriction(B,A)) = A ) ) ),
+    file(wellord1,t39_wellord1),
+    []).
+
+fof(t39_xboole_1,lemma,(
+    ! [A,B] : set_union2(A,set_difference(B,A)) = set_union2(A,B) ),
+    file(xboole_1,t39_xboole_1),
+    []).
+
+fof(t39_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( subset(A,singleton(B))
+    <=> ( A = empty_set
+        | A = singleton(B) ) ) ),
+    file(zfmisc_1,t39_zfmisc_1),
+    []).
+
+fof(t3_lattice3,lemma,(
+    ! [A] : 
+      ( lower_bounded_semilattstr(boole_lattice(A))
+      & bottom_of_semilattstr(boole_lattice(A)) = empty_set ) ),
+    file(lattice3,t3_lattice3),
+    []).
+
+fof(t3_ordinal1,lemma,(
+    ! [A,B,C] : ~ ( in(A,B)
+      & in(B,C)
+      & in(C,A) ) ),
+    file(ordinal1,t3_ordinal1),
+    []).
+
+fof(t3_wellord2,lemma,(
+    ! [A] : transitive(inclusion_relation(A)) ),
+    file(wellord2,t3_wellord2),
+    []).
+
+fof(t3_xboole_0,lemma,(
+    ! [A,B] : 
+      ( ~ ( ~ disjoint(A,B)
+          & ! [C] : ~ ( in(C,A)
+              & in(C,B) ) )
+      & ~ ( ? [C] : 
+              ( in(C,A)
+              & in(C,B) )
+          & disjoint(A,B) ) ) ),
+    file(xboole_0,t3_xboole_0),
+    []).
+
+fof(t3_xboole_1,lemma,(
+    ! [A] : 
+      ( subset(A,empty_set)
+     => A = empty_set ) ),
+    file(xboole_1,t3_xboole_1),
+    []).
+
+fof(t3_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( ~ ( in(C,neighborhood_system(A,B))
+                  & ~ point_neighbourhood(C,A,B) )
+              & ~ ( point_neighbourhood(C,A,B)
+                  & ~ in(C,neighborhood_system(A,B)) ) ) ) ) ),
+    file(yellow19,t3_yellow19),
+    []).
+
+fof(t40_xboole_1,lemma,(
+    ! [A,B] : set_difference(set_union2(A,B),B) = set_difference(A,B) ),
+    file(xboole_1,t40_xboole_1),
+    []).
+
+fof(t41_ordinal1,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => ( being_limit_ordinal(A)
+      <=> ! [B] : 
+            ( ordinal(B)
+           => ( in(B,A)
+             => in(succ(B),A) ) ) ) ) ),
+    file(ordinal1,t41_ordinal1),
+    []).
+
+fof(t41_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( subnet(C,A,B)
+             => subset(lim_points_of_net(A,B),lim_points_of_net(A,C)) ) ) ) ),
+    file(yellow_6,t41_yellow_6),
+    []).
+
+fof(t42_ordinal1,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => ( ~ ( ~ being_limit_ordinal(A)
+            & ! [B] : 
+                ( ordinal(B)
+               => A != succ(B) ) )
+        & ~ ( ? [B] : 
+                ( ordinal(B)
+                & A = succ(B) )
+            & being_limit_ordinal(A) ) ) ) ),
+    file(ordinal1,t42_ordinal1),
+    []).
+
+fof(t42_yellow_0,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & antisymmetric_relstr(A)
+        & lower_bounded_relstr(A)
+        & rel_str(A) )
+     => ( ex_sup_of_relstr_set(A,empty_set)
+        & ex_inf_of_relstr_set(A,the_carrier(A)) ) ) ),
+    file(yellow_0,t42_yellow_0),
+    []).
+
+fof(t43_subset_1,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(A))
+     => ! [C] : 
+          ( element(C,powerset(A))
+         => ( disjoint(B,C)
+          <=> subset(B,subset_complement(A,C)) ) ) ) ),
+    file(subset_1,t43_subset_1),
+    []).
+
+fof(t44_pre_topc,lemma,(
+    ! [A] : 
+      ( ( topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(powerset(the_carrier(A))))
+         => ~ ( ! [C] : 
+                  ( element(C,powerset(the_carrier(A)))
+                 => ~ ( in(C,B)
+                      & ~ closed_subset(C,A) ) )
+              & ~ closed_subset(meet_of_subsets(the_carrier(A),B),A) ) ) ) ),
+    file(pre_topc,t44_pre_topc),
+    []).
+
+fof(t44_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => subset(relation_dom(relation_composition(A,B)),relation_dom(A)) ) ) ),
+    file(relat_1,t44_relat_1),
+    []).
+
+fof(t44_tops_1,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => subset(interior(A,B),B) ) ) ),
+    file(tops_1,t44_tops_1),
+    []).
+
+fof(t44_yellow_0,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & antisymmetric_relstr(A)
+        & lower_bounded_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => related(A,bottom_of_relstr(A),B) ) ) ),
+    file(yellow_0,t44_yellow_0),
+    []).
+
+fof(t45_pre_topc,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ! [C] : ~ ( in(C,the_carrier(A))
+              & ~ ( ~ ( in(C,topstr_closure(A,B))
+                      & ~ ! [D] : 
+                            ( element(D,powerset(the_carrier(A)))
+                           => ~ ( closed_subset(D,A)
+                                & subset(B,D)
+                                & ~ in(C,D) ) ) )
+                  & ~ ( ! [D] : 
+                          ( element(D,powerset(the_carrier(A)))
+                         => ~ ( closed_subset(D,A)
+                              & subset(B,D)
+                              & ~ in(C,D) ) )
+                      & ~ in(C,topstr_closure(A,B)) ) ) ) ) ) ),
+    file(pre_topc,t45_pre_topc),
+    []).
+
+fof(t45_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => subset(relation_rng(relation_composition(A,B)),relation_rng(B)) ) ) ),
+    file(relat_1,t45_relat_1),
+    []).
+
+fof(t45_xboole_1,lemma,(
+    ! [A,B] : 
+      ( subset(A,B)
+     => B = set_union2(A,set_difference(B,A)) ) ),
+    file(xboole_1,t45_xboole_1),
+    []).
+
+fof(t46_funct_2,lemma,(
+    ! [A,B,C,D] : 
+      ( ( function(D)
+        & quasi_total(D,A,B)
+        & relation_of2_as_subset(D,A,B) )
+     => ( B != empty_set
+       => ! [E] : 
+            ( in(E,relation_inverse_image(D,C))
+          <=> ( in(E,A)
+              & in(apply(D,E),C) ) ) ) ) ),
+    file(funct_2,t46_funct_2),
+    []).
+
+fof(t46_pre_topc,lemma,(
+    ! [A] : 
+      ( ( topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ~ ! [C] : 
+                ( element(C,powerset(powerset(the_carrier(A))))
+               => ~ ( ! [D] : 
+                        ( element(D,powerset(the_carrier(A)))
+                       => ( ~ ( in(D,C)
+                              & ~ ( closed_subset(D,A)
+                                  & subset(B,D) ) )
+                          & ~ ( closed_subset(D,A)
+                              & subset(B,D)
+                              & ~ in(D,C) ) ) )
+                    & topstr_closure(A,B) = meet_of_subsets(the_carrier(A),C) ) ) ) ) ),
+    file(pre_topc,t46_pre_topc),
+    []).
+
+fof(t46_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ( subset(relation_rng(A),relation_dom(B))
+           => relation_dom(relation_composition(A,B)) = relation_dom(A) ) ) ) ),
+    file(relat_1,t46_relat_1),
+    []).
+
+fof(t46_setfam_1,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ~ ( B != empty_set
+          & complements_of_subsets(A,B) = empty_set ) ) ),
+    file(setfam_1,t46_setfam_1),
+    []).
+
+fof(t46_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( in(A,B)
+     => set_union2(singleton(A),B) = B ) ),
+    file(zfmisc_1,t46_zfmisc_1),
+    []).
+
+fof(t47_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ( subset(relation_dom(A),relation_rng(B))
+           => relation_rng(relation_composition(B,A)) = relation_rng(A) ) ) ) ),
+    file(relat_1,t47_relat_1),
+    []).
+
+fof(t47_setfam_1,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ( B != empty_set
+       => subset_difference(A,cast_to_subset(A),union_of_subsets(A,B)) = meet_of_subsets(A,complements_of_subsets(A,B)) ) ) ),
+    file(setfam_1,t47_setfam_1),
+    []).
+
+fof(t48_pre_topc,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => subset(B,topstr_closure(A,B)) ) ) ),
+    file(pre_topc,t48_pre_topc),
+    []).
+
+fof(t48_setfam_1,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(powerset(A)))
+     => ( B != empty_set
+       => union_of_subsets(A,complements_of_subsets(A,B)) = subset_difference(A,cast_to_subset(A),meet_of_subsets(A,B)) ) ) ),
+    file(setfam_1,t48_setfam_1),
+    []).
+
+fof(t48_xboole_1,lemma,(
+    ! [A,B] : set_difference(A,set_difference(A,B)) = set_intersection2(A,B) ),
+    file(xboole_1,t48_xboole_1),
+    []).
+
+fof(t49_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ! [C] : 
+              ( ( relation(C)
+                & function(C) )
+             => ( relation_isomorphism(A,B,C)
+               => relation_isomorphism(B,A,function_inverse(C)) ) ) ) ) ),
+    file(wellord1,t49_wellord1),
+    []).
+
+fof(t4_waybel_7,lemma,(
+    ! [A] : the_carrier(boole_POSet(A)) = powerset(A) ),
+    file(waybel_7,t4_waybel_7),
+    []).
+
+fof(t4_wellord2,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => connected(inclusion_relation(A)) ) ),
+    file(wellord2,t4_wellord2),
+    []).
+
+fof(t4_xboole_0,lemma,(
+    ! [A,B] : 
+      ( ~ ( ~ disjoint(A,B)
+          & ! [C] : ~ in(C,set_intersection2(A,B)) )
+      & ~ ( ? [C] : in(C,set_intersection2(A,B))
+          & disjoint(A,B) ) ) ),
+    file(xboole_0,t4_xboole_0),
+    []).
+
+fof(t4_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( ( upper_relstr_subset(C,boole_POSet(cast_as_carrier_subset(A)))
+                & element(C,powerset(the_carrier(boole_POSet(cast_as_carrier_subset(A))))) )
+             => ( ~ ( is_a_convergence_point_of_set(A,C,B)
+                    & ~ subset(neighborhood_system(A,B),C) )
+                & ~ ( subset(neighborhood_system(A,B),C)
+                    & ~ is_a_convergence_point_of_set(A,C,B) ) ) ) ) ) ),
+    file(yellow19,t4_yellow19),
+    []).
+
+fof(t4_yellow_1,lemma,(
+    ! [A] : boole_POSet(A) = incl_POSet(powerset(A)) ),
+    file(yellow_1,t4_yellow_1),
+    []).
+
+fof(t50_lattice3,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & lattice(A)
+        & complete_latt_str(A)
+        & latt_str(A) )
+     => ( ~ empty_carrier(A)
+        & lattice(A)
+        & lower_bounded_semilattstr(A)
+        & latt_str(A)
+        & bottom_of_semilattstr(A) = join_of_latt_set(A,empty_set) ) ) ),
+    file(lattice3,t50_lattice3),
+    []).
+
+fof(t50_subset_1,lemma,(
+    ! [A] : 
+      ( A != empty_set
+     => ! [B] : 
+          ( element(B,powerset(A))
+         => ! [C] : 
+              ( element(C,A)
+             => ( ~ in(C,B)
+               => in(C,subset_complement(A,B)) ) ) ) ) ),
+    file(subset_1,t50_subset_1),
+    []).
+
+fof(t51_tops_1,lemma,(
+    ! [A] : 
+      ( ( topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => open_subset(interior(A,B),A) ) ) ),
+    file(tops_1,t51_tops_1),
+    []).
+
+fof(t52_pre_topc,lemma,(
+    ! [A] : 
+      ( top_str(A)
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ( ~ ( closed_subset(B,A)
+                & topstr_closure(A,B) != B )
+            & ~ ( topological_space(A)
+                & topstr_closure(A,B) = B
+                & ~ closed_subset(B,A) ) ) ) ) ),
+    file(pre_topc,t52_pre_topc),
+    []).
+
+fof(t53_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ! [C] : 
+              ( ( relation(C)
+                & function(C) )
+             => ( relation_isomorphism(A,B,C)
+               => ( ( reflexive(A)
+                   => reflexive(B) )
+                  & ( transitive(A)
+                   => transitive(B) )
+                  & ( connected(A)
+                   => connected(B) )
+                  & ( antisymmetric(A)
+                   => antisymmetric(B) )
+                  & ( well_founded_relation(A)
+                   => well_founded_relation(B) ) ) ) ) ) ) ),
+    file(wellord1,t53_wellord1),
+    []).
+
+fof(t54_funct_1,lemma,(
+    ! [A] : 
+      ( ( relation(A)
+        & function(A) )
+     => ( one_to_one(A)
+       => ! [B] : 
+            ( ( relation(B)
+              & function(B) )
+           => ( B = function_inverse(A)
+            <=> ( relation_dom(B) = relation_rng(A)
+                & ! [C,D] : 
+                    ( ( ( in(C,relation_rng(A))
+                        & D = apply(B,C) )
+                     => ( in(D,relation_dom(A))
+                        & C = apply(A,D) ) )
+                    & ( ( in(D,relation_dom(A))
+                        & C = apply(A,D) )
+                     => ( in(C,relation_rng(A))
+                        & D = apply(B,C) ) ) ) ) ) ) ) ) ),
+    file(funct_1,t54_funct_1),
+    []).
+
+fof(t54_subset_1,lemma,(
+    ! [A,B,C] : 
+      ( element(C,powerset(A))
+     => ~ ( in(B,subset_complement(A,C))
+          & in(B,C) ) ) ),
+    file(subset_1,t54_subset_1),
+    []).
+
+fof(t54_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ! [B] : 
+          ( relation(B)
+         => ! [C] : 
+              ( ( relation(C)
+                & function(C) )
+             => ( ( well_ordering(A)
+                  & relation_isomorphism(A,B,C) )
+               => well_ordering(B) ) ) ) ) ),
+    file(wellord1,t54_wellord1),
+    []).
+
+fof(t55_funct_1,lemma,(
+    ! [A] : 
+      ( ( relation(A)
+        & function(A) )
+     => ( one_to_one(A)
+       => ( relation_rng(A) = relation_dom(function_inverse(A))
+          & relation_dom(A) = relation_rng(function_inverse(A)) ) ) ) ),
+    file(funct_1,t55_funct_1),
+    []).
+
+fof(t55_tops_1,lemma,(
+    ! [A] : 
+      ( ( topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( top_str(B)
+         => ! [C] : 
+              ( element(C,powerset(the_carrier(A)))
+             => ! [D] : 
+                  ( element(D,powerset(the_carrier(B)))
+                 => ( ~ ( open_subset(D,B)
+                        & interior(B,D) != D )
+                    & ~ ( interior(A,C) = C
+                        & ~ open_subset(C,A) ) ) ) ) ) ) ),
+    file(tops_1,t55_tops_1),
+    []).
+
+fof(t56_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( ! [B,C] : ~ in(ordered_pair(B,C),A)
+       => A = empty_set ) ) ),
+    file(relat_1,t56_relat_1),
+    []).
+
+fof(t57_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ( ( one_to_one(B)
+          & in(A,relation_rng(B)) )
+       => ( A = apply(B,apply(function_inverse(B),A))
+          & A = apply(relation_composition(function_inverse(B),B),A) ) ) ) ),
+    file(funct_1,t57_funct_1),
+    []).
+
+fof(t5_connsp_2,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ~ ( open_subset(B,A)
+                  & in(C,B)
+                  & ~ point_neighbourhood(B,A,C) ) ) ) ) ),
+    file(connsp_2,t5_connsp_2),
+    []).
+
+fof(t5_tex_2,lemma,(
+    ! [A,B] : 
+      ( element(B,powerset(A))
+     => ( ~ ( proper_element(B,powerset(A))
+            & B = A )
+        & ~ ( B != A
+            & ~ proper_element(B,powerset(A)) ) ) ) ),
+    file(tex_2,t5_tex_2),
+    []).
+
+fof(t5_tops_2,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(powerset(the_carrier(A))))
+         => ~ ( is_a_cover_of_carrier(A,B)
+              & B = empty_set ) ) ) ),
+    file(tops_2,t5_tops_2),
+    []).
+
+fof(t5_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( well_founded_relation(A)
+      <=> is_well_founded_in(A,relation_field(A)) ) ) ),
+    file(wellord1,t5_wellord1),
+    []).
+
+fof(t5_wellord2,lemma,(
+    ! [A] : antisymmetric(inclusion_relation(A)) ),
+    file(wellord2,t5_wellord2),
+    []).
+
+fof(t60_relat_1,lemma,
+    ( relation_dom(empty_set) = empty_set
+    & relation_rng(empty_set) = empty_set ),
+    file(relat_1,t60_relat_1),
+    []).
+
+fof(t60_xboole_1,lemma,(
+    ! [A,B] : ~ ( subset(A,B)
+      & proper_subset(B,A) ) ),
+    file(xboole_1,t60_xboole_1),
+    []).
+
+fof(t60_yellow_0,lemma,(
+    ! [A] : 
+      ( rel_str(A)
+     => ! [B] : 
+          ( subrelstr(B,A)
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ! [D] : 
+                  ( element(D,the_carrier(A))
+                 => ! [E] : 
+                      ( element(E,the_carrier(B))
+                     => ! [F] : 
+                          ( element(F,the_carrier(B))
+                         => ~ ( E = C
+                              & F = D
+                              & related(B,E,F)
+                              & ~ related(A,C,D) ) ) ) ) ) ) ) ),
+    file(yellow_0,t60_yellow_0),
+    []).
+
+fof(t61_yellow_0,lemma,(
+    ! [A] : 
+      ( rel_str(A)
+     => ! [B] : 
+          ( ( full_subrelstr(B,A)
+            & subrelstr(B,A) )
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ! [D] : 
+                  ( element(D,the_carrier(A))
+                 => ! [E] : 
+                      ( element(E,the_carrier(B))
+                     => ! [F] : 
+                          ( element(F,the_carrier(B))
+                         => ~ ( E = C
+                              & F = D
+                              & related(A,C,D)
+                              & in(E,the_carrier(B))
+                              & in(F,the_carrier(B))
+                              & ~ related(B,E,F) ) ) ) ) ) ) ) ),
+    file(yellow_0,t61_yellow_0),
+    []).
+
+fof(t62_funct_1,lemma,(
+    ! [A] : 
+      ( ( relation(A)
+        & function(A) )
+     => ( one_to_one(A)
+       => one_to_one(function_inverse(A)) ) ) ),
+    file(funct_1,t62_funct_1),
+    []).
+
+fof(t63_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( ( subset(A,B)
+        & disjoint(B,C) )
+     => disjoint(A,C) ) ),
+    file(xboole_1,t63_xboole_1),
+    []).
+
+fof(t64_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( ( relation_dom(A) = empty_set
+          | relation_rng(A) = empty_set )
+       => A = empty_set ) ) ),
+    file(relat_1,t64_relat_1),
+    []).
+
+fof(t65_relat_1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( relation_dom(A) = empty_set
+      <=> relation_rng(A) = empty_set ) ) ),
+    file(relat_1,t65_relat_1),
+    []).
+
+fof(t65_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( set_difference(A,singleton(B)) = A
+    <=> ~ in(B,A) ) ),
+    file(zfmisc_1,t65_zfmisc_1),
+    []).
+
+fof(t68_funct_1,lemma,(
+    ! [A,B] : 
+      ( ( relation(B)
+        & function(B) )
+     => ! [C] : 
+          ( ( relation(C)
+            & function(C) )
+         => ( B = relation_dom_restriction(C,A)
+          <=> ( relation_dom(B) = set_intersection2(relation_dom(C),A)
+              & ! [D] : 
+                  ( in(D,relation_dom(B))
+                 => apply(B,D) = apply(C,D) ) ) ) ) ) ),
+    file(funct_1,t68_funct_1),
+    []).
+
+fof(t69_enumset1,lemma,(
+    ! [A] : unordered_pair(A,A) = singleton(A) ),
+    file(enumset1,t69_enumset1),
+    []).
+
+fof(t6_funct_2,lemma,(
+    ! [A,B,C,D] : 
+      ( ( function(D)
+        & quasi_total(D,A,B)
+        & relation_of2_as_subset(D,A,B) )
+     => ( in(C,A)
+       => ( B = empty_set
+          | in(apply(D,C),relation_rng(D)) ) ) ) ),
+    file(funct_2,t6_funct_2),
+    []).
+
+fof(t6_wellord2,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => well_founded_relation(inclusion_relation(A)) ) ),
+    file(wellord2,t6_wellord2),
+    []).
+
+fof(t6_yellow_0,lemma,(
+    ! [A] : 
+      ( rel_str(A)
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ( relstr_set_smaller(A,empty_set,B)
+            & relstr_element_smaller(A,empty_set,B) ) ) ) ),
+    file(yellow_0,t6_yellow_0),
+    []).
+
+fof(t6_yellow_6,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & topological_space(A)
+        & top_str(A) )
+     => ! [B] : 
+          ( element(B,powerset(the_carrier(A)))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( in(C,topstr_closure(A,B))
+                    & ~ ! [D] : 
+                          ( point_neighbourhood(D,A,C)
+                         => ~ disjoint(D,B) ) )
+                & ~ ( ! [D] : 
+                        ( point_neighbourhood(D,A,C)
+                       => ~ disjoint(D,B) )
+                    & ~ in(C,topstr_closure(A,B)) ) ) ) ) ) ),
+    file(yellow_6,t6_yellow_6),
+    []).
+
+fof(t6_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( subset(singleton(A),singleton(B))
+     => A = B ) ),
+    file(zfmisc_1,t6_zfmisc_1),
+    []).
+
+fof(t70_funct_1,lemma,(
+    ! [A,B,C] : 
+      ( ( relation(C)
+        & function(C) )
+     => ( in(B,relation_dom(relation_dom_restriction(C,A)))
+       => apply(relation_dom_restriction(C,A),B) = apply(C,B) ) ) ),
+    file(funct_1,t70_funct_1),
+    []).
+
+fof(t71_relat_1,lemma,(
+    ! [A] : 
+      ( relation_dom(identity_relation(A)) = A
+      & relation_rng(identity_relation(A)) = A ) ),
+    file(relat_1,t71_relat_1),
+    []).
+
+fof(t72_funct_1,lemma,(
+    ! [A,B,C] : 
+      ( ( relation(C)
+        & function(C) )
+     => ( in(B,A)
+       => apply(relation_dom_restriction(C,A),B) = apply(C,B) ) ) ),
+    file(funct_1,t72_funct_1),
+    []).
+
+fof(t74_relat_1,lemma,(
+    ! [A,B,C,D] : 
+      ( relation(D)
+     => ( in(ordered_pair(A,B),relation_composition(identity_relation(C),D))
+      <=> ( in(A,C)
+          & in(ordered_pair(A,B),D) ) ) ) ),
+    file(relat_1,t74_relat_1),
+    []).
+
+fof(t7_lattice3,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & lattice(A)
+        & latt_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => ! [C] : 
+              ( element(C,the_carrier(A))
+             => ( ~ ( below_refl(A,B,C)
+                    & ~ related_reflexive(poset_of_lattice(A),cast_to_el_of_LattPOSet(A,B),cast_to_el_of_LattPOSet(A,C)) )
+                & ~ ( related_reflexive(poset_of_lattice(A),cast_to_el_of_LattPOSet(A,B),cast_to_el_of_LattPOSet(A,C))
+                    & ~ below_refl(A,B,C) ) ) ) ) ) ),
+    file(lattice3,t7_lattice3),
+    []).
+
+fof(t7_mcart_1,lemma,(
+    ! [A,B] : 
+      ( pair_first(ordered_pair(A,B)) = A
+      & pair_second(ordered_pair(A,B)) = B ) ),
+    file(mcart_1,t7_mcart_1),
+    []).
+
+fof(t7_wellord2,lemma,(
+    ! [A] : 
+      ( ordinal(A)
+     => well_ordering(inclusion_relation(A)) ) ),
+    file(wellord2,t7_wellord2),
+    []).
+
+fof(t7_xboole_1,lemma,(
+    ! [A,B] : subset(A,set_union2(A,B)) ),
+    file(xboole_1,t7_xboole_1),
+    []).
+
+fof(t83_xboole_1,lemma,(
+    ! [A,B] : 
+      ( disjoint(A,B)
+    <=> set_difference(A,B) = A ) ),
+    file(xboole_1,t83_xboole_1),
+    []).
+
+fof(t86_relat_1,lemma,(
+    ! [A,B,C] : 
+      ( relation(C)
+     => ( in(A,relation_dom(relation_dom_restriction(C,B)))
+      <=> ( in(A,B)
+          & in(A,relation_dom(C)) ) ) ) ),
+    file(relat_1,t86_relat_1),
+    []).
+
+fof(t88_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_dom_restriction(B,A),B) ) ),
+    file(relat_1,t88_relat_1),
+    []).
+
+fof(t8_funct_1,lemma,(
+    ! [A,B,C] : 
+      ( ( relation(C)
+        & function(C) )
+     => ( in(ordered_pair(A,B),C)
+      <=> ( in(A,relation_dom(C))
+          & B = apply(C,A) ) ) ) ),
+    file(funct_1,t8_funct_1),
+    []).
+
+fof(t8_waybel_0,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & net_str(B,A) )
+         => ! [C,D] : ~ ( subset(C,D)
+              & ~ ( ~ ( is_eventually_in(A,B,C)
+                      & ~ is_eventually_in(A,B,D) )
+                  & ~ ( is_often_in(A,B,C)
+                      & ~ is_often_in(A,B,D) ) ) ) ) ) ),
+    file(waybel_0,t8_waybel_0),
+    []).
+
+fof(t8_waybel_7,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & reflexive_relstr(A)
+        & transitive_relstr(A)
+        & antisymmetric_relstr(A)
+        & lower_bounded_relstr(A)
+        & rel_str(A) )
+     => ! [B] : 
+          ( ( ~ empty(B)
+            & filtered_subset(B,A)
+            & upper_relstr_subset(B,A)
+            & element(B,powerset(the_carrier(A))) )
+         => ( ~ ( proper_element(B,powerset(the_carrier(A)))
+                & in(bottom_of_relstr(A),B) )
+            & ~ ( ~ in(bottom_of_relstr(A),B)
+                & ~ proper_element(B,powerset(the_carrier(A))) ) ) ) ) ),
+    file(waybel_7,t8_waybel_7),
+    []).
+
+fof(t8_wellord1,lemma,(
+    ! [A] : 
+      ( relation(A)
+     => ( well_orders(A,relation_field(A))
+      <=> well_ordering(A) ) ) ),
+    file(wellord1,t8_wellord1),
+    []).
+
+fof(t8_xboole_1,lemma,(
+    ! [A,B,C] : 
+      ( ( subset(A,B)
+        & subset(C,B) )
+     => subset(set_union2(A,C),B) ) ),
+    file(xboole_1,t8_xboole_1),
+    []).
+
+fof(t8_zfmisc_1,lemma,(
+    ! [A,B,C] : 
+      ( singleton(A) = unordered_pair(B,C)
+     => A = B ) ),
+    file(zfmisc_1,t8_zfmisc_1),
+    []).
+
+fof(t90_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_dom(relation_dom_restriction(B,A)) = set_intersection2(relation_dom(B),A) ) ),
+    file(relat_1,t90_relat_1),
+    []).
+
+fof(t91_tmap_1,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( element(B,the_carrier(A))
+         => apply_as_element(the_carrier(A),the_carrier(A),identity_on_carrier(A),B) = B ) ) ),
+    file(tmap_1,t91_tmap_1),
+    []).
+
+fof(t92_zfmisc_1,lemma,(
+    ! [A,B] : 
+      ( in(A,B)
+     => subset(A,union(B)) ) ),
+    file(zfmisc_1,t92_zfmisc_1),
+    []).
+
+fof(t94_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => relation_dom_restriction(B,A) = relation_composition(identity_relation(A),B) ) ),
+    file(relat_1,t94_relat_1),
+    []).
+
+fof(t99_relat_1,lemma,(
+    ! [A,B] : 
+      ( relation(B)
+     => subset(relation_rng(relation_dom_restriction(B,A)),relation_rng(B)) ) ),
+    file(relat_1,t99_relat_1),
+    []).
+
+fof(t99_zfmisc_1,lemma,(
+    ! [A] : union(powerset(A)) = A ),
+    file(zfmisc_1,t99_zfmisc_1),
+    []).
+
+fof(t9_funct_2,lemma,(
+    ! [A,B,C,D] : 
+      ( ( function(D)
+        & quasi_total(D,A,B)
+        & relation_of2_as_subset(D,A,B) )
+     => ( subset(B,C)
+       => ( ( B = empty_set
+            & A != empty_set )
+          | ( function(D)
+            & quasi_total(D,A,C)
+            & relation_of2_as_subset(D,A,C) ) ) ) ) ),
+    file(funct_2,t9_funct_2),
+    []).
+
+fof(t9_yellow19,lemma,(
+    ! [A] : 
+      ( ( ~ empty_carrier(A)
+        & one_sorted_str(A) )
+     => ! [B] : 
+          ( ( ~ empty_carrier(B)
+            & transitive_relstr(B)
+            & directed_relstr(B)
+            & net_str(B,A) )
+         => ! [C] : 
+              ( netstr_induced_subset(C,A,B)
+             => is_eventually_in(A,B,C) ) ) ) ),
+    file(yellow19,t9_yellow19),
+    []).
+
+fof(t9_zfmisc_1,lemma,(
+    ! [A,B,C] : 
+      ( singleton(A) = unordered_pair(B,C)
+     => B = C ) ),
+    file(zfmisc_1,t9_zfmisc_1),
+    []).

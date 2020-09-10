@@ -1,0 +1,25 @@
+fof(human_created_equal,axiom,(
+    ! [X,Y] :
+      ( ( human(X)
+        & human(Y) )
+     => created_equal(X,Y) ) )).
+
+fof(human,axiom,(
+    human(john) )).
+
+fof(grade_received,axiom,(
+    grade(john) = f )).
+ 
+fof(human_receive_grade,axiom,(
+    ? [X] :
+      ( human(X)
+      & grade(X) = a ) )).
+
+fof(a_not_f,axiom,(
+        a != f )).
+   
+fof(human_created_equal,conjecture,(
+    ~ ( ! [X,Y] :
+          ( created_equal(X,Y)
+        <=> X = Y ) ) )).
+

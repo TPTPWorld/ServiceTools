@@ -1,0 +1,29 @@
+This is pdfTeX, Version 3.14159-1.10b (Web2C 7.4.5) (format=pdflatex 2004.2.19)  7 APR 2004 14:03
+**eprover.
+(/sw/share/texmf/tex/latex/tools/.tex{/sw/share/texmf/pdftex/config/pdftex.cfg}
+! Interruption.
+<to be read again> 
+                   \begingroup 
+l.1 
+    %%
+? 
+! Emergency stop.
+<to be read again> 
+                   \begingroup 
+l.1 
+    %%
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 8 strings out of 95437
+ 129 string characters out of 1190295
+ 44508 words of memory out of 1000001
+ 3103 multiletter control sequences out of 10000+50000
+ 3640 words of font info for 14 fonts, out of 500000 for 1000
+ 14 hyphenation exceptions out of 1000
+ 3i,0n,1p,14b,6s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 0 PDF objects out of 300000
+ 0 named destinations out of 131072
+ 0 words of extra memory for PDF output out of 65536
+No pages of output.

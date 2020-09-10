@@ -1,0 +1,17 @@
+This directory contains Automatic Generator of Interesting Theorems (AGINT)
+(C) Yury Puzis
+
+Installing: run 'make'
+
+Generation of interesting formulae
+	$ seek.pl -p AXIOMS_FILE [-a PROOVER_NAME -i ITERATION_SIZE 
+		  -l MAX_ITERATIONS -q QUIETNESS_LEVEL]
+
+Evaluation of formulae for interestingness
+	$ rate.pl AXIOMS_FILE FORMULAE_FILE
+
++ All output is sent to stdout
++ FORMULAE_FILE needs to contain all axioms from AXIOMS_FILE within it.
+  The reason is that AXIOMS_FILE axioms are used to build stats. tables,
+  but can have the original names. FORMULAE_FILE axioms must be named by
+  the same naming convention as the rest of the formulae (provers do renaming)

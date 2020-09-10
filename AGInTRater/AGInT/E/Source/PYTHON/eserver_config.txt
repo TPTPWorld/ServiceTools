@@ -1,0 +1,10 @@
+Port:               20000
+Max processes:      2
+Binaries directory: /Users/schulz/SOURCES/Projects/E/PROVER
+Problem directory:  /Users/schulz/EPROVER/TPTP_3.5.0_FLAT
+E-Mark:             992.168
+Memory limit:       512
+Auto options:       -s --print-statistics --resources-info
+Master:             localhost:30000
+Local blocks:       false
+Load limit:         2.0
