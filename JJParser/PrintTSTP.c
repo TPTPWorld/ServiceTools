@@ -209,6 +209,11 @@ Formula,0,0,outermost,1);
         PrintFileTSTPFormula(Stream,tptp_tff,Term->TheSymbol.NestedFormula->
 Formula,0,0,outermost,1);
         PFprintf(Stream,")");
+    } else if (Term->Type == nested_tcf) {
+        PFprintf(Stream,"$tcf(");
+        PrintFileTSTPFormula(Stream,tptp_tcf,Term->TheSymbol.NestedFormula->
+Formula,0,0,outermost,1);
+        PFprintf(Stream,")");
     } else if (Term->Type == nested_fof) {
         PFprintf(Stream,"$fof(");
         PrintFileTSTPFormula(Stream,tptp_fof,Term->TheSymbol.NestedFormula->
@@ -845,6 +850,9 @@ int Pretty) {
         case tptp_tff:
             PFprintf(Stream,"tff");
             break;
+        case tptp_tcf:
+            PFprintf(Stream,"tcf");
+            break;
         case tptp_fof:
             PFprintf(Stream,"fof");
             break;
@@ -1061,6 +1069,7 @@ AnnotatedFormula->AnnotatedFormulaUnion.Comment);
             case tptp_tpi:
             case tptp_thf:
             case tptp_tff:
+            case tptp_tcf:
             case tptp_fof:
             case tptp_cnf:
                 switch (Format) {

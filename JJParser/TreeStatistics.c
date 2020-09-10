@@ -33,6 +33,13 @@ double TreeCount(TREENODE Tree,CountType WhatToCount,int Expand) {
                     Counter = 0;
                 }
                 break;
+            case tcf_nodes:
+                if (GetSyntax(Tree->AnnotatedFormula) == tptp_tcf) {
+                    Counter = 1;
+                } else {
+                    Counter = 0;
+                }
+                break;
             case fof_nodes:
                 if (GetSyntax(Tree->AnnotatedFormula) == tptp_fof) {
                     Counter = 1;
@@ -259,6 +266,7 @@ count_formula_depth,0) / Statistics->NumberOfFormulae;
 
     Statistics->NumberOfTHF = RootListCount(RootListHead,thf_nodes,0);
     Statistics->NumberOfTFF = RootListCount(RootListHead,tff_nodes,0);
+    Statistics->NumberOfTCF = RootListCount(RootListHead,tcf_nodes,0);
     Statistics->NumberOfFOF = RootListCount(RootListHead,fof_nodes,0);
 
     Statistics->NumberOfCNF = RootListCount(RootListHead,cnf_nodes,0);

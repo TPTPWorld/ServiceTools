@@ -119,6 +119,11 @@ SIGNATURE Signature) {
         Language = tptp_tff;
         AnnotatedFormula = NewAnnotatedTSTPFormula(tptp_tff);
         VariablesMustBeQuantifiedAlready = 1;
+    } else if (CheckToken(Stream,lower_word,"tcf")) {
+        AcceptToken(Stream,lower_word,"tcf");
+        Language = tptp_tcf;
+        AnnotatedFormula = NewAnnotatedTSTPFormula(tptp_tcf);
+        VariablesMustBeQuantifiedAlready = 1;
     } else if (CheckToken(Stream,lower_word,"fof")) {
         AcceptToken(Stream,lower_word,"fof");
         Language = tptp_fof;

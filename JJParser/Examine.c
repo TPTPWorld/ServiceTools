@@ -188,6 +188,7 @@ int LogicalAnnotatedFormula(ANNOTATEDFORMULA AnnotatedFormula) {
 
     return(CheckAnnotatedFormula(AnnotatedFormula,tptp_thf) ||
 CheckAnnotatedFormula(AnnotatedFormula,tptp_tff) ||
+CheckAnnotatedFormula(AnnotatedFormula,tptp_tcf) ||
 CheckAnnotatedFormula(AnnotatedFormula,tptp_fof) ||
 CheckAnnotatedFormula(AnnotatedFormula,tptp_cnf));
 }

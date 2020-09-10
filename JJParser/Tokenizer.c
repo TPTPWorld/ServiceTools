@@ -654,6 +654,9 @@ SyntaxType StringToSyntax(char * String) {
     if (!strcmp(String,"tff")) {
         return(tptp_tff);
     }
+    if (!strcmp(String,"tcf")) {
+        return(tptp_tcf);
+    }
     if (!strcmp(String,"fof")) {
         return(tptp_fof);
     }
@@ -678,6 +681,9 @@ char * SyntaxToString(SyntaxType Syntax) {
             break;
         case tptp_tff:
             return("tff");
+            break;
+        case tptp_tcf:
+            return("tcf");
             break;
         case tptp_fof:
             return("fof");
