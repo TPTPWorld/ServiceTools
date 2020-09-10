@@ -153,6 +153,7 @@ typedef enum {
     let_term,
     nested_thf,
     nested_tff,
+    nested_tcf,
     nested_fof,
     nested_cnf,
     nested_fot,   // Used to record variable bindings in proofs
