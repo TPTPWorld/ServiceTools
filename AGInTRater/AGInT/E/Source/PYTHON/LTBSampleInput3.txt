@@ -1,0 +1,3 @@
+/Users/schulz/EPROVER/TPTP-v3.4.2/CSR025+1.p /tmp/CSR025+1
+/Users/schulz/EPROVER/TPTP-v3.4.2/CSR026+1.p /tmp/CSR026+1
+/Users/schulz/EPROVER/TPTP-v3.4.2/CSR025+4.p /tmp/CSR025+4

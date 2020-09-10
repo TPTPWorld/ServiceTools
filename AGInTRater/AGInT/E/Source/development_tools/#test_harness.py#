@@ -1,0 +1,212 @@
+#!/usr/bin/env python2.3
+# ----------------------------------
+#
+# test_harness.py
+#
+# New framework for E (and possibly other system) testruns, intended
+# to eliminate both sequential_eprover*.awk and
+# distributed_eprover.awk.  
+
+
+"""
+Usage: test_harness.py [options] [spec_files]
+
+-h
+ Print this information and exit.
+
+
+Copyright 2005 Stephan Schulz, schulz@eprover.org
+
+This code is part of the support structure for the equational
+theorem prover E. Visit
+
+ http://www.eprover.org
+
+for more information.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program ; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+MA  02111-1307 USA 
+
+The original copyright holder can be contacted as
+
+Stephan Schulz (I4)
+Technische Universitaet Muenchen
+Institut fuer Informatik
+Boltzmannstrasse 3
+Garching bei Muenchen
+Germany
+
+or via email (address above).
+"""
+
+import re
+import string
+import sys
+import time
+import os
+
+import pylib_basics
+import pylib_io
+
+
+
+def scale_time(e_mark):
+    """
+    Return the scaling factor for a e_mark E-Mark system.
+    """
+    return float(100)/e_mark
+
+
+def time_limit(time, e_mark):
+    """
+    Return the corrected time limit for a e_mark E-Mark system and a
+    given base time limit. Various corrections for borderline
+    effects...
+    """
+    res = int(time*scale_time(e_mark)+0.5)
+    if res <= 0:
+        res = 1
+    return 1
+
+def time_limit_arg(time, e_mark, soft):
+    """
+    Return the proper time limit arguments for E.
+    """
+    base_limit = time_limit(time, e_mark)
+    
+    if soft:
+        res = "--soft-time-limit="+repr(base_limit)+\
+        " --time-limit="+repr(3*base_limit)
+    else:
+        res = "--time-limit="+repr(base_limit)
+    return res
+
+
+class hostinfo(object):
+    def __init__(self, host_name = None):
+        if host_name:
+            # Remote host!
+            self.name = host_name
+            self.local = False
+        else:
+            self.name = None
+            self.local = True
+
+    def get_system(self):
+        if self.local:
+            tmp = run_shell_command("get_system.awk")               
+            
+    
+
+class run_spec(object):
+    """
+    Describes a specification of a test run (as specified in the
+    tptp_* files).
+    """
+
+    spec_pat = re.compile("[A-Z][a-z ]*:")
+    required_keys = ["Executable", "Problemdir", "Arguments", "Time limit"]
+    
+    def __init__(self, name):
+        self.jobs = []
+        self.key_val_list = {}
+        
+        files = [name]
+        while len(files)>0:
+            file = files.pop()
+            print "# Parsing file "+file
+            tmp = pylib_io.parse_lines(file)
+            for i in tmp:
+                mo = run_spec.spec_pat.match(i)
+                if mo:
+                    kv = i.split(":", 1)
+                    key = kv[0]
+                    arg = kv[1].strip()
+                    if key == "Include":
+                        files.append(arg)
+                    elif key in self.key_val_list:
+                        sys.error("Key "+key+" used more than once!")
+                    else:
+                        self.key_val_list[key] = arg
+                else:
+                    self.jobs.append(i)
+        for i in run_spec.required_keys:
+            if not i in self.key_val_list:
+                sys.exit("Cannot find specification of "+i)
+        self.executable  = os.path.expanduser(self.key_val_list["Executable"])
+        self.problemdir  = os.path.expanduser(self.key_val_list["Problemdir"])
+        self.arguments   = os.path.expanduser(self.key_val_list["Arguments"])
+        self.time_limit  = os.path.expanduser(self.key_val_list["Time limit"])
+
+    def __repr__(self):
+        res_list = ["Executable: "+self.executable,
+                    "Problemdir: "+self.problemdir,
+                    "Arguments:  "+self.arguments,
+                    "Time limit: "+self.time_limit]
+        res_list.extend(self.jobs)
+        return "\n".join(res_list)
+
+    def job_list(self):
+        return self.jobs
+
+    def basic_command(self):
+        """
+        Return executable + arguments + default arguments.
+        """
+        return self.executable+" "+self.arguments+" "+default_arguments
+
+class job(object):
+    """
+    A single job (input problem+parameters+status).
+    """
+    def __init__(self, spec, problem):
+        self.spec = spec
+        self.problem = problem
+
+    def command_line(self, e_mark):
+        """
+        Return a proper command line to run the system on a host with
+        e_mark E-Mark.
+        """
+        res = self.spec.basic_command()
+        return res
+    
+
+if __name__ == '__main__':
+    hosts_fname = None
+    default_arguments = "--memory-limit=192 --tstp-in"
+
+    for opt in pylib_io.get_options():
+        if opt == "-h":
+            print __doc__
+            sys.exit()
+        elif opt.startswith("--hosts="):
+            print "# Distributed run";
+            hosts_fname = opt[8:]
+        elif opt.startswith("--default_args"):
+            default_arguments = opt[14:]
+            print default_arguments
+        else:
+            sys.exit("Unknown option "+ option)
+
+    #hosts = host_info(hosts_fname)
+
+    print pylib_io.run_shell_command("echo Hallo")
+#    for i in pylib_io.get_args():
+#        print i
+#        spec = run_spec(i)
+#        for j in spec.job_list():
+#            njob = job(spec,j)
+#            print njob.command_line(100)

@@ -1,0 +1,39 @@
+\indexentry{xyzzy}{3}
+\indexentry{terms}{3}
+\indexentry{variables}{3}
+\indexentry{subterm}{3}
+\indexentry{equations}{3}
+\indexentry{literal}{3}
+\indexentry{ordering}{4}
+\indexentry{reduction ordering}{4}
+\indexentry{selection functions}{4}
+\indexentry{literals!eligible}{4}
+\indexentry{eligible for paramodulation|see{literals, eligible}}{4}
+\indexentry{eligible for resolution|see{literals, eligible}}{4}
+\indexentry{eligible literals|see{literals, eligible}}{4}
+\indexentry{literals!eligible}{5}
+\indexentry{SP@\textbf{SP} (calculus)}{5}
+\indexentry{equality resolution}{5}
+\indexentry{superposition}{5}
+\indexentry{superposition}{5}
+\indexentry{equality factoring}{5}
+\indexentry{rewriting}{5}
+\indexentry{rewriting}{6}
+\indexentry{subsumption}{6}
+\indexentry{subsumption}{6}
+\indexentry{simplify-reflect}{6}
+\indexentry{simplify-reflect}{6}
+\indexentry{contextual simplify-reflect}{6}
+\indexentry{E (theorem prover)}{6}
+\indexentry{SPASS}{6}
+\indexentry{tautology deletion}{7}
+\indexentry{equality      resolution}{7}
+\indexentry{clause splitting}{7}
+\indexentry{clause splitting}{7}
+\indexentry{DISCOUNT}{8}
+\indexentry{SPASS}{8}
+\indexentry{proof procedure}{9}
+\indexentry{clause evaluation}{13}
+\indexentry{term ordering}{14}
+\indexentry{GPL}{28}
+\indexentry{GNU General Public License}{28}

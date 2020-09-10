@@ -1,0 +1,261 @@
+%------------------------------------------------------------------------------
+% File       : SPASS---3.5
+% Problem    : PUZ001+1 : TPTP v4.1.0. Released v2.0.0
+% Transform  : none
+% Format     : tptp
+% Command    : SPASS -TPTP -PGiven=0 -PProblem=0 -DocProof -TimeLimit=%d %s
+
+% Computer   : quokka.cs.miami.edu
+% Model      : i686 i686
+% CPU        : Intel(R) Xeon(TM) CPU 2.80GHz @ 2799MHz
+% Memory     : 1521MB
+% OS         : Linux 2.6.26.8-57.fc8
+% CPULimit   : 30s
+% DateTime   : Sun Jul 25 10:17:57 EDT 2010
+
+% Result     : Theorem 0.1s
+% Output     : Refutation 0.1s
+% Verified   : 
+% Statistics : Number of clauses        :   33 (  53 expanded)
+%              Number of leaves         :   12 (  24 expanded)
+%              Depth                    :    6
+%              Number of atoms          :   47 (  90 expanded)
+%              Number of equality atoms :   18 (  49 expanded)
+%              Maximal clause size      :    4 (   1 average)
+%              Maximal term depth       :    2 (   1 average)
+
+% Comments   : 
+%------------------------------------------------------------------------------
+cnf(1,axiom,
+    ( lives(skc1) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(5,axiom,
+    ( killed(skc1,agatha) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(6,axiom,
+    ( ~ killed(agatha,agatha) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(7,axiom,
+    ( butler != agatha ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(8,axiom,
+    ( ~ hates(U,skf1(U)) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(9,axiom,
+    ( U = butler
+    | hates(agatha,U) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(10,axiom,
+    ( richer(U,agatha)
+    | hates(butler,U) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(11,axiom,
+    ( ~ killed(U,V)
+    | hates(U,V) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(12,axiom,
+    ( ~ hates(agatha,U)
+    | hates(butler,U) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(13,axiom,
+    ( ~ richer(U,V)
+    | ~ killed(U,V) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(14,axiom,
+    ( ~ hates(charles,U)
+    | ~ hates(agatha,U) ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(15,axiom,
+    ( ~ lives(U)
+    | U = charles
+    | U = butler
+    | U = agatha ),
+    file('/tmp/SystemOnTPTP9780/PUZ001+1.tptp',unknown),
+    []).
+
+cnf(17,plain,
+    ( richer(skf1(butler),agatha) ),
+    inference(res,[status(thm)],[10,8,theory(equality)]),
+    [iquote('0:Res:10.1,8.0')]).
+
+cnf(21,plain,
+    ( ~ hates(agatha,skf1(butler)) ),
+    inference(res,[status(thm)],[12,8,theory(equality)]),
+    [iquote('0:Res:12.1,8.0')]).
+
+cnf(25,plain,
+    ( skf1(butler) = butler ),
+    inference(res,[status(thm)],[9,21,theory(equality)]),
+    [iquote('0:Res:9.1,21.0')]).
+
+cnf(26,plain,
+    ( richer(butler,agatha) ),
+    inference(rew,[status(thm)],[25,17,theory(equality)]),
+    [iquote('0:Rew:25.0,17.0')]).
+
+cnf(31,plain,
+    ( ~ killed(charles,U)
+    | ~ hates(agatha,U) ),
+    inference(res,[status(thm)],[11,14,theory(equality)]),
+    [iquote('0:Res:11.1,14.0')]).
+
+cnf(38,plain,
+    ( ~ killed(charles,U)
+    | U = butler ),
+    inference(res,[status(thm)],[9,31,theory(equality)]),
+    [iquote('0:Res:9.1,31.1')]).
+
+cnf(39,plain,
+    ( ~ richer(skc1,agatha) ),
+    inference(res,[status(thm)],[5,13,theory(equality)]),
+    [iquote('0:Res:5.0,13.1')]).
+
+cnf(40,plain,
+    ( skc1 = charles
+    | skc1 = butler
+    | skc1 = agatha ),
+    inference(ems,[status(thm)],[15,1]),
+    [iquote('0:EmS:15.0,1.0')]).
+
+cnf(44,plain,
+    ( skc1 = charles ),
+    inference(spt,[spt(split,[position(s1)])],[40]),
+    [iquote('1:Spt:40.0')]).
+
+cnf(46,plain,
+    ( killed(charles,agatha) ),
+    inference(rew,[status(thm)],[44,5,theory(equality)]),
+    [iquote('1:Rew:44.0,5.0')]).
+
+cnf(51,plain,
+    ( butler = agatha ),
+    inference(res,[status(thm)],[46,38,theory(equality)]),
+    [iquote('1:Res:46.0,38.0')]).
+
+cnf(52,plain,
+    ( $false ),
+    inference(mrr,[status(thm)],[51,7]),
+    [iquote('1:MRR:51.0,7.0')]).
+
+cnf(53,plain,
+    ( skc1 != charles ),
+    inference(spt,[spt(split,[position(s3)])],[52,44]),
+    [iquote('1:Spt:52.0,40.0,44.0')]).
+
+cnf(54,plain,
+    ( skc1 = butler
+    | skc1 = agatha ),
+    inference(spt,[spt(split,[position(s2)])],[40]),
+    [iquote('1:Spt:52.0,40.1,40.2')]).
+
+cnf(55,plain,
+    ( skc1 = butler ),
+    inference(spt,[spt(split,[position(s2s1)])],[54]),
+    [iquote('2:Spt:54.0')]).
+
+cnf(58,plain,
+    ( ~ richer(butler,agatha) ),
+    inference(rew,[status(thm)],[55,39,theory(equality)]),
+    [iquote('2:Rew:55.0,39.0')]).
+
+cnf(60,plain,
+    ( $false ),
+    inference(mrr,[status(thm)],[58,26]),
+    [iquote('2:MRR:58.0,26.0')]).
+
+cnf(61,plain,
+    ( skc1 != butler ),
+    inference(spt,[spt(split,[position(s2s3)])],[60,55]),
+    [iquote('2:Spt:60.0,54.0,55.0')]).
+
+cnf(62,plain,
+    ( skc1 = agatha ),
+    inference(spt,[spt(split,[position(s2s2)])],[54]),
+    [iquote('2:Spt:60.0,54.1')]).
+
+cnf(64,plain,
+    ( killed(agatha,agatha) ),
+    inference(rew,[status(thm)],[62,5,theory(equality)]),
+    [iquote('2:Rew:62.0,5.0')]).
+
+cnf(65,plain,
+    ( $false ),
+    inference(mrr,[status(thm)],[64,6]),
+    [iquote('2:MRR:64.0,6.0')]).
+%------------------------------------------------------------------------------
+%----ORIGINAL SYSTEM OUTPUT
+% 
+% SPASS V 3.5 
+% SPASS beiseite: Proof found.
+% Problem: /tmp/SystemOnTPTP9780/PUZ001+1.tptp 
+% SPASS derived 42 clauses, backtracked 11 clauses, performed 2 splits and kept 49 clauses.
+% SPASS allocated 30069 KBytes.
+% SPASS spent	0:00:00.08 on the problem.
+% 		0:00:00.03 for the input.
+% 		0:00:00.02 for the FLOTTER CNF translation.
+% 		0:00:00.00 for inferences.
+% 		0:00:00.00 for the backtracking.
+% 		0:00:00.00 for the reduction.
+% 
+% 
+% Here is a proof with depth 3, length 33 :
+% 1[0:Inp] ||  -> lives(skc1)*.
+% 5[0:Inp] ||  -> killed(skc1,agatha)*.
+% 6[0:Inp] || killed(agatha,agatha)* -> .
+% 7[0:Inp] || equal(butler,agatha)** -> .
+% 8[0:Inp] || hates(U,skf1(U))* -> .
+% 9[0:Inp] ||  -> equal(U,butler) hates(agatha,U)*.
+% 10[0:Inp] ||  -> richer(U,agatha) hates(butler,U)*.
+% 11[0:Inp] || killed(U,V) -> hates(U,V)*.
+% 12[0:Inp] || hates(agatha,U) -> hates(butler,U)*.
+% 13[0:Inp] || richer(U,V) killed(U,V)* -> .
+% 14[0:Inp] || hates(charles,U)* hates(agatha,U) -> .
+% 15[0:Inp] lives(U) ||  -> equal(U,charles)* equal(U,butler) equal(U,agatha).
+% 17[0:Res:10.1,8.0] ||  -> richer(skf1(butler),agatha)*.
+% 21[0:Res:12.1,8.0] || hates(agatha,skf1(butler))* -> .
+% 25[0:Res:9.1,21.0] ||  -> equal(skf1(butler),butler)**.
+% 26[0:Rew:25.0,17.0] ||  -> richer(butler,agatha)*.
+% 31[0:Res:11.1,14.0] || killed(charles,U) hates(agatha,U)* -> .
+% 38[0:Res:9.1,31.1] || killed(charles,U)* -> equal(U,butler).
+% 39[0:Res:5.0,13.1] || richer(skc1,agatha)* -> .
+% 40[0:EmS:15.0,1.0] ||  -> equal(skc1,charles)** equal(skc1,butler) equal(skc1,agatha).
+% 44[1:Spt:40.0] ||  -> equal(skc1,charles)**.
+% 46[1:Rew:44.0,5.0] ||  -> killed(charles,agatha)*.
+% 51[1:Res:46.0,38.0] ||  -> equal(butler,agatha)**.
+% 52[1:MRR:51.0,7.0] ||  -> .
+% 53[1:Spt:52.0,40.0,44.0] || equal(skc1,charles)** -> .
+% 54[1:Spt:52.0,40.1,40.2] ||  -> equal(skc1,butler)** equal(skc1,agatha).
+% 55[2:Spt:54.0] ||  -> equal(skc1,butler)**.
+% 58[2:Rew:55.0,39.0] || richer(butler,agatha)* -> .
+% 60[2:MRR:58.0,26.0] ||  -> .
+% 61[2:Spt:60.0,54.0,55.0] || equal(skc1,butler)** -> .
+% 62[2:Spt:60.0,54.1] ||  -> equal(skc1,agatha)**.
+% 64[2:Rew:62.0,5.0] ||  -> killed(agatha,agatha)*.
+% 65[2:MRR:64.0,6.0] ||  -> .
+% Formulae used in the proof : pel55_1 pel55 pel55_11 pel55_10 pel55_7 pel55_8 pel55_4 pel55_9 pel55_5 pel55_6 pel55_3
+% 
+% 
+% 
+%------------------------------------------------------------------------------

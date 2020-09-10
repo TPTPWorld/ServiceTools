@@ -1,0 +1,219 @@
+#!/usr/bin/perl -w
+
+use strict "vars";
+#-----------------------------------------------------------------------------
+my $TPTPDirectory = "/home/tptp";
+
+if (exists($ENV{TPTP_HOME})) {
+    $TPTPDirectory = $ENV{TPTP_HOME};
+}
+if (! exists($ENV{TPTP})) {
+    $ENV{TPTP} = "$TPTPDirectory/TPTP";
+}
+if (! -d $ENV{TPTP}) {
+    die("ERROR: Cannot find TPTP directory\n");
+}
+
+my $TPTP4X = "$TPTPDirectory/ServiceTools/tptp4X";
+my $TryToProve = "$TPTPDirectory/ServiceTools/TryToProve";
+
+#----Global for use in END statements
+my $GlobalTemporaryDirectory = "/tmp/GMV_$$";
+my $GlobalInterrupted = 0;
+my %GlobalOptions;
+
+my $DefaultProver = "Vampire---4.0";
+my $DefaultModelFinder = "iProver---SAT-2.0";
+my $DefaultCPULimit = 10;
+#-----------------------------------------------------------------------------
+DoMain();
+#-----------------------------------------------------------------------------
+sub DoMain {
+
+    %GlobalOptions = (
+          "-q" => 1,          #----Quietness
+          "-t" => $DefaultCPULimit,
+          "-f" => "0",          #----Continue on failure
+          "-p" => $DefaultProver,          #----Use prover
+          "-m" => $DefaultModelFinder,     #----Use model finder
+          "-k" => undef,        #----Don't keep temporary files
+          "-c" => 0,          #----Don't do converse check
+       );
+    my $Key;
+
+    my $ModelFile;
+    my $ProblemFile;
+    my $Result;
+    my $Output;
+
+#----Send QUIT signals to the right place
+    $SIG{'QUIT'} = 'QUITHandler';
+    $SIG{'XCPU'} = 'QUITHandler';
+    $SIG{'INT'}  = 'QUITHandler';
+    $SIG{'ALRM'} = 'QUITHandler';
+
+#----Send STDERR to STDOUT
+    close(STDERR);
+    open(STDERR,">&STDOUT");
+#----Flush output
+    $| = 1;
+
+#----Extract command line arguments
+    while (scalar(@ARGV) >= 2 && $ARGV[0] =~/-[a-z]/) {
+        $Key = shift(@ARGV);
+        if (length($Key) == 2) {
+            if (defined($ARGV[0])) {
+                $GlobalOptions{$Key} = shift(@ARGV);
+            } else {
+                Usage();
+            }
+        } else {
+            $GlobalOptions{substr($Key,0,2)} = substr($Key,2);
+        }
+    }
+
+    if (defined($GlobalOptions{'-k'})) {
+        $GlobalTemporaryDirectory = $GlobalOptions{'-k'};
+    } 
+    system("mkdir -p $GlobalTemporaryDirectory");
+    END {
+        if (!defined($GlobalOptions{'-k'})) {
+            system("rm -rf $GlobalTemporaryDirectory");
+        }
+    }
+
+#----Command line is model file, problem file
+    if (scalar(@ARGV) < 2 || ! -f ($ModelFile = $ARGV[0]) || 
+! -f ($ProblemFile = $ARGV[1])) {
+        Usage();
+        die("\n");
+    }
+
+    ($Result) = VerifyModel($ModelFile,$ProblemFile,$GlobalOptions{'-p'},
+$GlobalOptions{'-m'},$GlobalOptions{'-t'});
+    if ($Result eq "NoSuccess" && $GlobalOptions{'-c'}) {
+        ($Result) = DenyModel($ModelFile,$ProblemFile,
+$GlobalOptions{'-p'},$GlobalOptions{'-m'},$GlobalOptions{'-t'})
+    }
+    print("% SZS status $Result for $ModelFile models $ProblemFile\n");
+}
+#-----------------------------------------------------------------------------
+sub Usage {
+
+    print("
+Usage 
+    GMV [-qN] [-f0/1] [-c0/1] [-tN] [-p prover] [-m model_finder] [-k dir] model_file problem_file
+");
+}
+#-----------------------------------------------------------------------------
+sub QUITHandler {
+    my ($Signal) = @_;
+
+    $GlobalInterrupted = 1;
+
+    if ($Signal eq 'INT' || $Signal eq 'QUIT') {
+        die("Terminated by ^C\n");
+    }
+}
+#-----------------------------------------------------------------------------
+sub VerifyModel {
+    my ($ModelFile,$ProblemFile,$Prover,$ModelFinder,$CPULimit) = @_;
+
+    my $ProblemFormula;
+    my $ProblemFormulaName;
+    my $Result;
+    my $AllResult;
+
+#----Convert the formulae in model file to axioms
+    system("$TPTP4X -x -c -u machine $ModelFile | sed -e 's/^\\(...([^,]*,\\)[^,]*\\(,.*\\)/\\1axiom\\2/' > $GlobalTemporaryDirectory/ModelAsAxioms");
+
+#----Convert problem file to "machine" format
+#----HACK HERE ASSUMES MODEL IN FOF. NEED TO PROMOTE TO HIGHEST LANGUAGE
+    open(PROBLEM,"$TPTP4X -x -c -u machine -t fofify $ProblemFile |") || 
+die("ERROR, Cannot open $ProblemFile\n");
+#----For each line (formula) in the problem
+#----If failure, continue only if requested
+    $AllResult = "Success";
+    while (!$GlobalInterrupted && defined($ProblemFormula = <PROBLEM>)) {
+        chomp($ProblemFormula);
+        ($ProblemFormulaName) = ($ProblemFormula =~ /^...\(([^,]*),/);
+        QuietPrint("Verifying $ProblemFormulaName",1);
+        ($Result) = TryToProve("$GlobalTemporaryDirectory/ModelAsAxioms",
+$ProblemFormula,$Prover,$ModelFinder,$CPULimit);
+        QuietPrint("Proving result for $ProblemFormulaName is $Result",0);
+        if ($Result eq "Theorem") {
+            QuietPrint("Verified $ProblemFormulaName",1);
+        } else {
+            QuietPrint("Not verified $ProblemFormulaName",1);
+            $AllResult = "NoSuccess";
+            if (! $GlobalOptions{'-f'}) {
+                close(PROBLEM);
+                return($AllResult);
+            }
+        }
+    }
+    close(PROBLEM);
+    if ($GlobalInterrupted) {
+        $AllResult = "Unknown";
+    }
+    return($AllResult);
+}
+#-----------------------------------------------------------------------------
+sub DenyModel {
+    my ($ModelFile,$ProblemFile,$Prover,$ModelFinder,$CPULimit) = @_;
+
+    my $Result;
+
+    QuietPrint("Trying to deny model",1);
+#----Convert the formulae in model file to axioms
+    system("$TPTP4X -x -c -u machine $ModelFile | sed -e 's/^\\(...([^,]*,\\)[^,]*\\(,.*\\)/\\1axiom\\2/' > $GlobalTemporaryDirectory/ModelAndProblem");
+#----Append the problem file as axioms
+    system("$TPTP4X -x -c -u machine -t fofify $ProblemFile | sed -e 's/^\\(...([^,]*,\\)[^,]*\\(,.*\\)/\\1axiom\\2/' >> $GlobalTemporaryDirectory/ModelAndProblem");
+    ($Result) = TryToProve("$GlobalTemporaryDirectory/ModelAndProblem",
+'fof(prove_false,conjecture,$false).',$Prover,$ModelFinder,$CPULimit);
+    if ($Result eq "Theorem") {
+        $Result = "Wrong";
+    } else {
+        $Result = "NoSuccess";
+    }
+    return($Result);
+}
+#-----------------------------------------------------------------------------
+sub TryToProve {
+    my ($AxiomsFile,$Conjecture,$Prover,$ModelFinder,$CPULimit) = @_;
+
+    my $TryToProveCommand;
+    my $TryingLine;
+    my $Result;
+
+    $TryToProveCommand = 
+"$TryToProve -q0 -t $CPULimit -p $Prover -m $ModelFinder ";
+    if (defined($GlobalOptions{'-k'})) {
+        $TryToProveCommand .= " -k $GlobalOptions{'-k'}";
+    }
+    $TryToProveCommand .= " $AxiomsFile";
+    if (defined($Conjecture)) {
+        $TryToProveCommand .= " '$Conjecture'";
+    }
+    $Result = "Unknown";
+    open(TRYTOPROVE,"$TryToProveCommand |") || 
+die("ERROR: Cannot start $TryToProveCommand\n");
+    while (defined($TryingLine = <TRYTOPROVE>) && $Result eq "Unknown") {
+        chomp($TryingLine);
+        QuietPrint($TryingLine,0);
+        if ($Result eq "Unknown" && $TryingLine =~ /SZS status/) {
+            ($Result) = ($TryingLine =~ / SZS status ([^ ]*)/);
+        } 
+    }
+    close(TRYTOPROVE);
+    return($Result);
+}
+#-----------------------------------------------------------------------------
+sub QuietPrint {
+    my ($Message,$MaxQuietness) = @_;
+
+    if ($GlobalOptions{'-q'} <= $MaxQuietness) {
+        print("$Message\n");
+    }
+}
+#-----------------------------------------------------------------------------

@@ -1,0 +1,24 @@
+Script started on Mon Aug 24 23:25:52 2009
+schulz has logged on console from local.
+schulz has logged on ttyp1 from local.
+schulz has logged on ttyp2 from local.
+schulz has logged on ttyp3 from local.
+schulz has logged on ttyp5 from local.
+schulz has logged on ttyp6 from local.
+schulz has logged on ttyp7 from local.
+[7mschulz@michelangelo[m 11:25pm [PROVER] ./eprover --version
+E 1.1-pre13 Balasun
+[7mschulz@michelangelo[m 11:25pm [PROVER] ./eprover -xAuto -tAuto --tptp3-in -s ~/Des ktop/singleProb-stoller_i14_p8.tptp [A[79C[5C[5D[4hR[4l ~/Dek[4hs[4lk[A[73C ~/Des
+# Preprocessing time       : 0.022 s
+
+# Proof found!
+# SZS status Theorem
+
+# -------------------------------------------------
+# User time                : 0.023 s
+# System time              : 0.005 s
+# Total time               : 0.029 s
+# Maximum resident set size: 0 pages
+[7mschulz@michelangelo[m 11:26pm [PROVER] ^Dexit
+
+Script done on Mon Aug 24 23:26:16 2009

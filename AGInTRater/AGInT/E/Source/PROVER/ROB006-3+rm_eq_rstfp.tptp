@@ -1,0 +1,75 @@
+%--------------------------------------------------------------------------
+% File     : ROB006-3 : TPTP v2.4.1. Released v1.0.0.
+% Domain   : Robbins Algebra
+% Problem  : c + d=d => Boolean
+% Version  : [Win90] (equality) axioms : Augmented.
+%            Theorem formulation : Denies Huntington's axiom.
+% English  : If there are elements c and d such that c+d=d, then the 
+%            algebra is Boolean.
+
+% Refs     : [HMT71] Henkin et al. (1971), Cylindrical Algebras
+%          : [Win90] Winker (1990), Robbins Algebra: Conditions that make a
+%          : [Wos92] Wos (1992), An Opportunity to Test Your Skills, and th
+% Source   : [Wos, 1992]
+% Names    : Theorem 1.1 [Win90]
+
+% Status   : unknown
+% Rating   : 1.00 v2.0.0
+% Syntax   : Number of clauses    :   13 (   0 non-Horn;   8 unit;   8 RR)
+%            Number of literals   :   19 (  14 equality)
+%            Maximal clause size  :    3 (   1 average)
+%            Number of predicates :    2 (   0 propositional; 1-2 arity)
+%            Number of functors   :    9 (   5 constant; 0-2 arity)
+%            Number of variables  :   19 (   0 singleton)
+%            Maximal term depth   :    8 (   3 average)
+
+% Comments : Commutativity, associativity, and Huntington's axiom 
+%            axiomatize Boolean algebra.
+%          : The extra lemmas are suggested by Winker (1990).
+%          : tptp2X -f tptp -t rm_equality:rstfp ROB006-3.p 
+%--------------------------------------------------------------------------
+input_clause(commutativity_of_add,axiom,
+    [++equal(add(X,Y),add(Y,X))]).
+
+input_clause(associativity_of_add,axiom,
+    [++equal(add(add(X,Y),Z),add(X,add(Y,Z)))]).
+
+input_clause(robbins_axiom,axiom,
+    [++equal(negate(add(negate(add(X,Y)),negate(add(X,negate(Y))))),X)]).
+
+input_clause(one_times_x,axiom,
+    [++equal(multiply(one,X),X)]).
+
+input_clause(times_by_adding,axiom,
+    [--positive_integer(X),
+     ++equal(multiply(successor(V),X),add(X,multiply(V,X)))]).
+
+input_clause(one,axiom,
+    [++positive_integer(one)]).
+
+input_clause(next_integer,axiom,
+    [--positive_integer(X),
+     ++positive_integer(successor(X))]).
+
+input_clause(idempotence,axiom,
+    [--equal(add(X,X),X)]).
+
+input_clause(corollary_3_7,axiom,
+    [--equal(negate(add(X,Y)),negate(Y)),
+     --positive_integer(V2),
+     ++equal(negate(add(Y,multiply(V2,add(X,negate(add(X,negate(Y))))))),negate(Y))]).
+
+input_clause(corollary_3_9_1,axiom,
+    [--equal(negate(add(X,negate(Y))),negate(Y)),
+     ++equal(add(Y,multiply(successor(successor(one)),add(X,negate(add(X,negate(Y)))))),add(Y,multiply(successor(one),add(X,negate(add(X,negate(Y)))))))]).
+
+input_clause(corollary_3_9_2,axiom,
+    [--equal(negate(add(negate(Y),negate(add(X,negate(Y))))),X),
+     ++equal(add(Y,multiply(successor(successor(one)),add(X,negate(add(X,negate(Y)))))),add(Y,multiply(successor(one),add(X,negate(add(X,negate(Y)))))))]).
+
+input_clause(absorbtion,hypothesis,
+    [++equal(add(c,d),d)]).
+
+input_clause(prove_huntingtons_axiom,conjecture,
+    [--equal(add(negate(add(a,negate(b))),negate(add(negate(a),negate(b)))),b)]).
+%--------------------------------------------------------------------------

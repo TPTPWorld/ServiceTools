@@ -1,0 +1,5 @@
+program(X13);program(X12);program(X1);program(X10);program(X9);program(X8);program(X9);program(X8);program(X7);program(X6);program(X5);program(X4);program(X3);
+program(X2);program(X11)<-program(X11).
+
+?- ~outputs(esk3_0,good), ~program(esk8_1(esk3_0)), halts2(X1,X2), program(X11), program(X10), program(X9), program(X8), program(X6), program(X7), program(X5), program(X4), program(X3), program(X1).
+?- ~outputs(esk3_0,good), ~program(esk8_1(esk3_0)), halts2(esk8_1(esk3_0),X10), program(X13), program(X12), program(X11), program(X10), program(X9), program(X8), program(X6), program(X7), program(X5), program(X4), program(X2), program(X3), program(X1).

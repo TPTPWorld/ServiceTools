@@ -1,0 +1,784 @@
+pcl_analysis.o: pcl_analysis.c pcl_analysis.h ../include/pcl_protocol.h \
+  ../include/pcl_steps.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/cte_termpos.h \
+  ../include/cte_termbanks.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h ../include/clb_stringtrees.h \
+  /usr/include/ctype.h ../include/cte_termcellstore.h \
+  ../include/cte_termtrees.h ../include/cte_termfunc.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_properties.h \
+  ../include/cte_functypes.h ../include/clb_sysdate.h \
+  ../include/clb_ptrees.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_expressions.o: pcl_expressions.c pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/cte_termpos.h \
+  ../include/cte_termbanks.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h ../include/clb_stringtrees.h \
+  /usr/include/ctype.h ../include/cte_termcellstore.h \
+  ../include/cte_termtrees.h ../include/cte_termfunc.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_properties.h \
+  ../include/cte_functypes.h ../include/clb_sysdate.h \
+  ../include/clb_ptrees.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_idents.o: pcl_idents.c pcl_idents.h ../include/clb_pdarrays.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/cio_scanner.h \
+  ../include/cio_streams.h ../include/cio_initio.h \
+  ../include/cio_output.h ../include/clb_dstrings.h \
+  ../include/clb_memory.h ../include/cio_fileops.h \
+  ../include/clb_stringtrees.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h /usr/include/ctype.h
+pcl_lemmas.o: pcl_lemmas.c pcl_lemmas.h ../include/pcl_protocol.h \
+  ../include/pcl_steps.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/cte_termpos.h \
+  ../include/cte_termbanks.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h ../include/clb_stringtrees.h \
+  /usr/include/ctype.h ../include/cte_termcellstore.h \
+  ../include/cte_termtrees.h ../include/cte_termfunc.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_properties.h \
+  ../include/cte_functypes.h ../include/clb_sysdate.h \
+  ../include/clb_ptrees.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_miniclauses.o: pcl_miniclauses.c pcl_miniclauses.h \
+  ../include/ccl_clauses.h ../include/ccl_neweval.h \
+  ../include/clb_avlgeneric.h ../include/clb_pstacks.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_ptrees.h \
+  ../include/clb_sysdate.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_termfunc.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_stringtrees.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h /usr/include/ctype.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_termbanks.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_replace.h ../include/cte_termcpos.h \
+  ../include/cte_termpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h
+pcl_miniprotocol.o: pcl_miniprotocol.c pcl_miniprotocol.h \
+  ../include/pcl_ministeps.h ../include/pcl_miniclauses.h \
+  ../include/ccl_clauses.h ../include/ccl_neweval.h \
+  ../include/clb_avlgeneric.h ../include/clb_pstacks.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_ptrees.h \
+  ../include/clb_sysdate.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_termfunc.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_stringtrees.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h /usr/include/ctype.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_termbanks.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_replace.h ../include/cte_termcpos.h \
+  ../include/cte_termpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h ../include/pcl_steps.h
+pcl_ministeps.o: pcl_ministeps.c pcl_ministeps.h \
+  ../include/pcl_miniclauses.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_ptrees.h \
+  ../include/clb_sysdate.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_termfunc.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_stringtrees.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h /usr/include/ctype.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_termbanks.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_replace.h ../include/cte_termcpos.h \
+  ../include/cte_termpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h ../include/pcl_steps.h
+pcl_positions.o: pcl_positions.c pcl_positions.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/clb_ptrees.h ../include/clb_pstacks.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/cte_termfunc.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_stringtrees.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h /usr/include/ctype.h ../include/clb_sysdate.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_termbanks.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_replace.h ../include/cte_termcpos.h \
+  ../include/cte_termpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h
+pcl_proofcheck.o: pcl_proofcheck.c pcl_proofcheck.h \
+  ../include/cio_tempfile.h /usr/include/stdlib.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/sys/types.h /usr/include/bits/types.h \
+  /usr/include/bits/typesizes.h /usr/include/time.h /usr/include/endian.h \
+  /usr/include/bits/endian.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/stdio.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/unistd.h \
+  /usr/include/bits/posix_opt.h /usr/include/bits/confname.h \
+  /usr/include/getopt.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/cio_fileops.h \
+  ../include/cio_output.h ../include/clb_dstrings.h \
+  ../include/clb_memory.h ../include/cio_commandline.h \
+  ../include/clb_stringtrees.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/pcl_protocol.h \
+  ../include/pcl_steps.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/cte_termpos.h \
+  ../include/cte_termbanks.h ../include/clb_numtrees.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h /usr/include/ctype.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_termfunc.h ../include/cte_termvars.h \
+  ../include/clb_pdarrays.h ../include/cte_termtypes.h \
+  ../include/clb_partial_orderings.h ../include/cte_signature.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/clb_sysdate.h ../include/clb_ptrees.h \
+  ../include/ccl_clauses.h ../include/ccl_neweval.h \
+  ../include/ccl_eqnlist.h ../include/ccl_eqn.h ../include/cte_acterms.h \
+  ../include/clb_objtrees.h ../include/cte_match_mgu_1-1.h \
+  ../include/cte_subst.h ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_propanalysis.o: pcl_propanalysis.c pcl_propanalysis.h \
+  ../include/che_clausefeatures.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_ptrees.h \
+  ../include/clb_sysdate.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_termfunc.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_stringtrees.h \
+  ../include/clb_properties.h ../include/cte_functypes.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h /usr/include/ctype.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_termbanks.h \
+  ../include/cte_termcellstore.h ../include/cte_termtrees.h \
+  ../include/cte_replace.h ../include/cte_termcpos.h \
+  ../include/cte_termpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/pcl_protocol.h \
+  ../include/pcl_steps.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_protocol.o: pcl_protocol.c pcl_protocol.h ../include/pcl_steps.h \
+  ../include/pcl_expressions.h ../include/can_infstate.h \
+  ../include/ccl_inferencedoc.h ../include/ccl_clausepos.h \
+  ../include/cte_termpos.h ../include/cte_termbanks.h \
+  ../include/clb_numtrees.h ../include/clb_dstrings.h \
+  ../include/clb_memory.h ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h ../include/clb_stringtrees.h \
+  /usr/include/ctype.h ../include/cte_termcellstore.h \
+  ../include/cte_termtrees.h ../include/cte_termfunc.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_properties.h \
+  ../include/cte_functypes.h ../include/clb_sysdate.h \
+  ../include/clb_ptrees.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h
+pcl_steps.o: pcl_steps.c pcl_steps.h ../include/pcl_expressions.h \
+  ../include/can_infstate.h ../include/ccl_inferencedoc.h \
+  ../include/ccl_clausepos.h ../include/cte_termpos.h \
+  ../include/cte_termbanks.h ../include/clb_numtrees.h \
+  ../include/clb_dstrings.h ../include/clb_memory.h \
+  ../include/clb_verbose.h ../include/clb_error.h \
+  ../include/clb_defines.h /usr/include/assert.h /usr/include/features.h \
+  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
+  /usr/include/stdio.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/string.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h /usr/include/stdlib.h \
+  /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+  /usr/include/sys/param.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/linux/param.h \
+  /usr/include/asm/param.h /usr/include/sys/types.h /usr/include/time.h \
+  /usr/include/sys/select.h /usr/include/bits/select.h \
+  /usr/include/bits/sigset.h /usr/include/bits/time.h \
+  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/alloca.h /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/bits/mathinline.h /usr/include/sys/time.h \
+  /usr/include/sys/resource.h /usr/include/bits/resource.h \
+  ../include/clb_os_wrapper.h ../include/clb_avlgeneric.h \
+  ../include/clb_pstacks.h ../include/clb_memory.h \
+  ../include/cio_basicparser.h ../include/clb_ddarrays.h \
+  ../include/cio_scanner.h ../include/cio_streams.h \
+  ../include/cio_initio.h ../include/cio_output.h \
+  ../include/cio_fileops.h ../include/clb_stringtrees.h \
+  /usr/include/ctype.h ../include/cte_termcellstore.h \
+  ../include/cte_termtrees.h ../include/cte_termfunc.h \
+  ../include/cte_termvars.h ../include/clb_pdarrays.h \
+  ../include/cte_termtypes.h ../include/clb_partial_orderings.h \
+  ../include/cte_signature.h ../include/clb_properties.h \
+  ../include/cte_functypes.h ../include/clb_sysdate.h \
+  ../include/clb_ptrees.h ../include/ccl_clauses.h \
+  ../include/ccl_neweval.h ../include/ccl_eqnlist.h ../include/ccl_eqn.h \
+  ../include/cte_acterms.h ../include/clb_objtrees.h \
+  ../include/cte_match_mgu_1-1.h ../include/cte_subst.h \
+  ../include/clb_pqueue.h ../include/cte_replace.h \
+  ../include/cte_termcpos.h ../include/cto_orderings.h \
+  ../include/cto_lpo.h ../include/cto_ocb.h ../include/cto_kbodata.h \
+  ../include/cto_lpo_debug.h ../include/cto_kbo.h \
+  ../include/cte_varhash.h ../include/cto_kbolin.h \
+  ../include/ccl_clauseinfo.h ../include/ccl_formula_wrapper.h \
+  ../include/ccl_tformulae.h ../include/ccl_clausesets.h \
+  ../include/ccl_fcvindexing.h ../include/ccl_freqvectors.h \
+  ../include/clb_fixdarrays.h ../include/clb_intmap.h \
+  ../include/ccl_tautologies.h ../include/ccl_pdtrees.h \
+  ../include/clb_simple_stuff.h ../include/clb_error.h \
+  ../include/clb_plist.h ../include/can_clausestore.h \
+  ../include/can_clausestats.h ../include/pcl_idents.h \
+  ../include/pcl_positions.h

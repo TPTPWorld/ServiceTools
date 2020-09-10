@@ -1,0 +1,11 @@
+To run the E version type:
+
+seek.pl -p filename
+
+to run the standalone version
+
+rate.pl axiomsfile formulafile
+
+The 2 directories need to be in the same directory, along with a
+directory named JJParser (with JJParser inside).
+

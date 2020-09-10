@@ -1,0 +1,12 @@
+P(0).
+~P(s(0)).
+P(s(s(X))) <- P(X).
+~P(s(s(X))) <- ~P(X).
+~equal(s(X),X).
+~equal(s(X),0).
+
+equal(X,X) <- .
+equal(X,Y) <- equal(Y,X).
+equal(X,Z) <- equal(X,Y), equal(Y,Z).
+P(X1) <- P(Y1),equal(X1,Y1).
+equal(s(X1),s(Y1)) <- equal(X1,Y1).

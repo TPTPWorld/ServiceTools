@@ -1,0 +1,638 @@
+#!/usr/bin/perl -w
+
+use strict "vars";
+#-----------------------------------------------------------------------------
+#----Takes just the proof part from one of the ATP systems as input
+my $TPTPDirectory = "/home/tptp";
+
+if (exists($ENV{TPTP_HOME})) {
+    $TPTPDirectory = $ENV{TPTP_HOME};
+}
+
+my $OtterfierDirectory = "$TPTPDirectory/ServiceTools/Otterfier";
+my $PreProcess="$OtterfierDirectory/PreProcessor";
+my $CompareClauses="$TPTPDirectory/ServiceTools/CompareClauses/CompareClauses";
+if (! -x "$CompareClauses") {
+    $CompareClauses = "$OtterfierDirectory/CompareClauses";
+}
+my $ReformatTPTPCommand = "$TPTPDirectory/ServiceTools/tptp4X";
+if (! -x "$ReformatTPTPCommand") {
+    $ReformatTPTPCommand = "$OtterfierDirectory/tptp4X";
+}
+my $SystemOnTPTPCommand = "$TPTPDirectory/SystemExecution/SystemOnTPTP";
+my $tptp2XCommand = "$TPTPDirectory/TPTP/TPTP2X/tptp2X";
+
+my $TempfileDirectory="/tmp/Otterfier$$";
+#------------------------------------------------------------------------------
+#--Usage: Otterfier -p problem 
+
+my $System="Otter---3.3-T";
+my $Time=100;
+my $AllFormula;
+my $DerivedFormula;
+my $SolutionSet;
+
+MyMain();
+#------------------------------------------------------------------------------
+sub MyMain
+{
+    my %Options = (
+                        "-p" => "unknown", #----tstp solution file, default is unknown
+                    );
+
+    my $Key;
+    my $FileName;
+    my $SolutionFile;
+
+    if (scalar(@ARGV)<2 || $ARGV[0] !~ /^-[pd]$/) {
+        die("ERROR: Usage is
+Otterfier -p problem(include directory) [FLAGS]\n");}
+
+    while (scalar(@ARGV)>0){
+        $Key=shift(@ARGV);
+        if ($Key=~/-[p]/) {
+            if (defined($ARGV[0])) {$Options{$Key}=shift(@ARGV);}
+            else { die("ERROR: Wrong input\n"); }
+        }
+    }
+
+    $SIG{'QUIT'} = 'QUITHandler'; # Ctr+\ returns a quit signal to program
+    $SIG{'XCPU'} = 'QUITHandler'; # when total CPU time is beyond the time limit, SystemOnTPTP will send a XCPU signal
+    mkdir($TempfileDirectory);
+ 
+    ReadFile($Options{'-p'});
+    OrderFormula($AllFormula);   
+
+
+#DEBUG  print("-------------------------------------------------------\n");
+#DEBUG  print("@$AllFormula\n");
+#DEBUG  print("Derived formula are\n");
+#DEBUG  print("@$DerivedFormula\n");
+#DEBUG  print("--------------------------------------------------------\n");
+
+   if ($Options{'-p'}=~ /\//) { 
+       $Options{'-p'}=~ /(.*)\/(.*)$/; $FileName=$2;
+   } else {
+       $FileName=$Options{'-p'};
+   }
+
+   mkdir "$TempfileDirectory/$FileName";
+   $TempfileDirectory="$TempfileDirectory/$FileName";
+   END {
+       system("rm -rf $TempfileDirectory");
+   }
+
+   if (Otterfier()) {
+#DEBUG print("@$SolutionSet\n");
+       Reformat(@$SolutionSet);
+   } else { 
+       print("ERROR: Otterfier failed\n");
+   }
+}
+
+#-------------------------------------------------------------------------------
+sub QUITHandler {
+
+    my ($Signal)=@_;
+    system("rm -rf $TempfileDirectory");
+    exit(0);
+}
+
+#-------------------------------------------------------------------------------
+sub Otterfier {
+
+    my $isSubsume=0;
+    my $Formulae;
+    my $ParentNameSet;
+    my $ParentSet;
+    my $Item;
+    my $Parent;
+    my @ProofSet;
+    my $WithEquality;
+    my $Solution;
+    my $Name; 
+    my $ParentName;
+    my $index;
+    my $Ref;
+    my $Output;
+
+    @$SolutionSet=();
+    while (@$DerivedFormula) {
+        $isSubsume=0;
+        $WithEquality=0;
+        @$ParentNameSet=();
+        @$ParentSet=();
+        @ProofSet=();
+        @$Solution=();
+
+        $Formulae = shift(@$DerivedFormula);
+#DEBUG print("\nCurrent clause is:\n"); print("$Formulae\n\n");
+
+        $ParentNameSet=GetParent($Formulae);#---not from original formula set
+        foreach $Item(@$ParentNameSet) {
+            if ($Item eq "equality") {
+                push(@$ParentSet,$Item);
+            } else {
+                $index=IndexofFormula($Item,$AllFormula);
+                push(@$ParentSet,$$AllFormula[$index]);
+            }
+        }    
+        
+#DEBUG print("Parents are\n"); print("@$ParentSet\n");
+
+        if (!@$ParentSet) {
+            print("ERROR: no parent exist!!\n");
+        } else {
+          $Ref=CheckRef($Formulae,$ParentNameSet);
+#---exclude some special reference rules(ef,split)
+          if ($Ref=~/split/) {
+              return(0);
+          } elsif ($Ref=~/ef/) {
+              next;
+          } else {
+            foreach $Parent (@$ParentSet) {
+                if ($Parent eq "equality") {
+                  next;
+                } else {
+#DEBUG print("compare $Parent\n$Formulae\n");
+                  $Output=CompClauses($Parent, $Formulae);
+                  if ($Output eq "subsumes" || $Output eq "same") {
+#----if parent subsumes the formulae    
+#DEBUG print("***forward subsume current clause***\n\n");
+                    $Name=GetName($Formulae);
+                    $ParentName=GetName($Parent);
+                    foreach $Item(@$DerivedFormula){
+                        if ($Item=~/$Name/) {
+                            $Item=~s/\b$Name\b/$ParentName/g;
+                        }                         
+                    }    
+#DEBUG print("derived formula changed to \n");
+#DEBUG print("@$DerivedFormula\n");
+                    Trim($ParentNameSet,$ParentName); 
+#DEBUG print("AFTER TRIMMING......\n");
+#DEBUG print("@$SolutionSet\n");
+                    $isSubsume=1;
+                  }
+                }
+            }
+            if ($isSubsume) {next;}
+            else { 
+#DEBUG print("***not forward subsume current clause***\n\n");
+                foreach $Parent(@$ParentSet){                
+                    if ($Parent ne "equality") {
+                        $Parent=~s/\,\s*(.*?)\s*\,/\,axiom\,/;
+#DEBUG print("parent is changed to $Parent\n");
+                        push(@ProofSet,$Parent);
+                    }
+                    else {$WithEquality=1;}                    
+                }
+                if ($Formulae !~ /\(\s*\$false\s*\)/) {
+                    $Formulae =~ s/\,(.*?)\,/\,hints2\,/;
+                    push(@ProofSet, $Formulae);
+                } else { 
+#---if it is a false statement
+                    push(@ProofSet,$Formulae);
+                }
+            }
+            
+#DEBUG print("ProofSet is:\n");
+#DEBUG print("@ProofSet\n");
+      
+            if (!($Solution=Prove(\@ProofSet,$WithEquality))) {
+                print("Otter cannot prove formulae:\n");
+                print("$Formulae\n");
+                return(0); 
+            } else {
+#DEBUG print("Proved!!\n"); print("@$Solution\n\n");
+
+                $Solution=PostProcess($Solution,$ParentSet,$Formulae);
+#DEBUG print("Otter Solution is\n"); print("@$Solution\n\n");
+                
+#---replace the formula in AllFormula by new one
+                foreach $Item(@$Solution){
+#DEBUG print("Replacing $Item\n");
+                    $Name=GetName($Item);
+                    if ($Item=~/plain/) {
+                        $index=IndexofFormula($Name,$AllFormula);
+                        if ($index>=0) {
+                            $$AllFormula[$index]=$Item;
+                        }
+                    }
+
+#---add the solution into SolutionSet
+                    $index=IndexofFormula($Name,$SolutionSet);
+                    if ($index<0) {
+                        push(@$SolutionSet,$Item);
+                    }
+                }
+                if ($$Solution[-1]=~/\(\s*\$false\s*\)/) {
+                #---if Otter derive empty clause
+                    OrderFormula($SolutionSet);
+                    return(1);                   
+                }
+
+            }
+          }
+        }
+ 
+    }           
+}
+
+#------------------------------------------------------------------------------
+#---put all formula in order
+sub OrderFormula
+{
+    my ($FormulaSet)=@_;
+    my $Item;
+    my $InitialFormula;
+    my $ParentNameSet;
+    my $Name;
+    my $Index;
+    my $isOrdered;
+    
+    @$InitialFormula=();
+    @$DerivedFormula=();
+
+    while(@$FormulaSet){
+        $isOrdered=1;
+        $Item=shift(@$FormulaSet);
+        if ($Item !~/inference\(/) { push(@$InitialFormula,$Item);next;}
+        else{
+            $ParentNameSet=GetParent($Item);
+#DEBUG print("Parents of $Item are @$ParentNameSet\n");
+            foreach $Name(@$ParentNameSet){
+                if ($Name eq "equality") {next;}
+                elsif(($Index=IndexofFormula($Name,$InitialFormula))>=0){next;}
+                elsif(($Index=IndexofFormula($Name,$DerivedFormula))>=0){next;}
+                else{ $isOrdered=0;} 
+            }
+            if ($isOrdered) { push(@$DerivedFormula,$Item);}
+            else {push(@$FormulaSet,$Item);}
+        }           
+    }
+    
+    push(@$FormulaSet, @$InitialFormula);
+    push(@$FormulaSet, @$DerivedFormula);
+}
+#------------------------------------------------------------------------------
+#--remove redundant steps when forward subsumption happens
+sub Trim
+{
+    my ($ParentNameSet,$Target)=@_;
+    my $Item;
+    my $NameSet;
+    my $Formulae;
+    my $CanBeRemoved;
+    my $Index;
+    my $FormulaeRemoved; 
+
+    while(@$ParentNameSet){
+        $CanBeRemoved=1;
+        $Item=pop(@$ParentNameSet);
+        if ($Item eq $Target || $Item eq "equality") {next;} 
+        else {
+            foreach $Formulae (@$SolutionSet){
+                $NameSet=GetParent($Formulae);
+                if (grep(/^\Q${Item}\E$/,@$NameSet)) {
+                    $CanBeRemoved=0;
+                    last;
+                }                
+            }
+            if ($CanBeRemoved) { next;}
+            else{
+                $Index=IndexofFormula($Item, $SolutionSet);
+                $FormulaeRemoved=splice(@$SolutionSet, $Index, 1);   
+                $NameSet=GetParent($FormulaeRemoved);
+                unshift(@$ParentNameSet, @$NameSet);
+            }
+        }
+    }
+    
+}
+#------------------------------------------------------------------------------
+#---return the parent list of the given formula
+sub GetParent
+{
+    my ($Formula)=@_;
+    my @ParentNameSet=();
+    my $Item;
+    my @TmpSet;
+    my $ExcessOpen;
+    my @FormulaChars;
+
+    $Formula =~ s/[^(]+\([^,]+,[^,]+,//;
+    @FormulaChars = split(//,$Formula);
+    while ($FormulaChars[0] ne "," || $ExcessOpen > 0) {
+        if ($FormulaChars[0] eq "(") {
+            $ExcessOpen++;
+        }
+        if ($FormulaChars[0] eq ")") {
+            $ExcessOpen--;
+        }
+        shift(@FormulaChars);
+    }
+    shift(@FormulaChars);
+    $Formula = join('',@FormulaChars);
+    $Formula =~ s/^\s*//;
+    if ($Formula=~/inference\((.*)\[(.*?)\]\)(,|\))/s) {
+        @TmpSet=split(/,/,$2);
+        foreach $Item(@TmpSet){
+            $Item=~/\b(.*)\b/;
+            $Item=$1;
+            if ($Item=~/theory\(equality/) {$Item="equality";}
+
+            if (!grep(/^\Q${Item}\E$/,@ParentNameSet)) {
+                push(@ParentNameSet,$Item);
+            }
+        }
+    } else {
+        @ParentNameSet = ($Formula =~ /^([^,]+)/);
+    }
+#DEBUG print("@ParentNameSet\n");
+    return(\@ParentNameSet);
+}
+#-----------------------------------------------------------------------------
+#----search the corresponding index of the given formula
+sub IndexofFormula
+{
+    my ($FormulaName,$FormulaSet)=@_;
+    my $Formulae; 
+    my $index;
+
+    for($index=0;$index<scalar(@$FormulaSet);$index++){
+        if ($FormulaName eq GetName($$FormulaSet[$index])) {
+            return($index); 
+        }
+    }
+#DEBUG    print("ERROR:formula $FormulaName does not exist!\n");
+    return(-1);
+}
+#------------------------------------------------------------------------------
+#--check ef and split inference rules
+sub CheckRef
+{
+    my ($Formula,$ParentSet)=@_;
+    my $Name;
+    my $Item; 
+    my $ParentLine="";  
+ 
+    foreach $Item(@$ParentSet){
+        $ParentLine.="$Item,";
+    }   
+    $ParentLine=~s/(.*),$/$1/;
+
+    $Formula=~/inference\((.*?)\,/;
+    if ($1=~/split/) {
+        print("Otter cannot solve split rule.\n");
+        return("split");
+    }
+    elsif($1=~/ef/){
+        $Name=GetName($Formula);
+        foreach $Item(@$DerivedFormula){
+            if ($Item=~/$Name/) {
+                $Item=~s/\b$Name\b/$ParentLine/g;
+            } 
+        } 
+        return("ef");
+    }
+    else {return(0);} 
+}
+#-----------------------------------------------------------------------------
+sub CompClauses
+{
+    my($Clause1, $Clause2)=@_;
+    my $Command;
+    my $OutputLine;   
+
+    $Clause1 =~ s/\$/\\\$/g;
+    $Clause2 =~ s/\$/\\\$/g;
+    $Command="$CompareClauses << EOF\n$Clause1\n$Clause2\nEOF\n";
+#DEBUG print("$Command\n");
+    $OutputLine=`$Command`;
+    if ($OutputLine=~/subsumed/) {return("subsumed");}
+    elsif($OutputLine=~/subsumes/){return("subsumes");}
+    elsif($OutputLine=~/same/){ return("same");}
+    else{ return("unrelated");}
+}
+#------------------------------------------------------------------------------
+#--rename the clauses and their parents to original names
+#--name newly generated clauses
+sub PostProcess
+{
+    my ($SolutionSet,$ParentSet,$Goal)=@_;
+    my $Formulae;
+    my $OldFormulae;
+    my $PairSet;
+    my $Name1;
+    my $Name2;
+    my $Pair;
+    my $RealSolutionSet;
+    my $TmpParents;
+    my $Counter=1;
+    my $Found;
+    my $Output;
+    
+
+    foreach $Formulae (@$SolutionSet){
+#DEBUG print("Postprocess $Formulae\n");
+        $Found=0;
+        $Name1=GetName($Formulae);
+        if ($Formulae=~/axiom/) {
+            foreach $OldFormulae (@$ParentSet){
+                if ($OldFormulae ne "equality" && CompClauses($Formulae,$OldFormulae) eq "same") {
+                    $Name2=GetName($OldFormulae);
+                    if ($OldFormulae=~/plain/) {
+                        $Formulae=$OldFormulae;
+                    }
+                    $Found=1;
+                    last;
+                }
+            }
+            if (!$Found) { #---formula of equality
+                $Name2=GetName($Goal);
+                $Name2="o_${Name2}_$Counter";
+                push(@$PairSet,[$Name1,$Name2]);
+                $Counter++;
+            }
+            push(@$PairSet, [$Name1,$Name2]);
+        }
+        else{
+            $Name2=GetName($Goal);
+            $Output=CompClauses($Formulae,$Goal);
+#DEBUG      print("output line from CompClauses is $Output\n"); 
+            if ($Output ne "same" && $Output ne "subsumes") {
+                $Name2="o_${Name2}_$Counter";
+                push(@$PairSet,[$Name1,$Name2]);
+                $Counter++;
+            }
+            foreach $Pair(@$PairSet){
+                if ($Formulae=~/$$Pair[0]/) {
+                     $Formulae=~s/\b$$Pair[0]\b/$$Pair[1]/g;
+                }
+            }
+            $Formulae=~s/\[iquote(.*)\]/\[\]/;
+        }
+
+        $Formulae=~s/\($Name1\,/\($Name2\,/;
+        push(@$RealSolutionSet, $Formulae);
+    }
+    return($RealSolutionSet); 
+}
+#------------------------------------------------------------------------------
+sub ReadFile
+{
+    my ($ProblemFile)=@_;
+    my $OutputLine;
+    my $TempStatement;
+    my $Command;
+
+    $Command="$PreProcess<$ProblemFile"; 
+
+    open(PROBLEM,"$Command|") || die("ERROR: Cannot run $Command\n");
+    open(PROBLEM, "<$ProblemFile")||die("ERROR:Cannot open $ProblemFile\n");
+    #----Parse the file structure by structure for proofs
+    while (defined($OutputLine = <PROBLEM>)) {
+        if ($OutputLine =~ /\%/ || $OutputLine eq "\n") {
+            next;
+        }
+        $TempStatement.=$OutputLine;
+        if ($OutputLine=~ /\.$/) {
+             $TempStatement=~s/\|~/\| ~/g;
+             push(@$AllFormula, $TempStatement);
+             $TempStatement="";
+        }
+    }
+    close(PROBLEM);
+#DEBUG print ("Finished to separate the tstp file of $ProblemFile!\n\n");
+}
+#------------------------------------------------------------------------------
+sub Prove
+{
+    my ($FormulaSet, $WithEquality)=@_;
+    my $TmpFile="";
+    my $Command;
+    my $OutputLine;
+    my $tptp2X=0;
+    my $TmpLine;
+    my $CanProve=0;
+    my @Solution;
+    my $Name;
+    my $Formulae;
+
+    foreach $Formulae (@$FormulaSet) {
+        if ($Formulae=~/\,\s*axiom\s*\,/) {
+            $Name=GetName($Formulae);
+            $TmpFile.="$Name+";
+        } else {
+            $Name=GetName($Formulae);
+            $TmpFile=~s/\+$/=$Name/;
+        }
+    }
+
+    $TmpFile="$TempfileDirectory/$TmpFile";
+
+    WriteToFile($FormulaSet,$TmpFile);
+#DEBUG print("Proving file... $TmpFile\n");
+
+#---add equality    
+    if ($WithEquality) {
+        $Command = 
+"$tptp2XCommand -t add_equality -d $TempfileDirectory $TmpFile|";
+        open(EQFILE, "$Command") || die("ERROR: Cannot open $TmpFile\n");
+        while (defined($OutputLine = <EQFILE>)) {
+            chomp($OutputLine);
+#DEBUG print("----$OutputLine---\n");
+            if($OutputLine =~/\-\>(.*)$/) {
+#DEBUG print("tptp2X finished producing file with equlity".$1."\n");
+                $TmpFile=$1;
+                $tptp2X = 1;
+                last;
+            }
+        }
+        if (!$tptp2X) {
+            print("tptp2X failed to produce file with equlity for $TmpFile\n");
+            die("ERROR: tptp2X cannot run correctly. Abort.\n");
+        }
+    }
+    close(EQFILE);
+
+#---prove the TmpFile 
+    $Command = "$SystemOnTPTPCommand -q0 $System $Time -S $TmpFile|";
+#DEBUG print("Running: $Command\n");
+    open(OUTPUT,"$Command") || die("ERROR: Cannot open $TmpFile.\n");
+    #----Check output of SystemOnTPTP
+    while (defined($OutputLine = <OUTPUT>)) {
+#DEBUG print("$OutputLine\n");
+        if ($OutputLine=~ /Output     : Refutation/) {
+            $CanProve=1;
+            last;
+        }    
+    }
+
+    if ($CanProve) {
+#----Skip to start of proof
+        while (defined($OutputLine = <OUTPUT>)&& $OutputLine !~ /%-----/) {
+        }
+        while (defined($OutputLine = <OUTPUT>)&& $OutputLine !~ /%-----/) {
+            if ($OutputLine=~/%/ || $OutputLine eq "\n") {
+                next;
+            }
+            $TmpLine.=$OutputLine;
+            if ($OutputLine=~/\.$/) {
+                push(@Solution, $TmpLine);
+                $TmpLine="";
+            }
+        }
+    }
+
+#---read SystemOnTPTP output until EOF 
+    while (defined($OutputLine = <OUTPUT>)) {
+    }
+    close(OUTPUT);
+    if ($CanProve) { 
+        return(\@Solution);
+    } else { 
+        return(0);
+    }
+}
+
+#------------------------------------------------------------------------------
+sub Reformat {
+    my (@Formulae) = @_;
+
+    my $ReformatHandle;
+
+    open($ReformatHandle,"|$ReformatTPTPCommand --") or 
+die("ERROR: Cannot open $ReformatTPTPCommand\n");
+    print($ReformatHandle @Formulae);
+    close($ReformatHandle);
+}
+#------------------------------------------------------------------------------
+sub WriteToFile
+{
+    my ($FormulaSet,$FileName)=@_;
+    my $Formulae;
+ 
+
+    open(NEWFILE,">$FileName") || 
+        die("ERROR: Cannot write $FileName\n");
+    foreach $Formulae(@$FormulaSet)
+    {
+        if ($Formulae!~/\(\s*\$false\s*\)/) {
+             print(NEWFILE "$Formulae \n"); 
+        } elsif($FileName=~/\.s/) {
+             print(NEWFILE "$Formulae \n");
+        }
+    } 
+    close(NEWFILE);
+}
+#------------------------------------------------------------------------------
+sub GetName
+{
+    my ($Formulae)=@_;
+
+    $Formulae=~/\((.*?)\,/;
+    return($1); 
+    
+}
+#------------------------------------------------------------------------------

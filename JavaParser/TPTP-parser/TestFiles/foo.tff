@@ -1,0 +1,6 @@
+tff(co1,conjecture,(
+    ! [U: $int,V: $int,W: $int] :
+      ( ( $sum($sum($product(2,U),V),W) = 10
+        & $sum($sum(U,$product(2,V)),W) = 10 )
+     => W != 0 ) )).
+

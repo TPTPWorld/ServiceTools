@@ -1,0 +1,15 @@
+run
+tptp_X_auto
+eprover
+-xAuto -tAuto --tptp3-in
+CSR001+1.p
+300
+.
+run
+tptp_X_auto
+eprover
+-xAuto -tAuto --tptp3-in
+GRP001-1.p
+300
+.
+

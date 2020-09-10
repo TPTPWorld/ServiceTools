@@ -1,0 +1,404 @@
+//Author: Yury Puzis
+//Date: 09/19/2006
+//Version 2.0
+
+#include "agint.h"
+#include <math.h>
+
+void InitializeStream(READFILE Stream) {
+    Stream->FileName = NULL;
+    Stream->FileHandle = stdin;
+    Stream->Line = 1;
+    Stream->Character = 0;
+    Stream->StringFileContent = NULL;
+    Stream->Overshot = 0;
+    Stream->StringOffset = 0;
+    Stream->CurrentCharacter = 0;
+    Stream->CurrentToken = NULL;
+    Stream->Auxilliary = NULL;
+    Stream->NeedNonLogicTokens = 0;
+}
+
+bool SlidingWindow::pass(double val) {
+  if (upper) return val <= data[0];
+  return val >= data[0];
+}
+
+void SlidingWindow::print() {
+  cout << "% ";
+  for (int i = 0; i < size; i++)
+    cout << data[i] << " ";
+  cout << endl;   
+}
+
+void SlidingWindow::update(double val) {
+  //first make sure there is no such value already
+  if (upper) {
+    if (data[0] < val) return;
+  } else {
+    if (data[0] > val) return;
+  }
+  for (int i = 0; i < size; i++)
+    if (fabs(data[i] - val) < 0.0001) return;
+  int i;
+  if (upper)
+    for (i = 1; i < size && val < data[i]; i++)
+      data[i-1] = data[i];
+  else
+    for (i = 1; i < size && val > data[i]; i++)
+      data[i-1] = data[i];
+  data[i-1] = val;
+}
+
+SlidingWindow::SlidingWindow(int size, bool upper, double def) 
+  : size(size), upper(upper) {
+  //if upper -> best values are small --> 5 4 3 2 1 ...
+  //else -> best values are large     --> 1 2 3 4 5 ... 
+  //initialize with the worst possible values
+  data = new double[size];
+  for (int i = 0; i < size; i++)
+    data[i] = def;
+//    if (upper)	  
+//      data[i] = INFINITY;
+//    else
+//      data[i] = 0;
+}
+
+double SlidingWindow::best() {
+#ifdef DEBUG
+  for (int i = 0; i < size; i++)
+    cerr << data[i] << " ";
+  cerr << endl;
+#endif
+  return data[0];
+}
+
+SlidingWindow::~SlidingWindow() {
+  delete [] data;
+}
+
+//only works on E output!!! strips digits from formula name
+//and uses it as local formula name
+int Name2int(char* NameString) {
+  char ThisLetter;
+  int number = 0;
+  int counter = 0;
+  ThisLetter = *NameString;
+  while(ThisLetter != '\0'){
+    if(isdigit(ThisLetter)){ //changed here for E---0.81t  
+      number = number*10 + (int)ThisLetter - 48;
+    }
+    counter++;
+    ThisLetter = NameString[counter];        
+  }
+  if(ThisLetter != '\0'||!number) return(-1); //not a valid parent
+  return(number);
+}
+
+
+double Name2double(char* str) {  
+  char * pch = strtok (str,"(");
+  pch = strtok (NULL, ")");
+  return (double) atof(pch);
+}
+
+void FLEMMA::getLeafAncesstorsString(char* allLeafs) {
+  int l = 0;
+  for(set<FLEMMA*>::iterator i=leafParents.begin();i != leafParents.end(); i++){
+    char temps[20];
+    sprintf(temps, "%d", (*i)->id);
+    for (int j = 0; temps[j] != '\0'; j++, l++)
+      allLeafs[l] = temps[j];
+    allLeafs[l++] = ',';
+  }
+  if (l == 0) {
+    allLeafs[0] = '0';
+    allLeafs[1] = '\0';
+  } else {
+    allLeafs[--l] = '\0';
+  }
+}
+
+StringHash::StringHash(char* str) {
+  hash = 0;
+  for (unsigned i = 0; i < strlen(str); i++)
+    hash = (31 * hash + str[i]) % 16017;
+  strcpy(value, str);
+}
+
+FLEMMA_COLLECTION::FLEMMA_COLLECTION(SIGNATURE AxSignature, LISTNODE AxHead,
+				     SIGNATURE Signature) {
+  nextid = 0;
+  this->Signature = Signature;
+  symbolsNumber = 
+    TreeSize(AxSignature->Predicates) + TreeSize(AxSignature->Functions);
+  hash_size = symbolsNumber + symbolsNumber;
+  hash_data = new char*[hash_size];
+  for (int i = 0; i < hash_size; i++) 
+    hash_data[i] = NULL;
+  HashSignature(AxSignature->Predicates);
+  HashSignature(AxSignature->Functions);
+    //create and initialize co-occurence and per-axiom occurence array
+  int coocuresize = hash_size * hash_size;
+  CoOccurence = new double[coocuresize];
+  for(int i = 0; i < coocuresize; i++)
+    CoOccurence[i] = 0;
+  for (LISTNODE f = AxHead; f != NULL; f = f->Next) {
+    bool SymPresence[hash_size];
+    for (int i = 0; i < hash_size; i++)
+      SymPresence[i] = false;
+    //only parse if the formula is of appropriate type
+    if (f->AnnotatedFormula->Syntax == tptp_cnf ||
+	f->AnnotatedFormula->Syntax == tptp_fof)
+//----This also updated CoOccurence
+      parseFormula(f->jjnext, SymPresence);    
+  }
+  //compute actual surprisingness values for symbol pairs 
+  for (int i = 0; i < hash_size; i++)
+    for (int j = 0; j < hash_size; j++)
+      if (i != j) {
+	double co = CoOccurence[i * hash_size + j];
+	double perAxi = CoOccurence[i * hash_size + i];
+	double perAxj = CoOccurence[j * hash_size + j];	
+//----If neither have then CoOccurence is maximal
+        if (perAxi == 0 && perAxj == 0) {
+           assert(co == 0);
+           CoOccurence[i * hash_size + j] = 1;
+        } else {
+	       CoOccurence[i * hash_size + j] = 1 - co /(perAxi + perAxj - co);
+        }
+      }  
+} 
+
+FLEMMA_COLLECTION::~FLEMMA_COLLECTION() {
+  for(hash_map<StringHash,FLEMMA*,StringHash>::iterator i = Lemmas.begin(); 
+      i != Lemmas.end(); i++)
+    delete (*i).second;
+  delete [] CoOccurence; 
+  delete [] hash_data;
+}
+
+FLEMMA* FLEMMA_COLLECTION::add(ANNOTATEDFORMULA f, LData &ld, 
+			       SuperString ParentNames) {
+  ld.intensity = 0;
+
+  //hash_value ---> number of uses (if 0 not stored)
+  vector< pair<int, int> > fsig_hash;
+  RewriteSignature(Signature->Predicates, fsig_hash);
+  RewriteSignature(Signature->Functions, fsig_hash);
+
+  //COMPLEXITY
+  ld.complexity = fsig_hash.size();
+  ld.NumOfSymbols = 0;
+  for(int i = 0; i < ld.complexity; i++)
+    ld.NumOfSymbols += fsig_hash[i].second;
+
+  //ADAPTIVITY
+  ld.adaptivity = 0;
+  if (f->Syntax == tptp_cnf) {
+    int vocc = getOccurences(Signature->Variables);
+    int vuni = getUnique(Signature->Variables);
+    if (vocc > 0)
+      ld.adaptivity = (double) vuni / (double) vocc;
+  }    
+  
+  //FOCUS
+  ld.focus = 1;
+  if (f->Syntax == tptp_cnf) {  
+    int negpred = 0;
+    int pospred = 0;
+    CountLiteralsOfPolarity(f,&pospred, &negpred);
+    double allpred = pospred + negpred;
+    if (allpred >= 4) {
+      double pratio = (double) pospred / allpred;
+      double nratio = (double) negpred / allpred;
+      if (nratio != 0 && pratio != 0)
+	ld.focus = 1 + pratio*log10(pratio)/log10(2.0) +
+	                nratio*log10(nratio)/log10(2.0);
+    }
+  }
+
+  //SURPRISINGNESS
+  ld.surprisingness = 0;  
+  for (int flat_i = 0; flat_i < ld.complexity; flat_i++) {
+    //make sure clause is not ~true or false ($true was already disregarded)
+    for (int flat_j = flat_i+1; flat_j < ld.complexity; flat_j++) {
+      //augment surp. value (the actual formula is already in the array)
+      ld.surprisingness += CoOccurence[fsig_hash[flat_i].first * hash_size + 
+				       fsig_hash[flat_j].first];
+    }
+  }
+
+  //generating the lemma
+  GetName(f, NameString);
+  FLEMMA* nlemma;
+  Lemmas[StringHash(NameString)] = nlemma = new FLEMMA(nextid++);
+  if (!DerivedAnnotatedFormula(f)) {
+    nlemma->symbolQuantity.swap(fsig_hash);
+    return nlemma;
+  }
+
+  //OBVIOUSNESS
+  //number of inferences - only for derived formulae...
+  //what if both parents came from the same chunk?
+  nlemma->NumOfInferences = 1;
+  hash_map<StringHash,FLEMMA*,StringHash>::iterator si;
+  FLEMMA* L;
+  for (char* temp = strtok(ParentNames,"\n"); temp; temp = strtok(NULL,"\n")) {
+    //skip definitions like "theory(equality)"
+    if (strchr(temp,'(') != NULL)
+      continue;
+    //compute depth
+    si = Lemmas.find(StringHash(temp));
+    assert(si != Lemmas.end());
+    L = si->second;
+    nlemma->NumOfInferences += L->NumOfInferences;
+    //compute leaf parents
+    if (L->leafParents.empty()) {  //parent is a leaf - store it's name
+      nlemma->leafParents.insert(L);
+    } else {			   //parent is not a leaf - store leaf's names
+      nlemma->leafParents.insert(L->leafParents.begin(), L->leafParents.end());
+    }
+  }
+
+  //INTENSITY
+  int LeafNumOfUniqueSymbols = 0, LeafNumOfSymbols = 0;
+  //combine all symbolQuantity hash tables of leafs into one big table
+  int leafSymbolQuantity[hash_size];
+  for (int j = 0; j < hash_size; j++)
+    leafSymbolQuantity[j] = 0;
+
+  for(set<FLEMMA*>::iterator i = nlemma->leafParents.begin(); 
+      i != nlemma->leafParents.end(); i++) {
+    int size = (*i)->symbolQuantity.size();    
+    for (int j = 0; j < size; j++) {
+      int loc = (*i)->symbolQuantity[j].first;
+      leafSymbolQuantity[loc] += (*i)->symbolQuantity[j].second;
+    }
+  }
+    
+  //go over the combined table, and compute unique and total number of symbols
+  for (int j = 0; j < hash_size; j++) {
+    if (leafSymbolQuantity[j] > 0) LeafNumOfUniqueSymbols++;
+    LeafNumOfSymbols += leafSymbolQuantity[j];
+  }
+  //  cout << "leaf_sym unique_sym / sym leaf_unique_sym" << endl;
+  //  cout << LeafNumOfSymbols << " * " << ld.complexity << " / " 
+  //       << ld.NumOfSymbols << " * " << LeafNumOfUniqueSymbols << endl;
+  ld.intensity = (double) (LeafNumOfSymbols * ld.complexity) /		\
+                 (double) (ld.NumOfSymbols * LeafNumOfUniqueSymbols);
+
+  return nlemma;
+}
+
+void FLEMMA_COLLECTION::RewriteSignature(SYMBOLNODE treeRoot, 
+					 vector< pair<int, int> > &fsig_hash) {
+  if (!treeRoot)
+    return;
+  if (treeRoot->NumberOfUses > 0)
+    fsig_hash.push_back(pair<int, int>(findLocation(treeRoot), 
+				       treeRoot->NumberOfUses));
+  RewriteSignature(treeRoot->LastSymbol, fsig_hash);
+  RewriteSignature(treeRoot->NextSymbol, fsig_hash);
+}
+
+void FLEMMA_COLLECTION::parseFormula(FORMULA f, bool *AV) {
+  switch (f->Type) {
+  case quantified:   
+    parseFormula(f->FormulaUnion.QuantifiedFormula.Formula, AV);
+    return;
+  case binary:
+    parseFormula(f->FormulaUnion.BinaryFormula.LHS, AV);
+    parseFormula(f->FormulaUnion.BinaryFormula.RHS, AV);
+    return;
+  case unary:
+    parseFormula(f->FormulaUnion.UnaryFormula.Formula, AV);
+    return;
+  case atom:
+    parseLiteral(f->FormulaUnion.Atom, AV);
+    return;
+  default:
+    cout << "% wrong formula format!" << endl;
+  }
+}
+
+void FLEMMA_COLLECTION::parseLiteral(TERM t, bool *AV) {  
+  if (t->Type == variable) return;
+  //got location of the symbol
+  //cout << "parsing symbol: " << t->TheSymbol.NonVariable->NameSymbol << endl;
+  int loc = findLocation(t->TheSymbol.NonVariable);
+  assert(loc != -2);
+  //if this symbol was already counted in this formula, skip it
+  if (!AV[loc]) {
+    //increment the Co-Occurence of symbol
+    for (int s = 0; s < hash_size; s++)
+      if (AV[s]) {
+	CoOccurence[loc * hash_size + s]++;
+	CoOccurence[s * hash_size + loc]++;
+      }
+    //increment the Per-Axiom-Occurence of symbol
+    CoOccurence[loc * hash_size + loc]++;
+    //update local axiom occurence array
+    AV[loc] = true;
+  }
+  //recure deeper
+  for (int i = 0; i < t->TheSymbol.NonVariable->Arity; i++) 
+    parseLiteral(t->Arguments[i], AV);
+}
+
+int FLEMMA_COLLECTION::findLocation(SYMBOLNODE tnode) {
+  int loc = hash(tnode->NameSymbol);
+  //resolving collisions
+  while (hash_data[loc] && strcmp(tnode->NameSymbol, hash_data[loc]) !=0) {
+    loc = (loc + 1) % hash_size;
+  }
+  //can't find the stupid thing
+  if (!hash_data[loc]) {
+    //it it is ~true or false... (can't be 'true', tautologies are dropped)
+    if (strcmp(tnode->NameSymbol, "$true")==0 || 
+	strcmp(tnode->NameSymbol, "$false")==0) {
+      return -1;
+    }
+    return -2;	
+  }
+  return loc;
+}
+
+void FLEMMA_COLLECTION::HashSignature(SYMBOLNODE treeRoot) {
+  if (!treeRoot)
+    return;  
+  int loc = hash(treeRoot->NameSymbol);         //hash
+  while (hash_data[loc]) loc = (loc + 1) % hash_size;      //resolve collisions
+  hash_data[loc] = treeRoot->NameSymbol;               	   //store identifier
+  HashSignature(treeRoot->LastSymbol);
+  HashSignature(treeRoot->NextSymbol);
+}
+
+int FLEMMA_COLLECTION::TreeSize(SYMBOLNODE treeRoot) {
+ if (!treeRoot)
+   return 0;
+ return TreeSize(treeRoot->LastSymbol) + TreeSize(treeRoot->NextSymbol) + 1;
+}
+
+//general-purpose hashing function for symbol strings
+int FLEMMA_COLLECTION::hash(char *str) {
+  unsigned long hash = 5381;
+  int c;
+  while ((c = *(str++))) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+  return hash % hash_size;
+}
+
+int FLEMMA_COLLECTION::getUnique(SYMBOLNODE treeRoot) {
+ if (!treeRoot)
+   return 0;
+ if (treeRoot->NumberOfUses > 0)
+   return getUnique(treeRoot->LastSymbol) + getUnique(treeRoot->NextSymbol) + 1;
+ return getUnique(treeRoot->LastSymbol) + getUnique(treeRoot->NextSymbol);
+}
+
+int FLEMMA_COLLECTION::getOccurences(SYMBOLNODE treeRoot) {
+ if (!treeRoot)
+   return 0;
+ return getOccurences(treeRoot->LastSymbol) + 
+	getOccurences(treeRoot->NextSymbol) + treeRoot->NumberOfUses;
+}

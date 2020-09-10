@@ -1,0 +1,9 @@
+plus(X,0)=X.
+mult(X,0)=0.
+mult(X,1)=X.
+plus(X,Y)=plus(Y,X).
+mult(X,Y)=mult(Y,X).
+plus(X,plus(Y,Z))=plus(plus(X,Y),Z).
+mult(X,mult(Y,Z))=mult(mult(X,Y),Z).
+#mult(X,plus(Y,Z))=plus(mult(X,Y), mult(X,Z)).
+

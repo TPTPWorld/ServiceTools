@@ -1,0 +1,11 @@
+m(1,X) = X.                           %identity
+m(X,1) = X.                         % Redundant with commutativity
+m(X,m(Y,Z)) = m(m(X,Y),Z).            %associativity
+m(X,Y) = m(Y,X).                      %commutativity
+m(X,Y) != m(X,Z) ; Y = Z<-.           %cancellation
+~d(X,Y) ; m(X,f(X,Y)) = Y<-.          %this and next line define divides
+m(X,Z) != Y ; d(X,Y)<-.
+~d(2,m(X,Y)) ; d(2,X) ; d(2,Y)<-.     % 2 is prime  (with 12)
+m(a,a) = m(2,m(b,b)).                 % a/b = sqrt(2)
+~d(X,a) ; ~d(X,b) ; X = 1<-.          % a/b is in lowest terms
+2 != 1.                               % I almost forgot this!

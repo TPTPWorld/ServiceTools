@@ -1,0 +1,5 @@
+#!//bin/tcsh
+
+set IDVDIR=/home/tptp/ServiceTools/IDVDir
+
+java -cp $IDVDIR/IDV.jar:$IDVDIR/TptpParser.jar:$IDVDIR/antlr-2.7.5.jar:$IDVDIR/ClientHttpRequest.jar IDV $*

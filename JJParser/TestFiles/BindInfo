@@ -1,0 +1,5 @@
+fof(a,plain,a,
+    inference(rule,[],[parent:[bind(X,$fot(a))]])).
+
+fof(1, axiom,s__p(s__a__m),file('D:\Sigma\tomcat\temp\SIMPLE63562.p',kb_SIMPLE_1)).
+

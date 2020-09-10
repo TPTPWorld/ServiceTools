@@ -1,0 +1,238 @@
+<HTML>
+<HEAD>
+<TITLE>CASC-JC Entrants' Sample Solutions</TITLE>
+</HEAD>
+<BODY>
+<HR><!------------------------------------------------------------------------>
+
+<A NAME="E---0.90">
+<HR><!------------------------------------------------------------------------>
+<H2>EP 0.90</H2>
+S. Schulz<BR>
+Institut f&uuml;r Informatik, Technische Universit&auml;t M&uuml;nchen,
+Germany, and ITC/irst, Trento, Italy<BR>
+schulz@eprover.org
+
+<p>
+EP will use the current version of the new TSTP output format,
+documented in [<A HREF="#References">SZS2003</A>].  The 
+following rule names are defined for the main proof search:
+<P>
+<DL>
+<DT> er
+<DD> Equality resolution: x!=a v x=x ==> a=a
+<DT> pm
+<DD> Paramodulation. Note that E considers all literals as equational,
+     and thus also performs resolution by a combination of top-level
+     paramodulation and (implicit) clause normalization.
+<DT> spm
+<DD> Simultaneous Paramodulation. See note on paramodulation above.
+<DT> ef
+<DD> Equality factoring (factor equations on one side only, move the 
+     remaining disequation into the precondition): x=a v b=c v x=d ==>
+     a!=c v b=c vb=d 
+<DT> split
+<DD> Clause splitting a la Vampire (non-deductive, but maintains
+     unsatisfiability)  
+<DT> rw
+<DD> Rewriting, each rw-expression corresponds to exacly one rewrite
+     step with the named clause. This is also used for equational
+     unfolding.
+<DT> sr
+<DD> Simplify-reflect: An (equational) version of unit-cutting. As as
+      example, see this positive simplify-reflect step:  
+      [a=b], [f(a)!=f(b)] => [].
+<DT> csr
+<DD> Contextual simplify-reflect (also known as contextual literal
+     cutting or subsumption resolution): Literal cutting with non-unit
+     clauses if one of the literals is implied in the context of the
+     clause to be simplified.
+<DT> ar
+<DD> AC-resolution: Delete literals that are trivial modulo the
+     AC-theory induced by the named clauses
+<DT> cn
+<DD> Clause normalize, delete trivial and repeated literals. This step
+     is often implicit, but can sometimes occcur explicitely.
+</DL>
+<P>
+
+Additionally, the clausification will use additional rule names:
+<P>
+<DL>
+<DT> assume_negation
+<DD> Negate a conjecture for a proof by refutation.
+<DT> fof_nnf
+<DD> Convert a formula to negation normal form by moving negation
+     signs inward to the literals, and eleminating equivalences and
+     implications.
+<DT> shift_quantors
+<DD> Move quantors (inwards for mini-scoping or outwards for the final
+     conjunctive normal form).
+<DT> variable_rename
+<DD> Rename bound variables to make sure each quantor binds a
+     different variable.
+<DT> skolemize
+<DD> Eliminate existential quantors via Skolemization.
+<DT> distribute
+<DD> Apply distributivity law to move <strong>and</strong> outwards
+     over <strong>or</strong>.
+<DT> split_conjunct
+<DD> Split of one conjunct from a formula in conjunctive normal form
+     to create a clause.
+<DT> fof_simplification
+<DD> Perform standard simplification steps on the formula. This may
+     also replaces back implications and exclusive or with equivalent
+     constructs using implications and equivalences.
+<DT> def_intro
+<DD> Introduce a (polarity-dependend) definition for a formula.
+<DT> def_fold
+<DD> Apply a definition to replace a subformula with a properly
+     defined literal. These last two rules are not yet implemented,
+     and thus not demonstrated below.
+</DL>
+<P>
+
+
+
+The first proof uses all proof search inferences except for "ef",
+"spm", and "csr", although it uses some in fairly trivial ways. The
+second is the required proof for SYN075-1, and contains examples for
+"ef" and "csr". The final proof is for SYN075+1, and also contains the
+clausification steps.
+
+<p>
+<strong>ALL_RULES</strong>
+<pre>
+# Problem is unsatisfiable (or provable), constructing proof object
+# TSTP exit status: Unsatisfiable
+# Proof object starts here.
+cnf(1,axiom,(f(X1,X2)=f(X2,X1)),file('ALL_RULES.lop', at_line_19_column_1)).
+cnf(2,axiom,(f(X1,f(X2,X3))=f(f(X1,X2),X3)),file('ALL_RULES.lop', at_line_20_column_1)).
+cnf(3,axiom,(g(X1,X2)=g(X2,X1)),file('ALL_RULES.lop', at_line_21_column_1)).
+cnf(4,axiom,(f(f(X1,X2),f(X3,g(X4,X5)))!=f(f(g(X4,X5),X3),f(X2,X1))|k(X1,X1)!=k(a,b)),file('ALL_RULES.lop', at_line_22_column_1)).
+cnf(5,axiom,(b=c|X1!=X2|X3!=X4|c!=d),file('ALL_RULES.lop', at_line_24_column_1)).
+cnf(6,axiom,(a=b|a=c),file('ALL_RULES.lop', at_line_26_column_1)).
+cnf(7,axiom,(i(X1)=i(X2)),file('ALL_RULES.lop', at_line_28_column_1)).
+cnf(8,axiom,(c=d|h(i(a))!=h(i(e))),file('ALL_RULES.lop', at_line_29_column_1)).
+cnf(13,derived,(k(a,b)!=k(X1,X1)),inference(ar,[status(thm)],[4,1,3,2,theory(equality)])).
+cnf(23,derived,(c=b|epred1_0|X3!=X4|d!=c),inference(split,[split(esplit,[])],[5])).
+cnf(24,derived,(epred2_0|X1!=X2),inference(split,[split(esplit,[])],[5])).
+cnf(25,derived,(~epred2_0|~epred1_0),inference(split,[split(esplit,[])],[5])).
+cnf(26,derived,(epred2_0),inference(er,[status(thm)],[24,theory(equality)])).
+cnf(27,derived,($false|~epred1_0),inference(rw,[status(thm)],[25,26,theory(equality)])).
+cnf(28,derived,(~epred1_0),inference(cn,[status(thm)],[27,theory(equality)])).
+cnf(29,derived,(c=b|epred1_0|d!=c),inference(er,[status(thm)],[23,theory(equality)])).
+cnf(30,derived,(c=b|d!=c),inference(sr,[status(thm)],[29,28,theory(equality)])).
+cnf(31,derived,(d=c),inference(sr,[status(thm)],[8,7,theory(equality)])).
+cnf(32,derived,(c=b|$false),inference(rw,[status(thm)],[30,31,theory(equality)])).
+cnf(33,derived,(c=b),inference(cn,[status(thm)],[32,theory(equality)])).
+cnf(34,derived,(b=a),inference(pm,[status(thm)],[6,33,theory(equality)])).
+cnf(36,derived,(k(b,b)!=k(X1,X1)),inference(rw,[status(thm)],[13,34,theory(equality)])).
+cnf(75,derived,($false),inference(er,[status(thm)],[36,theory(equality)])).
+cnf(76,derived,($false),75,['proof']).
+# Proof object ends here.
+</pre>
+<p>
+<strong>SYN075-1</strong>
+<PRE>
+# Problem is unsatisfiable (or provable), constructing proof object
+# TSTP exit status: Unsatisfiable
+# Proof object starts here.
+cnf(1,axiom,(X1=a|~big_f(X1,X2)),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_1)).
+cnf(3,axiom,(big_f(X1,X2)|X1!=a|X2!=b),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_3)).
+cnf(4,negated_conjecture,(f(X2)=X2|~big_f(X1,f(X2))|X1!=g(X2)),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_4)).
+cnf(6,negated_conjecture,(big_f(X1,f(X2))|f(X2)=X2|X1!=g(X2)),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_6)).
+cnf(9,negated_conjecture,(big_f(h(X1,X2),f(X1))|h(X1,X2)=X2|f(X1)!=X1),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_9)).
+cnf(10,negated_conjecture,(f(X1)!=X1|h(X1,X2)!=X2|~big_f(h(X1,X2),f(X1))),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075-1.p', clause_10)).
+cnf(14,negated_conjecture-derived,(f(X2)=X2|g(X2)!=X1),inference(csr,[status(thm)],[4,6])).
+cnf(15,negated_conjecture-derived,(f(X1)=X1),inference(er,[status(thm)],[14,theory(equality)])).
+cnf(19,negated_conjecture-derived,(h(X1,X2)!=X2|f(X1)!=X1|a!=h(X1,X2)|b!=f(X1)),inference(spm,[status(thm)],[10,3,theory(equality)])).
+cnf(23,negated_conjecture-derived,(h(X1,X2)!=a|h(X1,X2)!=X2|X1!=b|f(X1)!=X1),inference(rw,[status(thm)],[19,15,theory(equality)])).
+cnf(24,negated_conjecture-derived,(h(X1,X2)!=a|h(X1,X2)!=X2|X1!=b|$false),inference(rw,[status(thm)],[23,15,theory(equality)])).
+cnf(25,negated_conjecture-derived,(h(X1,X2)!=a|h(X1,X2)!=X2|X1!=b),inference(cn,[status(thm)],[24,theory(equality)])).
+cnf(28,negated_conjecture-derived,(h(X1,X2)!=X2|$false|~big_f(h(X1,X2),f(X1))),inference(rw,[status(thm)],[10,15,theory(equality)])).
+cnf(29,negated_conjecture-derived,(h(X1,X2)!=X2|$false|~big_f(h(X1,X2),X1)),inference(rw,[status(thm)],[28,15,theory(equality)])).
+cnf(30,negated_conjecture-derived,(h(X1,X2)!=X2|~big_f(h(X1,X2),X1)),inference(cn,[status(thm)],[29,theory(equality)])).
+cnf(33,negated_conjecture-derived,(h(X1,X2)=X2|big_f(h(X1,X2),X1)|f(X1)!=X1),inference(rw,[status(thm)],[9,15,theory(equality)])).
+cnf(34,negated_conjecture-derived,(h(X1,X2)=X2|big_f(h(X1,X2),X1)|$false),inference(rw,[status(thm)],[33,15,theory(equality)])).
+cnf(35,negated_conjecture-derived,(h(X1,X2)=X2|big_f(h(X1,X2),X1)),inference(cn,[status(thm)],[34,theory(equality)])).
+cnf(38,negated_conjecture-derived,(a=h(X1,X2)|h(X1,X2)=X2),inference(spm,[status(thm)],[1,35,theory(equality)])).
+cnf(50,negated_conjecture-derived,(h(X1,X2)=a|~big_f(X2,X1)),inference(spm,[status(thm)],[30,38,theory(equality)])).
+cnf(56,negated_conjecture-derived,(a!=X2|X1!=b|~big_f(X2,X1)),inference(spm,[status(thm)],[25,50,theory(equality)])).
+cnf(59,negated_conjecture-derived,(a!=X2|X1!=b),inference(csr,[status(thm)],[56,3])).
+cnf(60,negated_conjecture-derived,(epred1_0|a!=X2),inference(split,[split(esplit,[])],[59])).
+cnf(61,negated_conjecture-derived,(epred2_0|X1!=b),inference(split,[split(esplit,[])],[59])).
+cnf(62,negated_conjecture-derived,(~epred2_0|~epred1_0),inference(split,[split(esplit,[])],[59])).
+cnf(63,negated_conjecture-derived,(epred1_0),inference(er,[status(thm)],[60,theory(equality)])).
+cnf(65,negated_conjecture-derived,(epred2_0),inference(er,[status(thm)],[61,theory(equality)])).
+cnf(73,negated_conjecture-derived,($false|~epred1_0),inference(rw,[status(thm)],[62,65,theory(equality)])).
+cnf(74,negated_conjecture-derived,($false|$false),inference(rw,[status(thm)],[73,63,theory(equality)])).
+cnf(75,negated_conjecture-derived,($false),inference(cn,[status(thm)],[74,theory(equality)])).
+cnf(76,negated_conjecture-derived,($false),75,['proof']).
+# Proof object ends here.
+</pre>
+</pre>
+<p>
+<strong>SYN075+1</strong>
+<PRE>
+# Problem is unsatisfiable (or provable), constructing proof object
+# TSTP exit status: Theorem
+# Proof object starts here.
+fof(1, axiom,?[X1]:?[X2]:![X3]:![X4]:(big_f(X3,X4)<=>(X3=X1&X4=X2)),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075+1.p', pel52_1)).
+fof(2, conjecture,?[X2]:![X4]:(?[X1]:![X3]:(big_f(X3,X4)<=>X3=X1)<=>X4=X2),file('/Users/schulz/EPROVER/TPTP_3.0.1_FLAT/SYN075+1.p', pel52)).
+fof(3, negated_conjecture-derived,~(?[X2]:![X4]:(?[X1]:![X3]:(big_f(X3,X4)<=>X3=X1)<=>X4=X2)),inference(assume_negation,[status(cth)],[2])).
+fof(4, derived,?[X1]:?[X2]:![X3]:![X4]:((~(big_f(X3,X4))|(X3=X1&X4=X2))&((~(X3=X1)|~(X4=X2))|big_f(X3,X4))),inference(fof_nnf,[status(thm)],[1])).
+fof(5, derived,?[X1]:?[X2]:(![X3]:![X4]:(~(big_f(X3,X4))|(X3=X1&X4=X2))&![X3]:![X4]:((~(X3=X1)|~(X4=X2))|big_f(X3,X4))),inference(shift_quantors,[status(thm)],[4])).
+fof(6, derived,?[X5]:?[X6]:(![X7]:![X8]:(~(big_f(X7,X8))|(X7=X5&X8=X6))&![X9]:![X10]:((~(X9=X5)|~(X10=X6))|big_f(X9,X10))),inference(variable_rename,[status(thm)],[5])).
+fof(7, derived,(![X7]:![X8]:(~(big_f(X7,X8))|(X7=esk1_0&X8=esk2_0))&![X9]:![X10]:((~(X9=esk1_0)|~(X10=esk2_0))|big_f(X9,X10))),inference(skolemize,[status(sab)],[6])).
+fof(8, derived,![X7]:![X8]:![X9]:![X10]:(((X7=esk1_0|~(big_f(X7,X8)))&(X8=esk2_0|~(big_f(X7,X8))))&((~(X9=esk1_0)|~(X10=esk2_0))|big_f(X9,X10))),inference(distribute,[status(thm)],[7])).
+cnf(9,derived,(big_f(X1,X2)|X2!=esk2_0|X1!=esk1_0),inference(split_conjunct,[status(thm)],[8])).
+cnf(10,derived,(X2=esk2_0|~big_f(X1,X2)),inference(split_conjunct,[status(thm)],[8])).
+cnf(11,derived,(X1=esk1_0|~big_f(X1,X2)),inference(split_conjunct,[status(thm)],[8])).
+fof(12, negated_conjecture-derived,![X2]:?[X4]:((![X1]:?[X3]:((~(big_f(X3,X4))|~(X3=X1))&(big_f(X3,X4)|X3=X1))|~(X4=X2))&(?[X1]:![X3]:((big_f(X3,X4)&X3=X1)|(~(big_f(X3,X4))&~(X3=X1)))|X4=X2)),inference(fof_nnf,[status(thm)],[3])).
+fof(13, negated_conjecture-derived,![X5]:?[X6]:((![X7]:?[X8]:((~(big_f(X8,X6))|~(X8=X7))&(big_f(X8,X6)|X8=X7))|~(X6=X5))&(?[X9]:![X10]:((big_f(X10,X6)&X10=X9)|(~(big_f(X10,X6))&~(X10=X9)))|X6=X5)),inference(variable_rename,[status(thm)],[12])).
+fof(14, negated_conjecture-derived,![X5]:((![X7]:((~(big_f(esk4_2(X5,X7),esk3_1(X5)))|~(esk4_2(X5,X7)=X7))&(big_f(esk4_2(X5,X7),esk3_1(X5))|esk4_2(X5,X7)=X7))|~(esk3_1(X5)=X5))&(![X10]:((big_f(X10,esk3_1(X5))&X10=esk5_1(X5))|(~(big_f(X10,esk3_1(X5)))&~(X10=esk5_1(X5))))|esk3_1(X5)=X5)),inference(skolemize,[status(sab)],[13])).
+fof(15, negated_conjecture-derived,![X5]:![X7]:![X10]:((((~(big_f(esk4_2(X5,X7),esk3_1(X5)))|~(esk4_2(X5,X7)=X7))|~(esk3_1(X5)=X5))&((big_f(esk4_2(X5,X7),esk3_1(X5))|esk4_2(X5,X7)=X7)|~(esk3_1(X5)=X5)))&((((~(big_f(X10,esk3_1(X5)))|big_f(X10,esk3_1(X5)))|esk3_1(X5)=X5)&((~(X10=esk5_1(X5))|big_f(X10,esk3_1(X5)))|esk3_1(X5)=X5))&(((~(big_f(X10,esk3_1(X5)))|X10=esk5_1(X5))|esk3_1(X5)=X5)&((~(X10=esk5_1(X5))|X10=esk5_1(X5))|esk3_1(X5)=X5)))),inference(distribute,[status(thm)],[14])).
+cnf(18,negated_conjecture-derived,(esk3_1(X1)=X1|big_f(X2,esk3_1(X1))|X2!=esk5_1(X1)),inference(split_conjunct,[status(thm)],[15])).
+cnf(20,negated_conjecture-derived,(esk4_2(X1,X2)=X2|big_f(esk4_2(X1,X2),esk3_1(X1))|esk3_1(X1)!=X1),inference(split_conjunct,[status(thm)],[15])).
+cnf(21,negated_conjecture-derived,(esk3_1(X1)!=X1|esk4_2(X1,X2)!=X2|~big_f(esk4_2(X1,X2),esk3_1(X1))),inference(split_conjunct,[status(thm)],[15])).
+cnf(24,negated_conjecture-derived,(esk3_1(X1)=X1|big_f(esk5_1(X1),esk3_1(X1))),inference(er,[status(thm)],[18,theory(equality)])).
+cnf(26,negated_conjecture-derived,(esk1_0=esk4_2(X1,X2)|esk4_2(X1,X2)=X2|esk3_1(X1)!=X1),inference(spm,[status(thm)],[11,20,theory(equality)])).
+cnf(27,negated_conjecture-derived,(esk2_0=esk3_1(X1)|esk4_2(X1,X2)=X2|esk3_1(X1)!=X1),inference(spm,[status(thm)],[10,20,theory(equality)])).
+cnf(29,negated_conjecture-derived,(esk4_2(X1,X2)!=X2|esk3_1(X1)!=X1|esk1_0!=esk4_2(X1,X2)|esk2_0!=esk3_1(X1)),inference(spm,[status(thm)],[21,9,theory(equality)])).
+cnf(31,negated_conjecture-derived,(esk1_0=esk5_1(X1)|esk3_1(X1)=X1),inference(spm,[status(thm)],[11,24,theory(equality)])).
+cnf(32,negated_conjecture-derived,(esk2_0=esk3_1(X1)|esk3_1(X1)=X1),inference(spm,[status(thm)],[10,24,theory(equality)])).
+cnf(35,negated_conjecture-derived,(esk3_1(X1)=X1|big_f(esk1_0,esk3_1(X1))),inference(spm,[status(thm)],[24,31,theory(equality)])).
+cnf(36,negated_conjecture-derived,(esk3_1(X2)=X2|esk2_0!=X2),inference(ef,[status(thm)],[32,theory(equality)])).
+cnf(46,negated_conjecture-derived,(esk4_2(X1,X2)!=X2|~big_f(esk4_2(X1,X2),X1)|esk2_0!=X1),inference(spm,[status(thm)],[21,36,theory(equality)])).
+cnf(54,negated_conjecture-derived,(esk2_0=X1|big_f(esk1_0,esk2_0)|esk3_1(X1)=X1),inference(spm,[status(thm)],[35,32,theory(equality)])).
+cnf(60,negated_conjecture-derived,(esk4_2(X1,X2)!=X2|~big_f(esk4_2(X1,X2),X1)),inference(csr,[status(thm)],[46,10])).
+cnf(71,negated_conjecture-derived,(esk3_1(X1)=X1|big_f(esk1_0,esk2_0)),inference(csr,[status(thm)],[54,36])).
+cnf(76,negated_conjecture-derived,(esk3_1(X1)=esk2_0|esk4_2(X1,X2)=X2),inference(csr,[status(thm)],[27,32])).
+cnf(79,negated_conjecture-derived,(esk3_1(X1)=esk2_0|~big_f(X2,X1)),inference(spm,[status(thm)],[60,76,theory(equality)])).
+cnf(87,negated_conjecture-derived,(esk3_1(esk2_0)=esk2_0|esk3_1(X1)=X1),inference(spm,[status(thm)],[79,71,theory(equality)])).
+cnf(101,negated_conjecture-derived,(esk3_1(esk2_0)=esk2_0),inference(ef,[status(thm)],[87,theory(equality)])).
+cnf(113,negated_conjecture-derived,(esk4_2(esk2_0,X1)=esk1_0|esk4_2(esk2_0,X1)=X1),inference(spm,[status(thm)],[26,101,theory(equality)])).
+cnf(114,negated_conjecture-derived,(esk4_2(esk2_0,X2)=X2|esk1_0!=X2),inference(ef,[status(thm)],[113,theory(equality)])).
+cnf(143,negated_conjecture-derived,(X1!=esk1_0|esk3_1(esk2_0)!=esk2_0),inference(spm,[status(thm)],[29,114,theory(equality)])).
+cnf(150,negated_conjecture-derived,(X1!=esk1_0|$false),inference(rw,[status(thm)],[143,101,theory(equality)])).
+cnf(151,negated_conjecture-derived,(X1!=esk1_0),inference(cn,[status(thm)],[150,theory(equality)])).
+cnf(152,negated_conjecture-derived,($false),inference(er,[status(thm)],[151,theory(equality)])).
+cnf(155,negated_conjecture-derived,($false),152,['proof']).
+# Proof object ends here.
+</pre>
+
+
+<A NAME="References">
+<H3>References</H3>
+<DL>
+<DT> SZS2003
+<DD> Suctcliffe, G.; Zimmer, J.; Schulz S. (2003),
+     <STRONG>Communication Formalisms for Automated Theorem Proving Tools</STRONG>,
+     <EM>Proceedings of the IJCAI-18 Workshop on Agents and 
+      Automated Reasoning</EM>, (Acapulco, Mexico).
+</DL>
+
+<HR><!------------------------------------------------------------------------>
+</BODY>
+</HTML>
