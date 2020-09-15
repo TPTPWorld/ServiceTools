@@ -274,9 +274,15 @@ count_formula_depth,0) / Statistics->NumberOfFormulae;
     if (Statistics->NumberOfCNF > 0) {
         Statistics->NumberOfCNFExpanded = RootListCount(RootListHead,
 cnf_nodes,1);
+    }
+    if (Statistics->NumberOfTCF > 0) {
+        Statistics->NumberOfTCFExpanded = RootListCount(RootListHead,
+tcf_nodes,1);
+    }
+    if (Statistics->NumberOfCNF > 0 || Statistics->NumberOfTCF > 0) {
         Statistics->MaxClauseSize = RootListMaximal(RootListHead,literals);
         Statistics->AverageClauseSize = Statistics->NumberOfLiterals /
-Statistics->NumberOfCNF;
+(Statistics->NumberOfCNF + Statistics->NumberOfTCF);
     }
 
     Statistics->MaxTermDepth = RootListMaximal(RootListHead,term_depth);
@@ -294,15 +300,17 @@ void PrintTreeStatistics(FILE * Stream,TreeStatisticsRecordType Statistics) {
 "%% Statistics : Number of formulae       : %4.0f (%4.0f expanded)\n",
 Statistics.NumberOfFormulae,Statistics.NumberOfFormulaeExpanded);
     }
-    if (Statistics.NumberOfCNF > 0) {
-        if (Statistics.NumberOfFormulae > Statistics.NumberOfCNF) {
+    if (Statistics.NumberOfCNF > 0 || Statistics.NumberOfTCF > 0) {
+        if (Statistics.NumberOfFormulae > 
+(Statistics.NumberOfCNF + Statistics.NumberOfTCF)) {
             fprintf(Stream,"%%              ");
         } else {
             fprintf(Stream,"%% Statistics : ");
         }
         fprintf(Stream,
 "Number of clauses        : %4.0f (%4.0f expanded)\n",
-Statistics.NumberOfCNF,Statistics.NumberOfCNFExpanded);
+Statistics.NumberOfCNF+Statistics.NumberOfTCF,
+Statistics.NumberOfCNFExpanded+Statistics.NumberOfTCFExpanded);
     }
 
     fprintf(Stream,
@@ -317,19 +325,20 @@ Statistics.NumberOfAtoms,Statistics.NumberOfAtomsExpanded);
     fprintf(Stream,
 "%%              Number of equality atoms : %4.0f (%4.0f expanded)\n",
 Statistics.NumberOfEqualityAtoms,Statistics.NumberOfEqualityAtomsExpanded);
-    if (Statistics.NumberOfFormulae > Statistics.NumberOfCNF) {
+    if (Statistics.NumberOfFormulae > 
+(Statistics.NumberOfCNF + Statistics.NumberOfTCF)) {
         fprintf(Stream,
 "%%              Maximal formula depth    : %4.0f (%4.0f average)\n",
 Statistics.MaxFormulaDepth,Statistics.AverageFormulaDepth);
     }
-    if (Statistics.NumberOfCNF > 0) {
+    if (Statistics.NumberOfCNF > 0 || Statistics.NumberOfTCF > 0) {
         fprintf(Stream,
 "%%              Maximal clause size      : %4.0f (%4.0f average)\n",
 Statistics.MaxClauseSize,Statistics.AverageClauseSize);
     }
 
-    if (Statistics.NumberOfFOF > 0 || Statistics.NumberOfCNF > 0 ||
-Statistics.NumberOfTFF > 0) {
+    if (Statistics.NumberOfTFF > 0 || Statistics.NumberOfTCF > 0 ||
+Statistics.NumberOfFOF > 0 || Statistics.NumberOfCNF > 0) {
         fprintf(Stream,
 "%%              Maximal term depth       : %4.0f (%4.0f average)\n",
 Statistics.MaxTermDepth,Statistics.AverageTermDepth);

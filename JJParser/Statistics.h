@@ -7,6 +7,7 @@ typedef enum {
     nodes,
     thf_nodes,
     tff_nodes,
+    tcf_nodes,
     fof_nodes,
     cnf_nodes,
     leaves,
@@ -44,6 +45,7 @@ typedef struct {
     double NumberOfFormulae;
     double NumberOfTHF;
     double NumberOfTFF;
+    double NumberOfTCF;
     double NumberOfFOF;
     double NumberOfCNF;
 

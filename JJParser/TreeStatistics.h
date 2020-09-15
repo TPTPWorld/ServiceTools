@@ -17,15 +17,17 @@ typedef struct {
 
     double NumberOfTHF;
     double NumberOfTFF;
+    double NumberOfTCF;
+    double NumberOfTCFExpanded;
     double NumberOfFOF;
+    double NumberOfCNF;
+    double NumberOfCNFExpanded;
 
 //----Not for pure CNF
     double MaxFormulaDepth;
     double AverageFormulaDepth;
 
 //----Not for pure FOF
-    double NumberOfCNF;
-    double NumberOfCNFExpanded;
     double MaxClauseSize;
     double AverageClauseSize;
 

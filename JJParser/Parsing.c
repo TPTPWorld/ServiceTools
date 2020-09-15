@@ -1074,7 +1074,8 @@ ParseTerm(Stream,Language,Context,EndOfScope,new_variable,Quantifier,NULL,0);
         AcceptToken(Stream,punctuation,":");
         QuantifiedFormula->VariableType = ParseFormula(Stream,Language,
 Context,EndOfScope,-1,1,VariablesMustBeQuantified,none);
-    } else if (Language == tptp_tff && CheckToken(Stream,punctuation,":")) {
+    } else if ((Language == tptp_tff || Language == tptp_tcf) && 
+CheckToken(Stream,punctuation,":")) {
         AcceptToken(Stream,punctuation,":");
         QuantifiedFormula->VariableType = ParseAtom(Stream,Language,
 Context,EndOfScope,VariablesMustBeQuantified);
