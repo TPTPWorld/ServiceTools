@@ -586,8 +586,10 @@ Statistics.FormulaStatistics.NumberOfTFF > 0) {
         }
         fprintf(Stream,
 "Number of clauses     : %4.0f (%4.0f non-Horn;%4.0f unit;%4.0f RR)\n",
-Statistics.FormulaStatistics.NumberOfCNF,
-Statistics.FormulaStatistics.NumberOfCNF -
+Statistics.FormulaStatistics.NumberOfCNF +
+Statistics.FormulaStatistics.NumberOfTCF,
+Statistics.FormulaStatistics.NumberOfCNF +
+Statistics.FormulaStatistics.NumberOfTCF -
 Statistics.FormulaStatistics.NumberOfHornClauses,
 Statistics.FormulaStatistics.NumberOfUnitFormulae,
 Statistics.FormulaStatistics.NumberOfRRClauses);

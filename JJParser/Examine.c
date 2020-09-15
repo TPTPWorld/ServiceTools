@@ -969,7 +969,8 @@ int RangeRestrictedClause(ANNOTATEDFORMULA AnnotatedFormula) {
     char * Slash;
     String CRNameSlash;
 
-    if (!CheckAnnotatedFormula(AnnotatedFormula,tptp_cnf)) {
+    if (!CheckAnnotatedFormula(AnnotatedFormula,tptp_cnf) &&
+!CheckAnnotatedFormula(AnnotatedFormula,tptp_tcf)) {
         return(0);
     }
 
@@ -1070,7 +1071,8 @@ int * Negative) {
 
     FORMULA DisjunctionOrLiteral;
 
-    if (!CheckAnnotatedFormula(AnnotatedFormula,tptp_cnf)) {
+    if (!CheckAnnotatedFormula(AnnotatedFormula,tptp_cnf) &&
+!CheckAnnotatedFormula(AnnotatedFormula,tptp_tcf)) {
         return(0);
     }
 

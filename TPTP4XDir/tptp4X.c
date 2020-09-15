@@ -304,7 +304,8 @@ char * IncludeFilter,SyntaxType * LastNodeType) {
     GetName(AnnotatedFormula,FormulaName);
 //----Blank line after every formula
     if (Options.Pretty &&
-(*LastNodeType == tptp_thf || *LastNodeType == tptp_tff ||
+(*LastNodeType == tptp_thf || 
+ *LastNodeType == tptp_tff || *LastNodeType == tptp_tcf ||
  *LastNodeType == tptp_fof || *LastNodeType == tptp_cnf ||
 (*LastNodeType == tptp_tpi && ThisNodeType != tptp_tpi)) &&
 ThisNodeType != blank_line) {
