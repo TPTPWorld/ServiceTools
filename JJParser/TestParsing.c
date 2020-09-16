@@ -79,9 +79,9 @@ int main(int argc, char *argv[]) {
     }
     PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
     PrintSignature(Signature);
-//    FreeListOfAnnotatedFormulae(&Head);
-//    FreeSignature(&Signature);
-//    return(EXIT_SUCCESS);
+    FreeListOfAnnotatedFormulae(&Head);
+    FreeSignature(&Signature);
+    return(EXIT_SUCCESS);
 
 //-----------------------------------------------------------------------------
 //----Test stats

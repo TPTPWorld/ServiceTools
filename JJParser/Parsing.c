@@ -854,8 +854,9 @@ Context.Signature,0);
         }
     } else {
         InfixRHSType = nonterm;
-//----Cannot have a variable if a predicate was expected
-        if (Language != tptp_thf && 
+//----Cannot have a variable if a predicate was expected, unless in a typed
+//----language, where variables can be types in polymorphic cases.
+        if (Language != tptp_thf && Language != tptp_tff &&
 Type == predicate && FunctorType == upper_word) {
             TokenError(Stream);
         }
