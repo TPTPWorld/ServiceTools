@@ -144,7 +144,7 @@ CopyHeapString(CurrentToken(Stream)->NameToken);
     EnsureTokenType(Stream,lower_word);
     if ((AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status = 
 CheckStringToStatus(CurrentToken(Stream)->NameToken)) == nonstatus) {
-        TokenError(Stream);
+        TokenError(Stream,"Invalid role");
     }
     AcceptTokenType(Stream,lower_word);
 //----Check for substatus
@@ -177,7 +177,7 @@ ParseTerm(Stream,nontype,Context,&EndOfScope,non_logical_data,none,NULL,0);
         if (!strcmp(GetSymbol(AnnotatedFormula->AnnotatedFormulaUnion.
 AnnotatedTSTPFormula.Source),"inference") && GetArity(AnnotatedFormula->
 AnnotatedFormulaUnion.AnnotatedTSTPFormula.Source) != 3) {
-            TokenError(Stream);
+            TokenError(Stream,"Inference record must have three arguments");
         }
 //----Don't check that inference sources have at least one parent - must allow
 //----derived but no parents - for tautologies which are inferred from nothing
