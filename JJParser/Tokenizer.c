@@ -1299,7 +1299,7 @@ int TakeToken(READFILE Stream,TokenType Type,char * Value) {
         TakeCurrentToken(Stream); 
         return(1);
     } else {
-        sprintf(Message,"Wrong token type or value, expected \"%s\"",Value);
+         sprintf(Message,"Wrong token type or value, expected \"%s\"",Value);
         TokenError(Stream,Message);
         return(0);
     }
