@@ -36,7 +36,7 @@ void FreeToken(TOKEN * Pointer);
 void SetTokenType(READFILE Stream,TokenType Type);
 int CheckTokenType(READFILE Stream,TokenType Type);
 void TokenWarning(READFILE Stream,char * Message);
-void TokenError(READFILE Stream);
+void TokenError(READFILE Stream,char * Message);
 int CheckToken(READFILE Stream,TokenType Type,char * Value);
 int TakeTokenType(READFILE Stream,TokenType Type);
 int TakeToken(READFILE Stream,TokenType Type,char * Value);

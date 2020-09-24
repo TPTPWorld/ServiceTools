@@ -1220,7 +1220,7 @@ void TokenWarning(READFILE Stream,char * Message) {
 Stream->Line,Stream->Character,CurrentToken(Stream)->NameToken,Message);
 }
 //-----------------------------------------------------------------------------
-void TokenError(READFILE Stream) {
+void TokenError(READFILE Stream,char * Message) {
 
     String RestOfLine;
     String ErrorMessage;
@@ -1231,9 +1231,14 @@ void TokenError(READFILE Stream) {
     } else if (Stream->StringFileContent != NULL) {
         strncat(RestOfLine,Stream->StringFileContent + Stream->StringOffset,20);
     }
+    if (strlen(RestOfLine) > 0 && RestOfLine[strlen(RestOfLine)-1] == '\n') {
+        RestOfLine[strlen(RestOfLine)-1] = '\0';
+    }
+
     sprintf(ErrorMessage,
-"Line %d Char %d Token \"%s\" continuing with \"%s\"",
-Stream->Line,Stream->Character,CurrentToken(Stream)->NameToken,RestOfLine);
+"Line %d Char %d Token \"%s\" continuing with \"%s\" : %s",
+Stream->Line,Stream->Character,CurrentToken(Stream)->NameToken,RestOfLine,
+Message == NULL ? "" : Message);
     ReportError("SyntaxError",ErrorMessage,1);
 }
 //-----------------------------------------------------------------------------
@@ -1280,19 +1285,22 @@ int TakeTokenType(READFILE Stream,TokenType Type) {
         TakeCurrentToken(Stream);
         return(1);
     } else {
-        TokenError(Stream);
+        TokenError(Stream,"Wrong token type");
         return(0);
     }
 }
 //------------------------------------------------------------------------------
 int TakeToken(READFILE Stream,TokenType Type,char * Value) {
 
+    String Message;
+
     if (CheckTokenType(Stream,Type) && 
 !strcmp(CurrentToken(Stream)->NameToken,Value)) {
         TakeCurrentToken(Stream); 
         return(1);
     } else {
-        TokenError(Stream);
+        sprintf(Message,"Wrong token type or value, expected \"%s\"",Value);
+        TokenError(Stream,Message);
         return(0);
     }
 }
@@ -1300,21 +1308,24 @@ int TakeToken(READFILE Stream,TokenType Type,char * Value) {
 void EnsureTokenType(READFILE Stream,TokenType Type) {
 
     if (!CheckTokenType(Stream,Type)) {
-        TokenError(Stream);
+        TokenError(Stream,"Wrong token type");
     }
 }
 //------------------------------------------------------------------------------
 void EnsureTokenNotType(READFILE Stream,TokenType NotType) {
 
     if (CheckTokenType(Stream,NotType)) {
-        TokenError(Stream);
+        TokenError(Stream,"Wrong token type");
     }
 }
 //------------------------------------------------------------------------------
 void EnsureToken(READFILE Stream,TokenType Type,char * Value) {
 
+    String Message;
+
     if (!CheckToken(Stream,Type,Value)) {
-        TokenError(Stream);
+        sprintf(Message,"Wrong token type or value, expected \"%s\"",Value);
+        TokenError(Stream,Message);
     }
 }
 //------------------------------------------------------------------------------
@@ -1324,19 +1335,22 @@ int AcceptTokenType(READFILE Stream,TokenType Type) {
         NextToken(Stream); 
         return(1);
     } else {
-        TokenError(Stream);
+        TokenError(Stream,"Wrong token type");
         return(0);
     }
 } 
 //------------------------------------------------------------------------------
 int AcceptToken(READFILE Stream,TokenType Type,char * Value) {
 
+    String Message;
+
     if (CheckTokenType(Stream,Type) && 
 !strcmp(CurrentToken(Stream)->NameToken,Value)) {
         NextToken(Stream); 
         return(1);
     } else {
-        TokenError(Stream);
+        sprintf(Message,"Wrong token type or value, expected \"%s\"",Value);
+        TokenError(Stream,Message);
         return(0);
     }
 } 

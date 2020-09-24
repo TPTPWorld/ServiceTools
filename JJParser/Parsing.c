@@ -127,7 +127,7 @@ int MustBeQuantifiedAlready) {
 //----Bail if not quantified
     if (!AllowFreeVariables && MustBeQuantifiedAlready && 
 Quantification == free_variable && FoundVariable == NULL) {
-        TokenError(Stream);
+        TokenError(Stream,"Unquantified variable");
     }
 
 //----Check if variable exists in the current scope
@@ -728,7 +728,7 @@ int * InfixNegatedAtom,int VariablesMustBeQuantified) {
 //----Make sure it's something that looks like a term
                 if (!CheckTokenType(Stream,functor) && !CheckToken(Stream,
 punctuation,"[") && !CheckTokenType(Stream,upper_word)) {
-                    TokenError(Stream);
+                    TokenError(Stream,"Invalid term term");
                 }
             }
             break;
@@ -792,12 +792,12 @@ Context,EndOfScope,term,none,NULL,VariablesMustBeQuantified);
 //THF TO FIX - Currently only allows ground predicates with arguments
         if (FunctorType == upper_word || FunctorType == distinct_object || 
 FunctorType == number) {
-            TokenError(Stream);
+            TokenError(Stream,"Invalid form for a predicate");
         }
         if (CheckToken(Stream,punctuation,"(")) {
 //----Now we can check that expected predicates look like predicates
             if (Type == predicate && FunctorType != lower_word) {
-                TokenError(Stream);
+                TokenError(Stream,"Invalid form for a predicate");
             }
             strcpy(MatchingBracket,")");
         } else {
@@ -858,7 +858,8 @@ Context.Signature,0);
 //----language, where variables can be types in polymorphic cases.
         if (Language != tptp_thf && Language != tptp_tff &&
 Type == predicate && FunctorType == upper_word) {
-            TokenError(Stream);
+            TokenError(Stream,
+"Variables cannot be used as predicates in untyped languages");
         }
     }
 
@@ -1499,7 +1500,7 @@ CurrentToken(Stream)->NameToken);
                 return(NULL);
             }
         } else {
-            TokenError(Stream);
+            TokenError(Stream,"TBA");
             return(NULL);
         }
     } else {
@@ -1625,7 +1626,7 @@ AnnotatedFormulaUnion.Include)) != 1) && Arity != 2) || (Arity == 1 &&
 GetArity(AnnotatedFormula->AnnotatedFormulaUnion.Include->Arguments[0]) != 0) ||
 (Arity == 2 && strcmp(GetSymbol(AnnotatedFormula->
 AnnotatedFormulaUnion.Include->Arguments[1]),"[]"))) {
-        TokenError(Stream);
+        TokenError(Stream,"Ill-formed include directive");
     }
 
     return(AnnotatedFormula);
