@@ -348,8 +348,7 @@ int TSTPSyntaxFlag) {
 //-----------------------------------------------------------------------------
 int TypeOrDefnConnective(ConnectiveType Connective) {
 
-    return(Connective == typedeclaration || Connective == subtype ||
-Connective == assignment);
+    return(Connective == typedeclaration || Connective == subtype);
 }
 //-----------------------------------------------------------------------------
 int FlatBinaryConnective(ConnectiveType Connective) {
@@ -556,7 +555,6 @@ strlen(ConnectiveToString(gentzenarrow)));
 Formula->FormulaUnion.SequentFormula.NumberOfRHSElements,
 Formula->FormulaUnion.SequentFormula.RHS,Indent,Pretty,TSTPSyntaxFlag);
                 break;
-
             case quantified:
                 if (LastConnective == brackets) {
                     PFprintf(Stream,"( ");
@@ -615,7 +613,8 @@ FormulaUnion.QuantifiedFormula.Formula,Indent,Pretty,none,TSTPSyntaxFlag);
                 }
                 break;
 
-            case binary:
+			case binary:
+            case assignment:
                 Connective = Formula->FormulaUnion.BinaryFormula.Connective;
 //----No brackets for sequences of associative formulae and top level
                 if (LastConnective == outermost ||
@@ -649,6 +648,8 @@ RightAssociative(SideFormula->FormulaUnion.BinaryFormula.Connective)) ||
 //----tptp2X needs them for literals too (sad - the BNF does not)
 //    !LiteralFormula(SideFormula))) {
                     FakeConnective = brackets;
+                } else if (Formula->Type == assignment) {
+                        FakeConnective = outermost;
                 } else {
                     FakeConnective = Connective;
                 }
@@ -663,15 +664,17 @@ FakeConnective,TSTPSyntaxFlag);
                 PFprintf(Stream,"%s ",ConnectiveToString(Connective));
                 SideFormula = Formula->FormulaUnion.BinaryFormula.RHS;
 //----If a type dec or defn then new line if not flat RHS
-                if (TypeOrDefnFormula(Formula) && !FlatFormula(SideFormula) &&
-Pretty) {
+                if ((Formula->Type == assignment || TypeOrDefnFormula(Formula)) 
+&& !FlatFormula(SideFormula) && Pretty) {
                     PFprintf(Stream,"\n");
                     Indent +=2;
                     PrintSpaces(Stream,Indent);
                 }
 //----If a : or := then no ()s required on RHS except if @ constructor
                 if (TypeOrDefnConnective(Connective) && 
-FlatFormula(SideFormula) && !ApplicationFormula(SideFormula)) {
+FlatFormula(SideFormula)) {
+//----Why? := is very low precedence
+//      && !ApplicationFormula(SideFormula)) {
                     FakeConnective = outermost;
 //----Need to force brackets for left associative operators
                 } else if ((Associative(Connective) && 

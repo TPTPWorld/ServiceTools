@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     if (argc > 1) {
         Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL);
     } else {
-        Head = ParseFILEOfFormulae(stdin,Signature,1,NULL);
+        Head = ParseFILEOfFormulae("--",stdin,Signature,1,NULL);
     }
     PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
     PrintSignature(Signature);

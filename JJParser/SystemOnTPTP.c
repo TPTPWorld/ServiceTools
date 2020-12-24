@@ -710,7 +710,7 @@ Conjecture,conjecture)) {
         RemoveFile(ProblemFileName);
         return(NULL);
     }
-    AppliedHead = ParseFILEOfFormulae(ProcessHandle,Signature,1,NULL);
+    AppliedHead = ParseFILEOfFormulae(NULL,ProcessHandle,Signature,1,NULL);
     pclose(ProcessHandle);
     RemoveFile(ProblemFileName);
     return(AppliedHead);

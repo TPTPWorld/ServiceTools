@@ -6,7 +6,8 @@
 //----v6.4.0.2 - Added verion numbering
 //----v6.4.0.3 - Added -r option
 //----v6.4.0.4 - Added -t doint option
-#define VERSION_NUMBER "v6.4.0.4"
+//----v7.4.0.1 - Fixed include relative to current directory
+#define VERSION_NUMBER "v7.4.0.1"
 
 typedef struct {
     int Quietness;

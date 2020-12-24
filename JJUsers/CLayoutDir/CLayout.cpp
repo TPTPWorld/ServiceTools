@@ -58,7 +58,7 @@ int main (int argc, char*argv[]) {
   if (argv[optind] != NULL) {
     Head = ParseFileOfFormulae(argv[optind],NULL,Signature,1,NULL);
   } else {
-    Head = ParseFILEOfFormulae(stdin,Signature,1,NULL);
+    Head = ParseFILEOfFormulae("--",stdin,Signature,1,NULL);
   }
 
 //----Remove nodes with type role

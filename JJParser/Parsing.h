@@ -61,8 +61,8 @@ void GetIncludeParts(ANNOTATEDFORMULA AnnotatedFormula,String IncludeFile,
 String IncludeFilter);
 LISTNODE ParseREADFILEOfFormulae(READFILE Stream,SIGNATURE Signature,
 int ExpandIncludes,char * NameFilter);
-LISTNODE ParseFILEOfFormulae(FILE * FileStream,SIGNATURE Signature,
-int ExpandIncludes,char * NameFilter);
+LISTNODE ParseFILEOfFormulae(char * FileName,FILE * FileStream,
+SIGNATURE Signature,int ExpandIncludes,char * NameFilter);
 LISTNODE GetIncludedAnnotatedFormulae(READFILE Stream,SIGNATURE Signature,
 int ExpandIncludes,ANNOTATEDFORMULA AnnotatedFormula);
 LISTNODE ParseFileOfHeader(char * FileName);

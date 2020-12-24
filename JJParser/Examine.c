@@ -685,6 +685,11 @@ Formula->FormulaUnion.SequentFormula.RHS,
 PredicateCollector,PredicateCollectorLength,FunctorCollector,
 FunctorCollectorLength,VariableCollector,VariableCollectorLength);
             break;
+        case assignment:
+            CollectSymbolsInFormula(Formula->FormulaUnion.BinaryFormula.RHS,
+PredicateCollector,PredicateCollectorLength,FunctorCollector,
+FunctorCollectorLength,VariableCollector,VariableCollectorLength);
+            break;
         case quantified:
 //DEBUG printf("CollectSymbolsInFormula: quantified");
 //----Add in RHS of : and := variables
@@ -699,10 +704,9 @@ FunctorCollectorLength,VariableCollector,VariableCollectorLength);
             break;
         case binary:
 //DEBUG printf("CollectSymbolsInFormula: binary");
-//----Do LHS unless : or := or <<
+//----Do LHS unless : or <<
             if (Formula->FormulaUnion.BinaryFormula.Connective != 
 typedeclaration && Formula->FormulaUnion.BinaryFormula.Connective !=
-assignment && Formula->FormulaUnion.BinaryFormula.Connective !=
 subtype) {
                 CollectSymbolsInFormula(Formula->FormulaUnion.BinaryFormula.LHS,
 PredicateCollector,PredicateCollectorLength,FunctorCollector,
@@ -1162,6 +1166,9 @@ CountTupleFormulaeTerms(
 Formula->FormulaUnion.SequentFormula.NumberOfRHSElements,
 Formula->FormulaUnion.SequentFormula.RHS));
             break;
+        case assignment:
+            return(CountFormulaTerms(Formula->FormulaUnion.BinaryFormula.RHS));
+            break;
         case quantified:
             return(
 CountFormulaTerms(Formula->FormulaUnion.QuantifiedFormula.Formula));
@@ -1195,7 +1202,7 @@ CountFormulaTerms(Formula->FormulaUnion.LetFormula.LetDefn) +
 CountFormulaTerms(Formula->FormulaUnion.LetFormula.LetBody));
             break;
         default:
-            CodingError("Invalid formula type for counting atoms");
+            CodingError("Invalid formula type for counting terms");
             exit(EXIT_FAILURE);
             break;
     }
@@ -1234,7 +1241,10 @@ Formula->FormulaUnion.SequentFormula.LHS,Predicate) +
 CountTupleFormulaeAtomsByPredicate(
 Formula->FormulaUnion.SequentFormula.NumberOfRHSElements,
 Formula->FormulaUnion.SequentFormula.RHS,Predicate));
-
+            break;
+        case assignment:
+            return(CountFormulaAtomsByPredicate(
+Formula->FormulaUnion.BinaryFormula.RHS,Predicate));
             break;
         case quantified:
 //----Add in RHS of : variables
@@ -1249,8 +1259,7 @@ Formula->FormulaUnion.QuantifiedFormula.Formula,Predicate);
         case binary:
 //----Do unless : or :=
             if (Formula->FormulaUnion.BinaryFormula.Connective != 
-typedeclaration && Formula->FormulaUnion.BinaryFormula.Connective !=
-assignment) {
+typedeclaration ) {
                 Count += CountFormulaAtomsByPredicate(Formula->
 FormulaUnion.BinaryFormula.LHS,Predicate);
                 Count += CountFormulaAtomsByPredicate(
@@ -1363,6 +1372,15 @@ Formula->FormulaUnion.SequentFormula.RHS);
             AddOnConnectiveStatistics(&ConnectiveStatistics,
 MoreConnectiveStatistics);
             break;
+        case assignment:
+            ConnectiveStatistics = GetFormulaConnectiveUsage(
+Formula->FormulaUnion.BinaryFormula.LHS);
+            MoreConnectiveStatistics = GetFormulaConnectiveUsage(
+Formula->FormulaUnion.BinaryFormula.RHS);
+            AddOnConnectiveStatistics(&ConnectiveStatistics,
+MoreConnectiveStatistics);
+            ConnectiveStatistics.NumberOfGlobalDefns++;
+            break;
         case quantified:
 //----For typed variables
             VariableType = Formula->FormulaUnion.QuantifiedFormula.VariableType;
@@ -1412,8 +1430,7 @@ MoreConnectiveStatistics);
         case binary:
 //----Do LHS unless : or :=
             if (Formula->FormulaUnion.BinaryFormula.Connective != 
-typedeclaration && Formula->FormulaUnion.BinaryFormula.Connective !=
-assignment) {
+typedeclaration) {
                 ConnectiveStatistics = GetFormulaConnectiveUsage(
 Formula->FormulaUnion.BinaryFormula.LHS);
             }
@@ -1477,13 +1494,10 @@ MoreConnectiveStatistics);
                 case typedeclaration:
                     ConnectiveStatistics.NumberOfGlobalTypeDecs++;
                     break;
-                case assignment:
-                    ConnectiveStatistics.NumberOfGlobalDefns++;
-                    break;
                 case equation:
                     break;
                 default:
-//DEBUG printf("%d===%s===\n",Formula->FormulaUnion.BinaryFormula.Connective,ConnectiveToString(Formula->FormulaUnion.BinaryFormula.Connective));
+//debug printf("%d===%s===\n",Formula->FormulaUnion.BinaryFormula.Connective,ConnectiveToString(Formula->FormulaUnion.BinaryFormula.Connective));
                     CodingError("Unknown binary connective in counting");
                     break;
             }
@@ -1502,7 +1516,7 @@ Formula->FormulaUnion.UnaryFormula.Formula);
                 case description:
                     break;
                 default:
-printf("%d===%s===\n",Formula->FormulaUnion.UnaryFormula.Connective,ConnectiveToString(Formula->FormulaUnion.UnaryFormula.Connective));
+//DEBUG printf("%d===%s===\n",Formula->FormulaUnion.UnaryFormula.Connective,ConnectiveToString(Formula->FormulaUnion.UnaryFormula.Connective));
                     CodingError("Unknown unary connective in counting");
                     break;
             }
@@ -1593,6 +1607,9 @@ Formula->FormulaUnion.SequentFormula.LHS),
 TupleFormulaeDepth(
 Formula->FormulaUnion.SequentFormula.NumberOfRHSElements,
 Formula->FormulaUnion.SequentFormula.RHS)));
+            break;
+        case assignment:
+            return(FormulaDepth(Formula->FormulaUnion.BinaryFormula.RHS));
             break;
         case quantified:
             return(1 + FormulaDepth(
@@ -1686,6 +1703,11 @@ Formula->FormulaUnion.SequentFormula.LHS),
 MaxTupleFormulaeTermDepth(
 Formula->FormulaUnion.SequentFormula.NumberOfRHSElements,
 Formula->FormulaUnion.SequentFormula.RHS)));
+            break;
+        case assignment:
+            return(MaxFormulaTermDepth(
+Formula->FormulaUnion.BinaryFormula.RHS));
+            break;
         case quantified:
             return(MaxFormulaTermDepth(
 Formula->FormulaUnion.QuantifiedFormula.Formula));

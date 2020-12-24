@@ -364,6 +364,7 @@ FormulaUnion.QuantifiedFormula.Formula),Variables);
 NULL);
                 break;
             case binary:
+            case assignment:
                 FreeFormula(&((*Formula)->FormulaUnion.BinaryFormula.LHS),
 Variables);
                 assert((*Formula)->FormulaUnion.BinaryFormula.LHS == NULL);
@@ -623,7 +624,6 @@ CheckToken(Stream,punctuation,"[")) {
 //----Numbers not allowed in CNF or FOF
             if (!AllowFOFNumbers && (Language == tptp_cnf || 
 Language == tptp_fof)) {
-//----Comment out this line when running tptp4X -t donum or noint
                 EnsureTokenNotType(Stream,number);
             }
             if (CheckToken(Stream,lower_word,"$ite")) {
@@ -853,6 +853,7 @@ Context.Signature,0);
             VariableQuantifier = free_variable;
         }
     } else {
+//DEBUG printf("Not doing infix now, after %s\n",CurrentToken(Stream)->NameToken);
         InfixRHSType = nonterm;
 //----Cannot have a variable if a predicate was expected, unless in a typed
 //----language, where variables can be types in polymorphic cases.
@@ -1353,6 +1354,28 @@ Context,ForceNewVariables);
     return(Formula);
 }
 //-----------------------------------------------------------------------------
+FORMULA ParseLowPrecedenceBinary(READFILE Stream,SyntaxType Language,
+ContextType Context,VARIABLENODE * EndOfScope,int AllowBinary,
+int AllowInfixEquality,int VariablesMustBeQuantified,
+FORMULA PossibleRHSFormula) {
+
+    FORMULA BinaryFormula = NULL;
+
+    if (AllowBinary && CheckToken(Stream,binary_connective,":=")) {
+        BinaryFormula = NewFormula();
+        BinaryFormula->Type = assignment;
+        BinaryFormula->FormulaUnion.BinaryFormula.LHS = PossibleRHSFormula;
+        BinaryFormula->FormulaUnion.BinaryFormula.Connective = assignmentsym;
+        AcceptTokenType(Stream,binary_connective);
+        BinaryFormula->FormulaUnion.BinaryFormula.RHS =
+ParseFormula(Stream,Language,Context,EndOfScope,1,1,VariablesMustBeQuantified,
+assignmentsym);
+        return(BinaryFormula);
+    } else {
+        return(PossibleRHSFormula);
+    }
+}
+//-----------------------------------------------------------------------------
 FORMULA ParseFormula(READFILE Stream,SyntaxType Language,ContextType Context,
 VARIABLENODE * EndOfScope,int AllowBinary,int AllowInfixEquality,
 int VariablesMustBeQuantified,ConnectiveType LastConnective) {
@@ -1362,7 +1385,7 @@ int VariablesMustBeQuantified,ConnectiveType LastConnective) {
     FORMULA InfixFormula = NULL;
     ConnectiveType NextConnective;
 
-//DEBUG printf("ParseFormula with token %s\n",CurrentToken(Stream)->NameToken);
+//DEBUG printf("ParseFormula with token %s, allow binary %d\n",CurrentToken(Stream)->NameToken,AllowBinary);
     switch (CurrentToken(Stream)->KindToken) {
 //----Two types of punctuation - ( for ()ed, [ for tuple
         case punctuation:
@@ -1399,15 +1422,14 @@ VariablesMustBeQuantified);
                 Formula = ParseLETFormula(Stream,Language,Context,EndOfScope,
 VariablesMustBeQuantified);
             } else {
-//DEBUG printf("parse atom %s\n",CurrentToken(Stream)->NameToken);
                 Formula = ParseAtom(Stream,Language,Context,EndOfScope,
 VariablesMustBeQuantified);
-//DEBUG printf("done atom %s\n",CurrentToken(Stream)->NameToken);
             }
             break;
     }
 
 //----Check for a binary formula
+//DEBUG printf("check infix with token %s and allow is %d\n",CurrentToken(Stream)->NameToken,AllowBinary);
     if (
 //----THF and TFX allow formulae as arguments of equality 
 ( AllowInfixEquality &&
@@ -1417,16 +1439,12 @@ VariablesMustBeQuantified);
     CheckToken(Stream,lower_word,"!=")
   )
 ) ||
-( AllowBinary && 
+( AllowBinary &&
   ( CheckTokenType(Stream,binary_connective) ||
 //----THF and TFF have types. Should this be allowed independent of AllowBinary?
     ( ( Language == tptp_thf ||
         Language == tptp_tff  || Language == tptp_tcf ) &&
-      ( CheckToken(Stream,punctuation,":") ||
-        CheckToken(Stream,punctuation,">") ||
-        CheckToken(Stream,punctuation,":=") ||
-        CheckToken(Stream,punctuation,"<<")
-      )
+      CheckToken(Stream,punctuation,":")
     )
   ) 
 )  ) {
@@ -1441,12 +1459,13 @@ LastConnective == NextConnective)) {
             if ((LastConnective == none && !LeftAssociative(NextConnective)) || 
 RightAssociative(NextConnective)) {
                 BinaryFormula = NewFormula();
-                BinaryFormula->Type = binary;
+                BinaryFormula->Type = NextConnective == assignmentsym ?
+assignment : binary;
                 BinaryFormula->FormulaUnion.BinaryFormula.LHS = Formula;
                 BinaryFormula->FormulaUnion.BinaryFormula.Connective = 
 NextConnective;
 //----For : the LHS is "none" because ()s are not needed.
-                if (NextConnective == assignment ||
+                if (NextConnective == subtype ||
 NextConnective == typedeclaration || NextConnective == maparrow) {
                     NextConnective = none;
                 }
@@ -1468,12 +1487,14 @@ equation;
 BinaryFormula;
                     BinaryFormula = InfixFormula;
                 }
-                return(BinaryFormula);
+                return(ParseLowPrecedenceBinary(Stream,Language,Context,
+EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,BinaryFormula));
             } else if (LeftAssociative(NextConnective)) {
                 while (LastConnective == none || 
 LastConnective == NextConnective) {
                     BinaryFormula = NewFormula();
-                    BinaryFormula->Type = binary;
+                    BinaryFormula->Type = NextConnective == assignmentsym ?
+assignment : binary;
                     BinaryFormula->FormulaUnion.BinaryFormula.LHS = Formula;
                     BinaryFormula->FormulaUnion.BinaryFormula.Connective =
 NextConnective;
@@ -1484,6 +1505,8 @@ ParseFormula(Stream,Language,Context,EndOfScope,0,1,VariablesMustBeQuantified,
 NextConnective);
                     Formula = BinaryFormula;
                     LastConnective = NextConnective;
+//----Check if we should continue a stream of binary. If a binary connective
+//----then keep it and the while loop will check, else nope.
                     if (CheckTokenType(Stream,binary_connective)) {
                         NextConnective = StringToConnective(
 CurrentToken(Stream)->NameToken);
@@ -1491,7 +1514,8 @@ CurrentToken(Stream)->NameToken);
                         NextConnective = none;
                     }
                 }
-                return(BinaryFormula);
+                return(ParseLowPrecedenceBinary(Stream,Language,Context,
+EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,BinaryFormula));
             } else if (LastConnective != none) {
                 CodingError("Association neither left nor right");
                 return(NULL);
@@ -1504,7 +1528,10 @@ CurrentToken(Stream)->NameToken);
             return(NULL);
         }
     } else {
-        return(Formula);
+//DEBUG printf("The next token is %s\n",CurrentToken(Stream)->NameToken);
+        return(ParseLowPrecedenceBinary(Stream,Language,Context,
+EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,Formula));
+        // return(Formula);
     }
 }
 //-----------------------------------------------------------------------------
@@ -1886,8 +1913,8 @@ strstr(AnnotatedFormula->AnnotatedFormulaUnion.Comment,"% File ") != NULL) {
     return(Head);
 }
 //-----------------------------------------------------------------------------
-LISTNODE ParseREADFILEOfFormulae(READFILE Stream,SIGNATURE Signature,
-int ExpandIncludes,char * NameFilter) {
+LISTNODE ParseREADFILEOfFormulae(READFILE Stream,
+SIGNATURE Signature,int ExpandIncludes,char * NameFilter) {
 
     ANNOTATEDFORMULA AnnotatedFormula;
     LISTNODE Head;
@@ -1974,12 +2001,12 @@ FormulaName);
     return(Head);
 }
 //-----------------------------------------------------------------------------
-LISTNODE ParseFILEOfHeader(FILE * FileStream) {
+LISTNODE ParseFILEOfHeader(char * FileName,FILE * FileStream) {
 
     READFILE Stream; 
     LISTNODE Head;
 
-    if ((Stream = OpenFILEReadFile(FileStream)) == NULL) {
+    if ((Stream = OpenFILEReadFile(FileName,FileStream)) == NULL) {
         return(NULL);
     }
 
@@ -1989,17 +2016,18 @@ LISTNODE ParseFILEOfHeader(FILE * FileStream) {
     return(Head);
 }
 //-----------------------------------------------------------------------------
-LISTNODE ParseFILEOfFormulae(FILE * FileStream,SIGNATURE Signature,
-int ExpandIncludes,char * NameFilter) {
+LISTNODE ParseFILEOfFormulae(char * FileName,FILE * FileStream,
+SIGNATURE Signature,int ExpandIncludes,char * NameFilter) {
 
     READFILE Stream; 
     LISTNODE Head;
 
-    if ((Stream = OpenFILEReadFile(FileStream)) == NULL) {
+    if ((Stream = OpenFILEReadFile(FileName,FileStream)) == NULL) {
         return(NULL);
     }
 
-    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,NameFilter);
+    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,
+NameFilter);
     CloseReadFile(Stream);
 
     return(Head);
@@ -2032,7 +2060,8 @@ SIGNATURE Signature,int ExpandIncludes,char * NameFilter) {
         return(NULL);
     }
 
-    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,NameFilter);
+    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,
+NameFilter);
     CloseReadFile(Stream);
 
     return(Head);
@@ -2048,7 +2077,8 @@ int ExpandIncludes,char * NameFilter) {
         return(NULL);
     }
     
-    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,NameFilter);
+    Head = ParseREADFILEOfFormulae(Stream,Signature,ExpandIncludes,
+NameFilter);
     CloseReadFile(Stream);
     
     return(Head);

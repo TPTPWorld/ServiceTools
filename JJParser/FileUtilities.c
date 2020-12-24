@@ -106,7 +106,7 @@ char * ExpandFileName(char * FileName,String ExpandedFileName) {
     return(ExpandedFileName);
 }
 //-----------------------------------------------------------------------------
-char * ExpandAndFindFileName(char * FileName,char * CurrentFileName,
+char * ExpandAndFindFileName(char * FileName,char * IncludingFileName,
 String ExpandedFileName) {
 
     char * Paths[] = {
@@ -133,7 +133,7 @@ String ExpandedFileName) {
     char * Home;
     struct passwd *PasswdEntry;
 
-//DEBUG printf("Start looking for ---%s---\n",FileName);
+//DEBUG printf("Start looking for ---%s--- relative to ---%s---\n",FileName,IncludingFileName);
 //----Expand ~ and ~user
     if (ExpandFileName(FileName,ExpandedFileName) == NULL) {
         return(NULL);
@@ -151,21 +151,21 @@ String ExpandedFileName) {
 
 //----Otherwise we have to search
 //----Try the base directory of the including file 
-    if (CurrentFileName != NULL) {
-//DEBUG printf("Look relative to %s\n",CurrentFileName);
-        strcpy(ExpandedFileName,CurrentFileName);
+    if (IncludingFileName != NULL) {
+//DEBUG printf("Look relative to %s\n",IncludingFileName);
+        strcpy(ExpandedFileName,IncludingFileName);
         if ((Slash = strrchr(ExpandedFileName,'/')) != NULL) {
             *(++Slash) = '\0';
             strcat(ExpandedFileName,FileName);
             if (access(ExpandedFileName,R_OK) == 0) {
-//DEBUG printf("Found it relative to %s\n",CurrentFileName);
+//DEBUG printf("Found it relative to %s\n",IncludingFileName);
                 return(ExpandedFileName);
             }
         }
     }
 
 //----If the including file has no name, use CWD
-    if (CurrentFileName == NULL) {
+    if (IncludingFileName == NULL) {
         getcwd(ExpandedFileName,MAXPATHLEN);
 //DEBUG printf("Look relative to CWD %s\n",ExpandedFileName);
         strcat(ExpandedFileName,"/");
@@ -363,7 +363,7 @@ void PFprintf(PRINTFILE Stream,char * Format,...) {
     va_end(Data);
 }
 //-----------------------------------------------------------------------------
-READFILE OpenFILEReadFile(FILE * OpenStream) {
+READFILE OpenFILEReadFile(char * FileName,FILE * OpenStream) {
 
     READFILE Stream;
 
@@ -372,6 +372,7 @@ READFILE OpenFILEReadFile(FILE * OpenStream) {
     }
 
     Stream = NewReadFile();
+    Stream->FileName = CopyHeapString(FileName);
     Stream->FileHandle = OpenStream;
 
     return(Stream);
@@ -392,7 +393,7 @@ READFILE OpenStringReadFile(char * Content) {
     return(Stream);
 }
 //-----------------------------------------------------------------------------
-READFILE OpenReadFile(char * OriginalFileName,char * CurrentFileName) {
+READFILE OpenReadFile(char * OriginalFileName,char * IncludingFileName) {
 
     String FinalFileName;
     String FileName;
@@ -402,10 +403,11 @@ READFILE OpenReadFile(char * OriginalFileName,char * CurrentFileName) {
 
 //----If the filename is "--" use stdin
     if (!strcmp(FileName,"--")) {
-        return(OpenFILEReadFile(stdin));
+        return(OpenFILEReadFile(FileName,stdin));
     }
 
-    if (ExpandAndFindFileName(FileName,CurrentFileName,FinalFileName) == NULL) {
+    if (ExpandAndFindFileName(FileName,IncludingFileName,FinalFileName) 
+== NULL) {
         return(NULL);
     }
 

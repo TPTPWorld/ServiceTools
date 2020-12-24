@@ -102,7 +102,6 @@ typedef enum {
     choicebinder,
     descriptionbinder,
     typedeclaration,
-    assignment,
     application,
     equation,
     typedequation,
@@ -116,6 +115,7 @@ typedef enum {
     xprodtype,
     uniontype,
     gentzenarrow,
+    assignmentsym,
 //----Special for unknown quantification
     free_variable,
 //----Specials for output formatting
@@ -206,6 +206,7 @@ typedef TERM * TERMArray;
 typedef enum {
     tuple,
     sequent,
+    assignment,
     quantified,
     binary,
     unary,

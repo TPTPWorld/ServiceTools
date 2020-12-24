@@ -9,7 +9,7 @@ char * CleanTheFileName(char * OriginalFileName,char * CleanFileName);
 FILE * OpenFileInMode(String FileName,char * Mode);
 
 READFILE OpenReadFile(char * OriginalFileName,char * CurrentFileName);
-READFILE OpenFILEReadFile(FILE * OpenStream);
+READFILE OpenFILEReadFile(char * FileName,FILE * OpenStream);
 READFILE OpenStringReadFile(char * Content);
 void CloseReadFile(READFILE Stream);
 
