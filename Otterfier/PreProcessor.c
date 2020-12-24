@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 //----Reading formulae one-by-one from stdin. Ignore comments, etc
     Signature = NewSignature();
     SetNeedForNonLogicTokens(0);
-    if ((Stream = OpenFILEReadFile(stdin)) != NULL) {
+    if ((Stream = OpenFILEReadFile("--",stdin)) != NULL) {
         NextToken(Stream);
          while (!CheckTokenType(Stream,endeof)) {
 //----DEBUG             printf("Got here before AnnotatedFormula?\n");

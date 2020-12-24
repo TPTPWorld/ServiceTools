@@ -28,7 +28,7 @@ literals_subsume(SubsumingLiterals,SubsumedLiterals):-
         numbervars(SubsumedLiterals,0,_),
         all_members(SubsumingLiterals,SubsumedLiterals))).
 %------------------------------------------------------------------------------
-%----Set if two clauses have the same literals, modulo renaming
+%----Set if two clauses have the same literals, modulo variable renaming
 %----Need to avoid instantiation here
 same_literals([],[],_).
     

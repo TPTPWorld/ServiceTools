@@ -519,7 +519,7 @@ ConnectiveType StringToConnective(char * String) {
         return(typedeclaration);
     }
     if (!strcmp(String,":=")) {
-        return(assignment);
+        return(assignmentsym);
     }
     if (!strcmp(String,"<<")) {
         return(subtype);
@@ -618,7 +618,7 @@ char * ConnectiveToString(ConnectiveType Connective) {
         case typedeclaration:
             return(":");
             break;
-        case assignment:
+        case assignmentsym:
             return(":=");
             break;
         case subtype:
@@ -1019,7 +1019,7 @@ PreviousChar != '*')) {
                     CharacterError(Stream);
                 }
             } else if (CurrentChar == '<') {
-                return(BuildToken(punctuation,"<<"));
+                return(BuildToken(binary_connective,"<<"));
             } else {
                 CharacterError(Stream);
             }

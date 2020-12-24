@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     if (argc - ArgOffset > 0) {
         Head = ParseFileOfFormulae(argv[ArgOffset],NULL,Signature,1,NULL);
     } else {
-        Head = ParseFILEOfFormulae(stdin,Signature,1,NULL);
+        Head = ParseFILEOfFormulae("--",stdin,Signature,1,NULL);
     }
 //----Empty file is not always an error, but we need some warning
     if (Head == NULL && !NoError) {

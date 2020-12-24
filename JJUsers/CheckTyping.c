@@ -388,7 +388,7 @@ int main(int argc, char *argv[]) {
         }
     } else {
         Signature = NewSignature();
-        Head = ParseFILEOfFormulae(stdin,Signature,1,NULL);
+        Head = ParseFILEOfFormulae("--",stdin,Signature,1,NULL);
         DoCheckTyping(Head,"stdin",WhatToCheck);
         FreeListOfAnnotatedFormulae(&Head);
         FreeSignature(&Signature);
