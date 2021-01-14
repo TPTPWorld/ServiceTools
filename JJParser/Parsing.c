@@ -1357,14 +1357,14 @@ Context,ForceNewVariables);
 FORMULA ParseLowPrecedenceBinary(READFILE Stream,SyntaxType Language,
 ContextType Context,VARIABLENODE * EndOfScope,int AllowBinary,
 int AllowInfixEquality,int VariablesMustBeQuantified,
-FORMULA PossibleRHSFormula) {
+FORMULA PossibleLHSFormula) {
 
     FORMULA BinaryFormula = NULL;
 
     if (AllowBinary && CheckToken(Stream,binary_connective,":=")) {
         BinaryFormula = NewFormula();
         BinaryFormula->Type = assignment;
-        BinaryFormula->FormulaUnion.BinaryFormula.LHS = PossibleRHSFormula;
+        BinaryFormula->FormulaUnion.BinaryFormula.LHS = PossibleLHSFormula;
         BinaryFormula->FormulaUnion.BinaryFormula.Connective = assignmentsym;
         AcceptTokenType(Stream,binary_connective);
         BinaryFormula->FormulaUnion.BinaryFormula.RHS =
@@ -1372,7 +1372,7 @@ ParseFormula(Stream,Language,Context,EndOfScope,1,1,VariablesMustBeQuantified,
 assignmentsym);
         return(BinaryFormula);
     } else {
-        return(PossibleRHSFormula);
+        return(PossibleLHSFormula);
     }
 }
 //-----------------------------------------------------------------------------
@@ -1487,6 +1487,8 @@ equation;
 BinaryFormula;
                     BinaryFormula = InfixFormula;
                 }
+//----If finished a binary, still need to allow another binary of low 
+//----precedence, right now that's :=
                 return(ParseLowPrecedenceBinary(Stream,Language,Context,
 EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,BinaryFormula));
             } else if (LeftAssociative(NextConnective)) {
@@ -1514,6 +1516,8 @@ CurrentToken(Stream)->NameToken);
                         NextConnective = none;
                     }
                 }
+//----If finished a binary, still need to allow another binary of low 
+//----precedence, right now that's :=
                 return(ParseLowPrecedenceBinary(Stream,Language,Context,
 EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,BinaryFormula));
             } else if (LastConnective != none) {
@@ -1529,9 +1533,7 @@ EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,BinaryFormula));
         }
     } else {
 //DEBUG printf("The next token is %s\n",CurrentToken(Stream)->NameToken);
-        return(ParseLowPrecedenceBinary(Stream,Language,Context,
-EndOfScope,1,AllowInfixEquality,VariablesMustBeQuantified,Formula));
-        // return(Formula);
+        return(Formula);
     }
 }
 //-----------------------------------------------------------------------------
