@@ -1,0 +1,15 @@
+{
+  "name": "idvjs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "echo 'Run webpack and start the webserver (flask through apache is what I've done in the past...).'"
+  },
+  "dependencies": {
+    "antlr4": "^4.7.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  }
+}
