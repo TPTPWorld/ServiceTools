@@ -346,9 +346,19 @@ int TSTPSyntaxFlag) {
     }
 }
 //-----------------------------------------------------------------------------
-int TypeOrDefnConnective(ConnectiveType Connective) {
+int TypeConnective(ConnectiveType Connective) {
 
     return(Connective == typedeclaration || Connective == subtype);
+}
+//-----------------------------------------------------------------------------
+int DefnConnective(ConnectiveType Connective) {
+
+    return(Connective == assignmentsym);
+}
+//-----------------------------------------------------------------------------
+int TypeOrDefnConnective(ConnectiveType Connective) {
+
+    return(TypeConnective(Connective) || DefnConnective(Connective));
 }
 //-----------------------------------------------------------------------------
 int FlatBinaryConnective(ConnectiveType Connective) {
@@ -411,10 +421,21 @@ Formula->FormulaUnion.BinaryFormula.Connective == equation) {
     }
 }
 //-----------------------------------------------------------------------------
+int TypeFormula(FORMULA Formula) {
+
+    return(Formula->Type == binary && 
+TypeConnective(Formula->FormulaUnion.BinaryFormula.Connective));
+}
+//-----------------------------------------------------------------------------
+int DefnFormula(FORMULA Formula) {
+
+    return(Formula->Type == assignment && 
+DefnConnective(Formula->FormulaUnion.BinaryFormula.Connective));
+}
+//-----------------------------------------------------------------------------
 int TypeOrDefnFormula(FORMULA Formula) {
 
-    return(Formula->Type == binary &&
-TypeOrDefnConnective(Formula->FormulaUnion.BinaryFormula.Connective));
+    return(TypeFormula(Formula) || DefnFormula(Formula));
 }
 //-----------------------------------------------------------------------------
 int FlatEquation(FORMULA Formula) {
@@ -439,23 +460,33 @@ FlatFormula(Formula->FormulaUnion.BinaryFormula.RHS));
 //-----------------------------------------------------------------------------
 int FlatTypeFormula(FORMULA Formula) {
 
-    return(TypeOrDefnFormula(Formula) &&
+    return(TypeFormula(Formula) &&
 SymbolFormula(Formula->FormulaUnion.BinaryFormula.LHS) &&
-SymbolFormula(Formula->FormulaUnion.BinaryFormula.RHS));
+FlatFormula(Formula->FormulaUnion.BinaryFormula.RHS));
+}
+//-----------------------------------------------------------------------------
+int FlatDefnFormula(FORMULA Formula) {
 
+    return(DefnFormula(Formula) &&
+SymbolFormula(Formula->FormulaUnion.BinaryFormula.LHS) &&
+FlatFormula(Formula->FormulaUnion.BinaryFormula.RHS));
+}
+//-----------------------------------------------------------------------------
+int FlatTypeOrDefnFormula(FORMULA Formula) {
+
+    return(FlatTypeFormula(Formula) || FlatDefnFormula(Formula));
 }
 //-----------------------------------------------------------------------------
 int ApplicationFormula(FORMULA Formula) {
 
     return(Formula->Type == binary && 
 Formula->FormulaUnion.BinaryFormula.Connective == application);
-
 }
 //-----------------------------------------------------------------------------
 int FlatFormula(FORMULA Formula) {
 
     return(LiteralFormula(Formula) || FlatEquation(Formula) || 
-FlatBinaryFormula(Formula) || TypeOrDefnFormula(Formula));
+FlatBinaryFormula(Formula) || FlatTypeOrDefnFormula(Formula));
 }
 //-----------------------------------------------------------------------------
 int FlatQuantifiedVariable(QuantifiedFormulaType QuantifiedFormula) {
@@ -629,8 +660,6 @@ Connective)) + 1;
                     PFprintf(Stream,"( ");
                     Indent += 2;
                 }
-//----No new line for sequences of @ and >, and flat equations
-                NeedNewLine = !FlatFormula(Formula);
 //----If in a negated infix equality, use != and reset
                 if (Connective == equation && TSTPSyntaxFlag == 2) {
                     Connective = negequation;
@@ -655,16 +684,20 @@ RightAssociative(SideFormula->FormulaUnion.BinaryFormula.Connective)) ||
                 }
                 PrintFileTSTPFormula(Stream,Language,SideFormula,Indent,Pretty,
 FakeConnective,TSTPSyntaxFlag);
+//----No new line for sequences of @ and >, and flat equations
+                NeedNewLine = !FlatFormula(Formula);
                 if (NeedNewLine && Pretty) {
                     PFprintf(Stream,"\n");
                     PrintSpaces(Stream,ConnectiveIndent);
-                } else if (!TypeOrDefnConnective(Connective)) {
+                } else if (Connective != typedeclaration) {
                     PFprintf(Stream," ");
                 }
                 PFprintf(Stream,"%s ",ConnectiveToString(Connective));
                 SideFormula = Formula->FormulaUnion.BinaryFormula.RHS;
-//----If a type dec or defn then new line if not flat RHS
-                if ((Formula->Type == assignment || TypeOrDefnFormula(Formula)) 
+//----If didn't need a new line, and a type dec or defn then new line if 
+//----not flat RHS
+                if (!NeedNewLine &&
+(Formula->Type == assignment || TypeOrDefnFormula(Formula)) 
 && !FlatFormula(SideFormula) && Pretty) {
                     PFprintf(Stream,"\n");
                     Indent +=2;
