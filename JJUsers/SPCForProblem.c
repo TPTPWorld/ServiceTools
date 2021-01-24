@@ -334,6 +334,18 @@ NULL) {
     return(Status);
 }
 //-----------------------------------------------------------------------------
+void RemoveLogicSpecifications(LISTNODE * Head) {
+
+    while (*Head != NULL) {
+        if (GetRole((*Head)->AnnotatedFormula,NULL) == logic) {
+printf("Removing %s",GetName((*Head)->AnnotatedFormula,NULL));
+            FreeAListNode(Head);
+        } else {
+            Head = &((*Head)->Next);
+        }
+    }
+}
+//-----------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     LISTNODE Head;
@@ -359,6 +371,7 @@ int main(int argc, char *argv[]) {
     Signature = NewSignature();
     SetNeedForNonLogicTokens(0);
     if ((Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL)) != NULL) {
+        RemoveLogicSpecifications(&Head);
         Statistics = GetListStatistics(Head,Signature);
         Status = GetStatusFromHeader(argv[1]);
         DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,

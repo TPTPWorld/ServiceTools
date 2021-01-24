@@ -966,7 +966,7 @@ PreviousChar != '*')) {
             } else if (CurrentChar == '>') {
                 return(BuildToken(quantifier,"!>"));
             } else if (CurrentChar == '!') {
-                return(BuildToken(unary_connective,"!!"));
+                return(BuildToken(lower_word,"!!"));
             } else {
                 Stream->Overshot = 1;
                 return(BuildToken(quantifier,"!"));
@@ -977,7 +977,7 @@ PreviousChar != '*')) {
             if (CurrentChar == '*') {
                 return(BuildToken(quantifier,"?*"));
             } else if (CurrentChar == '?') {
-                return(BuildToken(unary_connective,"??"));
+                return(BuildToken(lower_word,"??"));
             } else {
                 Stream->Overshot = 1;
                 return(BuildToken(quantifier,"?"));
@@ -1087,14 +1087,14 @@ PreviousChar != '*')) {
             if (CurrentChar == '@') {
                 CurrentChar = NextCharacter(Stream);
                 if (CurrentChar == '+') {
-                    return(BuildToken(unary_connective,"@@+"));
+                    return(BuildToken(lower_word,"@@+"));
                 } else if (CurrentChar == '-') {
-                    return(BuildToken(unary_connective,"@@-"));
+                    return(BuildToken(lower_word,"@@-"));
                 } else {
                     CharacterError(Stream);
                 }
             } else if (CurrentChar == '=') {
-                return(BuildToken(unary_connective,"@="));
+                return(BuildToken(lower_word,"@="));
             } else if (CurrentChar == '+') {
                 return(BuildToken(quantifier,"@+"));
             } else if (CurrentChar == '-') {
@@ -1133,12 +1133,6 @@ PreviousChar != '*')) {
                 if (Index > 0 && !islower(LocalValue[Index])) {
                     CharacterError(Stream);
                 }
-//----Replace equal by = for now (can remove in future)
-//----At some point I did comment this out, but it's still needed for
-//----reformatting old, e.g., EP proofs.
-//                if (!strcmp(LocalValue,"equal")) {
-//                    strcpy(LocalValue,"=");
-//                }
                 return(BuildToken(lower_word,LocalValue));
             } else if (isupper(CurrentChar)) {
                 do {
