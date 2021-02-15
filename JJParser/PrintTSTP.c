@@ -685,7 +685,8 @@ RightAssociative(SideFormula->FormulaUnion.BinaryFormula.Connective)) ||
                 PrintFileTSTPFormula(Stream,Language,SideFormula,Indent,Pretty,
 FakeConnective,TSTPSyntaxFlag);
 //----No new line for sequences of @ and >, and flat equations
-                NeedNewLine = !FlatFormula(Formula);
+                NeedNewLine = !FlatFormula(Formula) &&
+Formula->Type != assignment && !TypeOrDefnFormula(Formula);
                 if (NeedNewLine && Pretty) {
                     PFprintf(Stream,"\n");
                     PrintSpaces(Stream,ConnectiveIndent);

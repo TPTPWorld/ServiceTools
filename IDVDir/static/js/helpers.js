@@ -132,7 +132,7 @@ function nodeHoverEventListener(e) {
 	let tptpTextareaOpen = "";
 	try{
 		tptpTextareaOpen = document.getElementById("tptpNodeStatement").classList.contains("open") ? "open" : "";
-	}catch{}
+	}catch(e){}
 
 	let interestingnessHTML = "";
 	if (node.info.interesting != undefined){

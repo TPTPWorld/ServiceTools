@@ -85,7 +85,7 @@ function getParentsFromSource(source, node){
 						for(let s of sources){
 							getParentsFromSource(s, node);
 						}
-					}catch{
+					}catch(e){
 						console.log(`failed to parse dag source: ${ps.dag_source().getText()}`);
 					}
 				}
