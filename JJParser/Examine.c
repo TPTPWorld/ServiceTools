@@ -1510,11 +1510,11 @@ Formula->FormulaUnion.UnaryFormula.Formula);
                     ConnectiveStatistics.NumberOfNegations++;
                     break;
 //----Ignore these - they are counted as atoms
-                case pi:
-                case sigma:
-                case choice:
-                case description:
-                    break;
+            //    case pi:
+            //    case sigma:
+            //    case choice:
+            //    case description:
+            //        break;
                 default:
 //DEBUG printf("%d===%s===\n",Formula->FormulaUnion.UnaryFormula.Connective,ConnectiveToString(Formula->FormulaUnion.UnaryFormula.Connective));
                     CodingError("Unknown unary connective in counting");
@@ -1524,30 +1524,18 @@ Formula->FormulaUnion.UnaryFormula.Formula);
             break;
         case atom:
 //----Count use of connectives as atoms
-            if (Formula->FormulaUnion.Atom->Type == connective) {
-                switch (StringToConnective(GetSymbol(
-Formula->FormulaUnion.Atom))) {
-                    case equation:
-                        ConnectiveStatistics.NumberOfEquations++;
-                        break;
-                    case typedequation:
-                        ConnectiveStatistics.NumberOfTypedEquations++;
-                        break;
-                    case pi:
-                        ConnectiveStatistics.NumberOfPis++;
-                        break;
-                    case sigma:
-                        ConnectiveStatistics.NumberOfSigmas++;
-                        break;
-                    case choice:
-                        ConnectiveStatistics.NumberOfChoices++;
-                        break;
-                    case description:
-                        ConnectiveStatistics.NumberOfDescriptions++;
-                        break;
-                    default:
-                        break;
-                }
+            if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"=")) {
+                ConnectiveStatistics.NumberOfEquations++;
+            } else if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"@=")) {
+                ConnectiveStatistics.NumberOfTypedEquations++;
+            } else if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"!!")) {
+                ConnectiveStatistics.NumberOfPis++;
+            } else if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"??")) {
+                ConnectiveStatistics.NumberOfSigmas++;
+            } else if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"@@+")) {
+                ConnectiveStatistics.NumberOfChoices++;
+            } else if (!strcmp(GetSymbol(Formula->FormulaUnion.Atom),"@@-")) {
+                ConnectiveStatistics.NumberOfDescriptions++;
             }
             break;
         case tuple:
