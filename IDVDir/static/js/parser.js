@@ -1,9 +1,9 @@
 import * as antlr4 from 'antlr4';
 window.antlr4 = antlr4;
 
-import { tptp_v7_0_0_0Lexer as Lexer } from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Lexer';
-import { tptp_v7_0_0_0Parser as Parser } from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Parser';
-import { tptp_v7_0_0_0Listener as Listener } from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Listener';
+import {default as Lexer} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Lexer';
+import {default as Parser} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Parser';
+import {default as Listener} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Listener';
 
 function stripParens(formula){
 	return formula.replace(/\s+/g,'').replace(/[()]/g, '');
