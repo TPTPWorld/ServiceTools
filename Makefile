@@ -6,8 +6,6 @@ clean-install: clean install
 
 all: most
 	$(MAKE) -C JJUsers all
-	$(MAKE) -C YuTV all
-	$(MAKE) -C Otterfier all
 	$(MAKE) -C CompareClauses all
 
 most: some
@@ -22,9 +20,6 @@ some:
 
 install: all install-most
 	$(MAKE) -C JJUsers install
-	$(MAKE) -C AGInTRater install
-	$(MAKE) -C YuTV install
-	$(MAKE) -C Otterfier install
 	$(MAKE) -C CompareClauses install
 
 install-most: most install-some
@@ -43,8 +38,5 @@ clean:
 	$(MAKE) -C TPIIDir clean
 	$(MAKE) -C JJUsers clean
 	$(MAKE) -C GDVDir clean
-	$(MAKE) -C AGInTRater clean
 	$(MAKE) -C Otter2TPTP/Source clean
-	$(MAKE) -C YuTV clean
-	$(MAKE) -C Otterfier clean
 	$(MAKE) -C CompareClauses clean
