@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "webpackVersion": "webpack --version",
+    "build": "webpack --config webpack.config.js",
     "start": "echo 'Run webpack and start the webserver (flask through apache is what I've done in the past...).'"
   },
   "dependencies": {
@@ -10,9 +12,10 @@
     "babel-preset-stage-1": "^6.24.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "babel-core": "^6.26.3",
+    "@babel/core": "^7.13.8",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.13.9",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "webpack": "^4.46.0",
