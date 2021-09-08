@@ -16,7 +16,7 @@
 #include "PrintTSTP.h"
 #include "ParseTSTP.h"
 #include "tptp4X.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakeBlankLine(void) {
 
     static ANNOTATEDFORMULA BlankLine = NULL;
@@ -29,7 +29,7 @@ LISTNODE MakeBlankLine(void) {
     return(NewListNode(BlankLine));
     
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakeReflexivity(SyntaxType Syntax,SIGNATURE Signature) {
 
     String Axiom;
@@ -43,7 +43,7 @@ LISTNODE MakeReflexivity(SyntaxType Syntax,SIGNATURE Signature) {
 //DEBUG printf("The string reflexivity is ==%s==\n",Axiom);
     return(ParseStringOfFormulae(Axiom,Signature,0,NULL));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakeSymmetry(SyntaxType Syntax,SIGNATURE Signature) {
 
     String Axiom;
@@ -57,7 +57,7 @@ LISTNODE MakeSymmetry(SyntaxType Syntax,SIGNATURE Signature) {
 //DEBUG printf("The string symmetry is ==%s==\n",Axiom);
     return(ParseStringOfFormulae(Axiom,Signature,0,NULL));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakeTransitivity(SyntaxType Syntax,SIGNATURE Signature) {
 
     String Axiom;
@@ -71,7 +71,7 @@ LISTNODE MakeTransitivity(SyntaxType Syntax,SIGNATURE Signature) {
 //DEBUG printf("The string transitivity is ==%s==\n",Axiom);
     return(ParseStringOfFormulae(Axiom,Signature,0,NULL));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void MakeTermSubstitutionPair(char * Symbol,int Arity,int Position,
 String TermX,String TermY,String Variables) {
 
@@ -106,7 +106,7 @@ String TermX,String TermY,String Variables) {
 
 //DEBUG printf("pair %d of %d for %s are ==%s==%s==\n",Position,Arity,Symbol,TermX,TermY);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakeFunctionSubstitution(char * Symbol,int Arity,int Position,
 SyntaxType Syntax,SIGNATURE Signature) {
 
@@ -141,7 +141,7 @@ SyntaxType Syntax,SIGNATURE Signature) {
 
     return(ParseStringOfFormulae(Axiom,Signature,0,NULL));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE MakePredicateSubstitution(char * Symbol,int Arity,int Position,
 SyntaxType Syntax,SIGNATURE Signature) {
 
@@ -173,7 +173,7 @@ SyntaxType Syntax,SIGNATURE Signature) {
     return(ParseStringOfFormulae(Axiom,Signature,0,NULL));
 
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void AppendNode(OptionsType Options,LISTNODE ** LastPointer,LISTNODE Node) {
 
     **LastPointer = Node;
@@ -184,9 +184,9 @@ void AppendNode(OptionsType Options,LISTNODE ** LastPointer,LISTNODE Node) {
         *LastPointer = &((**LastPointer)->Next);
     }
 }
-//-----------------------------------------------------------------------------
-LISTNODE MakeEqualityFormulae(OptionsType Options,char * SymbolUsage,
-char * Functors,SyntaxType Syntax,SIGNATURE Signature,char * WhatEquality) {
+//-------------------------------------------------------------------------------------------------
+LISTNODE MakeEqualityFormulae(OptionsType Options,char * SymbolUsage,char * Functors,
+SyntaxType Syntax,SIGNATURE Signature,char * WhatEquality) {
 
     LISTNODE EqualityFormulae;
     LISTNODE * AddHere;
@@ -253,9 +253,9 @@ Symbol,Arity,Index,Syntax,Signature));
 
     return(EqualityFormulae);
 }
-//-----------------------------------------------------------------------------
-LISTNODE AddEqualityAxioms(OptionsType Options,SIGNATURE Signature,
-int NumberOfFOF,int NumberOfCNF) {
+//-------------------------------------------------------------------------------------------------
+LISTNODE AddEqualityAxioms(OptionsType Options,SIGNATURE Signature, int NumberOfFOF,
+int NumberOfCNF) {
 
     LISTNODE EqualityFormulae;
     char * SymbolUsage;
@@ -299,4 +299,4 @@ Functors,tptp_cnf,Signature,WhatEquality);
     Free((void **)&SymbolUsage);
     return(EqualityFormulae);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

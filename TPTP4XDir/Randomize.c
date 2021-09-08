@@ -9,7 +9,7 @@
 #include "List.h"
 #include "PrintTSTP.h"
 #include "tptp4X.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void RandomizeFormulaeBelowIncludes(LISTNODE * Head) {
 
     LISTNODE * FirstLogical;
@@ -22,7 +22,7 @@ void RandomizeFormulaeBelowIncludes(LISTNODE * Head) {
     
     RandomizeListOfAnnotatedFormulae(FirstLogical,1);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void RandomizeCommutativeFormulae(LISTNODE * Head) {
 
     LISTNODE * Target;
@@ -53,4 +53,4 @@ void RandomizeCommutativeFormulae(LISTNODE * Head) {
     *AddHere = *Head;
     *Head = Randomized;
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
