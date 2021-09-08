@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -26,7 +26,7 @@
 #include "SystemOnTPTP.h"
 
 #include "GDV.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void GlobalInterruptHandler(int TheSignal) {
 
     extern int GlobalInterrupted;
@@ -34,7 +34,7 @@ void GlobalInterruptHandler(int TheSignal) {
     printf("GDV has been interrupted\n");
     GlobalInterrupted = 1;
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
 
     int OptionChar;
@@ -234,7 +234,7 @@ OptionValues->KeepFilesDirectory:"0");
 
     return(1);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 double GetTotalCPUTime(void) {
 
     struct rusage MyTime;
@@ -252,7 +252,7 @@ ChildTime.ru_stime.tv_sec + ChildTime.ru_stime.tv_usec/1000000.0
         return(-1.0);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * MakePrintableList(StringParts Names,int NumberOfNames,
 char * ListNames) {
 
@@ -270,7 +270,7 @@ char * ListNames) {
 
     return(BufferReturn(&Buffer,ListNames));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * MakePrintableListFromList(LISTNODE Head,char * ListNames) {
 
     char * Buffer;
@@ -289,7 +289,7 @@ char * MakePrintableListFromList(LISTNODE Head,char * ListNames) {
 
     return(BufferReturn(&Buffer,ListNames));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int IsNewSymbol(OptionsType OptionValues,char * Symbol) {
 
     static char * AllNewSymbols = NULL;
@@ -322,7 +322,7 @@ int IsNewSymbol(OptionsType OptionValues,char * Symbol) {
         return(1);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void InitializeNewSymbols(OptionsType OptionValues,LISTNODE Head) {
 
     LISTNODE NonIntroducedLeaves;
@@ -338,9 +338,8 @@ void InitializeNewSymbols(OptionsType OptionValues,LISTNODE Head) {
     Target = &NonIntroducedLeaves;
     while (*Target != NULL) {
         if (DerivedAnnotatedFormula((*Target)->AnnotatedFormula) ||
-((SourceTerm = GetSourceTERM((*Target)->AnnotatedFormula,NULL)) !=
-NULL && !strcmp(GetSymbol(SourceTerm),"introduced") &&
-GetArity(SourceTerm) > 0)) {
+((SourceTerm = GetSourceTERM((*Target)->AnnotatedFormula,NULL)) != NULL && 
+!strcmp(GetSymbol(SourceTerm),"introduced") && GetArity(SourceTerm) > 0)) {
 //----Remove this one
 //DEBUG printf("don't use %s\n",GetName((*Target)->AnnotatedFormula,NULL));
             FreeAListNode(Target);
@@ -350,11 +349,10 @@ GetArity(SourceTerm) > 0)) {
         }
     }
 
-//----Get all the symbols in those formulae. They are stored in a static place
-//----in IsNewSymbol
+//----Get all the symbols in those formulae. They are stored in a static place in IsNewSymbol
     AllSymbols = NULL;
-    GetListOfAnnotatedFormulaSymbolUsage(NonIntroducedLeaves,
-&AllSymbols,&Functors);
+    GetListOfAnnotatedFormulaSymbolUsage(NonIntroducedLeaves,&AllSymbols,&Functors);
+printf("All symbols %s\n",AllSymbols);
     Symbol = strtok(AllSymbols,"\n");
     while (Symbol != NULL) {
 //----If a ''ed symbol, leap past the ''s in case there's a / in there
@@ -373,7 +371,7 @@ GetArity(SourceTerm) > 0)) {
     Free((void **)&AllSymbols);
     FreeListOfAnnotatedFormulae(&NonIntroducedLeaves);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void EmptyAndDeleteDirectory(String Directory) {
 
     String UNIXCommand;
@@ -381,7 +379,7 @@ void EmptyAndDeleteDirectory(String Directory) {
     sprintf(UNIXCommand,"rm -rf %s",Directory);
     system(UNIXCommand);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CreateDirectory(String Directory,String DerivationFileName) {
 
     String DerivationFileBasename;
@@ -406,7 +404,7 @@ int CreateDirectory(String Directory,String DerivationFileName) {
         return(1);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void AddVerifiedTag(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,
 char * TagValue) {
 
@@ -416,7 +414,7 @@ char * TagValue) {
     AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,
 VerifiedTag);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * OutputPrefixForQuietness(OptionsType OptionValues) {
 
     if (OptionValues.Quietness <= 1) {
@@ -425,7 +423,7 @@ char * OutputPrefixForQuietness(OptionsType OptionValues) {
         return(NULL);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int GDVCheckTheorem(OptionsType OptionValues,SIGNATURE Signature,
 LISTNODE Axioms,ANNOTATEDFORMULA Conjecture,char * FileBaseName,
 char * Extension,int TestCounterTheorem) {
@@ -447,6 +445,8 @@ char * Extension,int TestCounterTheorem) {
             if (GetSyntax(Conjecture) == tptp_fof ||
 GetSyntax(Conjecture) == tptp_cnf) {
                 TheoremProver = OptionValues.TheoremProver;
+            } else if (GetSyntax(Conjecture) == tptp_tff) {
+                TheoremProver = OptionValues.TFFTheoremProver;
             } else if (GetSyntax(Conjecture) == tptp_thf) {
                 TheoremProver = OptionValues.THFTheoremProver;
             } else {
@@ -482,9 +482,8 @@ GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
             } else {
                 CodingError("Mixed THF with something");
             }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
-TestCounterTheorem,OptionValues.THFCounterSatisfiableProver,
-"CounterSatisfiable",OptionValues.TimeLimit,
+            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
+OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
 OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
@@ -494,7 +493,7 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int GDVCheckSatisfiable(OptionsType OptionValues,LISTNODE Formulae,
 char * FileBaseName,char * Extension,int TestUnsatisfiability) {
 
@@ -592,7 +591,7 @@ OutputFileName));
             break;
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CorrectlyInferred(OptionsType OptionValues,SIGNATURE Signature,
 ANNOTATEDFORMULA Target,char * FormulaName,LISTNODE ParentAnnotatedFormulae,
 char * ParentNames,char * SZSStatus,char * FileBaseName,int OutcomeQuietness,
@@ -757,7 +756,7 @@ ESAFileBaseName,4,"(Inverted ecs)");
         return(0);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 ANNOTATEDFORMULA MakeSplitDefinitionFor(ANNOTATEDFORMULA SplitChild,
 SIGNATURE Signature) {
 
@@ -797,7 +796,7 @@ GetName(SplitChild,NULL));
 
     return(SplitDefinition);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int MakeESplitDefinitions(OptionsType OptionValues,LISTNODE Head,SIGNATURE
 Signature,LISTNODE * SplitDefinitions) {
 
@@ -908,7 +907,7 @@ Sibling->AnnotatedFormula,Signature,ProcessedTag);
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int InsertExplicitSplitInfo(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfExplicitSplits) {
 
@@ -1006,7 +1005,7 @@ SplitSiblingsNames);
     }
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----For each node with a missing parent, remove the inference term
 void RemoveLeafInferenceInfo(SIGNATURE Signature,LISTNODE Head) {
 
@@ -1045,7 +1044,7 @@ Signature,non_logical_data,"introduced",2,NULL);
     }
     FreeBTreeOfAnnotatedFormulae(&BTreeRoot);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int StructuralCompletion(OptionsType OptionValues,LISTNODE * Head,
 SIGNATURE Signature) {
 
@@ -1098,7 +1097,7 @@ SIGNATURE Signature) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int AllParentsExist(OptionsType OptionValues,LISTNODE Head) {
 
     LISTNODE Target;
@@ -1135,7 +1134,7 @@ int AllParentsExist(OptionsType OptionValues,LISTNODE Head) {
     }
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CyclicTree(TREENODE TreeRoot) {
 
     int ParentIndex;
@@ -1167,7 +1166,7 @@ ParentIndex++) {
     TreeRoot->Visited = 2;
     return(0);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CyclicRootList(ROOTLIST RootListHead) {
 
     ResetRootListVisited(RootListHead);
@@ -1180,7 +1179,7 @@ int CyclicRootList(ROOTLIST RootListHead) {
     ResetRootListVisited(RootListHead);
     return(0);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 TREENODE CheckFalseRootNode(OptionsType OptionValues,ROOTLIST RootListHead) {
 
     TREENODE FalseRoot;
@@ -1191,7 +1190,7 @@ TREENODE CheckFalseRootNode(OptionsType OptionValues,ROOTLIST RootListHead) {
 
     return(FalseRoot);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int NoRootWithAssumptions(OptionsType OptionValues,ROOTLIST RootListHead) {
 
     TERM AssumptionsTerm;
@@ -1208,7 +1207,7 @@ GetName(RootListHead->TheTree->AnnotatedFormula,NULL));
     }
     return(1);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * GetParentsAssumptions(OptionsType OptionValues,ANNOTATEDFORMULA
 AnnotatedFormula,LISTNODE Head) {
 
@@ -1258,7 +1257,7 @@ TargetAssumptionsTerm)) != NULL) {
     }
     return(Assumptions);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int FormulaAssumptionsPropagated(OptionsType OptionValues,ANNOTATEDFORMULA 
 AnnotatedFormula,LISTNODE Head) {
 
@@ -1352,7 +1351,7 @@ NULL) {
     }
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int AssumptionsPropagated(OptionsType OptionValues,LISTNODE Head,
 int * NumberOfInstances) {
 
@@ -1373,7 +1372,7 @@ GetName(Target->AnnotatedFormula,NULL));
     }
     return(1);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Must replace this by stuff from Tree.c
 int IsAncestor(LISTNODE Head,ANNOTATEDFORMULA Ancestor,ANNOTATEDFORMULA 
 Descendant,int THMNodesOnly) {
@@ -1410,7 +1409,7 @@ IsAncestor(Head,Ancestor,Parent,THMNodesOnly)) {
     Free((void **)&AllParentNames);
     return(0);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 TREENODE DoAnnotatedFormulaInTreeTHM(TREENODE ATree,ANNOTATEDFORMULA
 LookingForThis,int THMNodesOnly) {
 
@@ -1447,7 +1446,7 @@ Parents[ParentIndex],LookingForThis,THMNodesOnly)) != NULL) {
 
     return(NULL);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 TREENODE AnnotatedFormulaInTreeTHM(TREENODE ATree,ANNOTATEDFORMULA
 LookingForThis,int THMNodesOnly) {
 
@@ -1459,7 +1458,7 @@ THMNodesOnly);
     ResetTreeVisited(ATree);
     return(TreeNodeFound);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 TREENODE AnnotatedFormulaInTreesTHM(ROOTLIST RootListHead,ANNOTATEDFORMULA
 LookingForThis,int THMNodesOnly) {
 
@@ -1475,7 +1474,7 @@ LookingForThis,THMNodesOnly)) != NULL) {
     }
     return(NULL);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int UsesFormulae(OptionsType OptionValues,LISTNODE Head,ROOTLIST RootListHead) {
 
     LISTNODE Target;
@@ -1510,7 +1509,7 @@ GetName(Target->AnnotatedFormula,NULL));
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int WellFormedProofsByContradiction(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfProofsByContradiction) {
 
@@ -1570,7 +1569,7 @@ Target->AnnotatedFormula,Signature,ProcessedTag);
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int ExplicitSplitsIndependent(OptionsType OptionValues,LISTNODE Head,
 ROOTLIST RootListHead,int * NumberOfExplicitSplits) {
 
@@ -1658,7 +1657,7 @@ SplitChildrenNames[0],SplitChildrenNames[1]);
     FreeRootList(&FalseList,0);
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int IsSpecifiedDefinition(OptionsType OptionValues,
 ANNOTATEDFORMULA PossibleDefinition,char ** SymbolDefined) {
 
@@ -1673,7 +1672,7 @@ IsNewSymbol(OptionValues,GetSymbol(NewSymbolTerm->Arguments[0]))) {
         return(0);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int IsPredicateDefinition(OptionsType OptionValues,
 ANNOTATEDFORMULA PossibleAnnotatedDefn,char ** PredicateDefined) {
 
@@ -1694,7 +1693,7 @@ BinaryFormula.LHS->FormulaUnion.Atom);
         return(0);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,
 SIGNATURE Signature) {
 
@@ -1834,7 +1833,7 @@ GetFalseRootNode(RootListHead) != NULL) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void GetSplitDefinitionNames(OptionsType OptionValues,LISTNODE Head,
 ANNOTATEDFORMULA AnnotatedFormula,String SplitDefinitionNames) {
 
@@ -1862,7 +1861,7 @@ SiblingNames[SiblingNumber]),"esplit_defn",1,SiblingInfo) != NULL) {
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE GetListOfLeaves(OptionsType OptionValues,LISTNODE Head) {
 
     LISTNODE Leaves;
@@ -1879,9 +1878,8 @@ LISTNODE GetListOfLeaves(OptionsType OptionValues,LISTNODE Head) {
     }
     return(Leaves);
 }
-//-----------------------------------------------------------------------------
-void AddTypeFormulae(LISTNODE Head,LISTNODE * ParentList,
-ANNOTATEDFORMULA Target) {
+//-------------------------------------------------------------------------------------------------
+void AddTypeFormulae(LISTNODE Head,LISTNODE * ParentList, ANNOTATEDFORMULA Target) {
 
     String SyntaxTypes;
     SyntaxType TargetSyntax;
@@ -1889,9 +1887,8 @@ ANNOTATEDFORMULA Target) {
 
     GetListSyntaxTypes(*ParentList,SyntaxTypes);
     TargetSyntax = GetSyntax(Target);
-    if (strstr(SyntaxTypes,"thf") != NULL || 
-strstr(SyntaxTypes,"tff") != NULL || TargetSyntax == tptp_thf ||
-TargetSyntax == tptp_tff) {
+    if (strstr(SyntaxTypes,"thf") != NULL || strstr(SyntaxTypes,"tff") != NULL || 
+TargetSyntax == tptp_thf || TargetSyntax == tptp_tff) {
         AddAfter = ParentList;
         while (Head != NULL) {
             if (GetRole(Head->AnnotatedFormula,NULL) == type) {
@@ -1902,7 +1899,7 @@ TargetSyntax == tptp_tff) {
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void RemoveTypeFormulae(LISTNODE * ParentList) {
 
     while (*ParentList != NULL) {
@@ -1913,9 +1910,8 @@ void RemoveTypeFormulae(LISTNODE * ParentList) {
         }
     }
 }
-//-----------------------------------------------------------------------------
-int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,
-LISTNODE Head) {
+//-------------------------------------------------------------------------------------------------
+int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTNODE Head) {
 
     LISTNODE Leaves;
     LISTNODE LeafAxioms;
@@ -1934,8 +1930,7 @@ LISTNODE Head) {
 LeafAxioms,"axioms","sat",1)) == 1) {
         QPRINTF(OptionValues,2)("SUCCESS: Leaf axioms are satisfiable\n");
     } else if (Satisfiable == 0) {
-        QPRINTF(OptionValues,2)
-("WARNING: Failed to find model of leaf axioms\n");
+        QPRINTF(OptionValues,2)("WARNING: Failed to find model of leaf axioms\n");
     } else {
         QPRINTF(OptionValues,2)("WARNING: Leaf axioms are unsatisfiable\n");
     }
@@ -1944,7 +1939,7 @@ LeafAxioms,"axioms","sat",1)) == 1) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int ESplitVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfSplits) {
 
@@ -2037,7 +2032,7 @@ Target->AnnotatedFormula,FormulaName,ParentAnnotatedFormulae,ListParentNames,
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int SRSplitVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfSplits) {
 
@@ -2083,20 +2078,16 @@ NULL);
             NegateListOfAnnotatedTSTPNodes(ParentAnnotatedFormulae,0);
             Negate(Target->AnnotatedFormula,0);
 //----Sneakily add all the type formulae for THF and TFF
-            AddTypeFormulae(Head,&ParentAnnotatedFormulae,
-Target->AnnotatedFormula);
-            if (!CorrectlyInferred(OptionValues,Signature,
-Target->AnnotatedFormula,FormulaName,ParentAnnotatedFormulae,ListParentNames,
-"thm",FileName,-1,"(Negated formulae for split)")) {
+            AddTypeFormulae(Head,&ParentAnnotatedFormulae,Target->AnnotatedFormula);
+            if (!CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,FormulaName,
+ParentAnnotatedFormulae,ListParentNames,"thm",FileName,-1,"(Negated formulae for split)")) {
                 OKSoFar = 0;
             } else {
                 QPRINTF(OptionValues,2)(
-"WARNING: Incomplete check of split from %s to %s\n",FormulaName,
-ListParentNames);
+"WARNING: Incomplete check of split from %s to %s\n",FormulaName,ListParentNames);
                 Parent = ParentAnnotatedFormulae;
                 while (Parent != NULL) {
-                    AddVerifiedTag(Parent->AnnotatedFormula,Signature,
-"explicit_split");
+                    AddVerifiedTag(Parent->AnnotatedFormula,Signature,"explicit_split");
                     Parent = Parent->Next;
                 }
             }
@@ -2115,7 +2106,7 @@ ListParentNames);
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int JoinVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfJoins) {
 
@@ -2142,10 +2133,8 @@ Target != NULL) {
         CleanTheFileName(FormulaName,FileName);
 //DEBUG PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
 
-        if ((JoinRecord = GetInferenceInfoTERM(
-Target->AnnotatedFormula,"__inference_rule__")) != NULL &&
-GetArity(JoinRecord) == 2 &&
-!strcmp(GetSymbol(JoinRecord->Arguments[0]),"join")) {
+        if ((JoinRecord = GetInferenceInfoTERM(Target->AnnotatedFormula,"__inference_rule__")) != 
+NULL && GetArity(JoinRecord) == 2 && !strcmp(GetSymbol(JoinRecord->Arguments[0]),"join")) {
 //----Get the parents' in various ways
             AllParentNames = GetNodeParentNames(Target->AnnotatedFormula,NULL);
             NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
@@ -2161,9 +2150,8 @@ OptionValues.ForceContinue) && Parent != NULL) {
                 strcpy(ThisFileName,FileName);
                 strcat(ThisFileName,".");
                 strcat(ThisFileName,ParentNames[ThisParentIndex]);
-                if (!CorrectlyInferred(OptionValues,Signature,
-Target->AnnotatedFormula,FormulaName,ThisParentList,
-ParentNames[ThisParentIndex],"thm",ThisFileName,-1,"")) {
+                if (!CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,FormulaName,
+ThisParentList,ParentNames[ThisParentIndex],"thm",ThisFileName,-1,"")) {
                     OKSoFar = 0;
                 } else {
                     (*NumberOfJoins)++;
@@ -2184,7 +2172,7 @@ ParentNames[ThisParentIndex],"thm",ThisFileName,-1,"")) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int ProofByContradictionVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfContradictions) {
 
@@ -2234,7 +2222,7 @@ FileName,-1,"(Negated parent for PbC)")) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int VerifyDischarge(OptionsType OptionValues,SIGNATURE Signature,LISTNODE Head,
 ANNOTATEDFORMULA InferredFormula,StringParts DischargedNames,
 int NumberOfDischargedNames) {
@@ -2329,7 +2317,7 @@ InferredFormula,InferredName,ParentAnnotatedFormulae,ListParentNames,
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int DischargeVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature,int * NumberOfDischarges) {
 
@@ -2393,7 +2381,7 @@ AnnotatedFormula,DischargedNames,NumberOfDischargedNames)) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Incomplete check. Complex parent to be inferred from definition and
 //----inferred
 int EApplyDefVerification(OptionsType OptionValues,LISTNODE Head,
@@ -2465,7 +2453,7 @@ Parents,ParentsNames,"thm",ApplyDefFileName,-1,
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int RuleSpecificVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature) {
 
@@ -2556,7 +2544,7 @@ SIGNATURE Signature) {
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void SplitIntoSatisfiableLists(OptionsType OptionValues, LISTNODE Head,
 LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
 
@@ -2609,7 +2597,7 @@ AnnotatedFormulaTrueInInterpretation(Head->AnnotatedFormula,negative)) {
         FreeListOfAnnotatedFormulae(NeitherHead);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int LeafVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE
 Signature) {
 
@@ -2932,7 +2920,7 @@ FormulaName);
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 SZSResultType CombineTwoSZSStatusesForVerification(SZSResultType SZS1,
 SZSResultType SZS2) {
 
@@ -2972,7 +2960,7 @@ SZSResultType SZS2) {
 
     return(NOC);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void CombineSZSStatusesForVerification(SZSResultArray SZSArray,
 char * SZSStatus,int NumberOfSZSResults) {
 
@@ -2991,7 +2979,7 @@ printf(" and got %s\n",SZSResultToString(SZSResult));
     strcpy(SZSStatus,SZSResultToString(SZSResult));
     StringToLower(SZSStatus);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int DerivedVerification(OptionsType OptionValues,LISTNODE Head,
 SIGNATURE Signature) {
 
@@ -3036,8 +3024,7 @@ NULL);
             GetNodesForNames(Head,ParentNames,NumberOfParents,
 &ParentAnnotatedFormulae);
 //----Sneakily add all the type formulae for THF and TFF
-            AddTypeFormulae(Head,&ParentAnnotatedFormulae,
-Target->AnnotatedFormula);
+            AddTypeFormulae(Head,&ParentAnnotatedFormulae,Target->AnnotatedFormula);
 
 //----Copied formula. Look at only the first (which ignores the type formulae
 //----added for THF)
@@ -3111,7 +3098,7 @@ SZSStatus);
 
     return(OKSoFar);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void GetProblemFileName(OptionsType * OptionValues,ANNOTATEDFORMULA 
 AnnotatedFormula,char * ProblemFileName) {
 
@@ -3141,7 +3128,7 @@ NULL) {
         }
     } 
 } 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ReportVerification(OptionsType OptionValues,LISTNODE Head,
 LISTNODE CopyOfHead,SIGNATURE Signature) {
 
@@ -3165,7 +3152,7 @@ Signature,VerifiedInfo);
 OptionValues.DerivationFileName);
 
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc,char * argv[]) {
 
     extern int GlobalInterrupted;
@@ -3194,10 +3181,9 @@ signal(SIGQUIT,GlobalInterruptHandler) == SIG_ERR) {
 //----Read the derivation file
     Signature = NewSignature();
     SetNeedForNonLogicTokens(0);
-    if ((Head = ParseFileOfFormulae(OptionValues.DerivationFileName,NULL,
-Signature,1,NULL)) == NULL) {
-        QPRINTF(OptionValues,4)(
-"ERROR: Could not parse %s\n",OptionValues.DerivationFileName);
+    if ((Head = ParseFileOfFormulae(OptionValues.DerivationFileName,NULL,Signature,1,NULL)) == 
+NULL) {
+        QPRINTF(OptionValues,4)("ERROR: Could not parse %s\n",OptionValues.DerivationFileName);
         exit(EXIT_FAILURE);
     }
     if (OptionValues.Quietness == 0) {
@@ -3207,15 +3193,12 @@ Signature,1,NULL)) == NULL) {
         fflush(stdout);
     }
 //----Get problem file name sorted out
-    GetProblemFileName(&OptionValues,Head->AnnotatedFormula,OptionValues.
-ProblemFileName);
+    GetProblemFileName(&OptionValues,Head->AnnotatedFormula,OptionValues.ProblemFileName);
 
 //----Create working directory
     if (!GlobalInterrupted) {
-        if (!CreateDirectory(OptionValues.KeepFilesDirectory,
-OptionValues.DerivationFileName)) {
-            QPRINTF(OptionValues,4)(
-"ERROR: Could not create working directory %s\n",
+        if (!CreateDirectory(OptionValues.KeepFilesDirectory,OptionValues.DerivationFileName)) {
+            QPRINTF(OptionValues,4)("ERROR: Could not create working directory %s\n",
 OptionValues.KeepFilesDirectory);
             exit(EXIT_FAILURE);
         }
@@ -3328,4 +3311,4 @@ Signature);)
 
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

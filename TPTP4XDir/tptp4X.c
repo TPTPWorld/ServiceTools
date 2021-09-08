@@ -23,10 +23,10 @@
 #include "Randomize.h"
 #include "NumberNames.h"
 #include "tptp4X.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ReformatFile(OptionsType Options,char * FileName,char * IncludeFilter,
 char * IncludingFileName,int RemoveHeader,FILE * OutputHandle);
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Return the first index for files in argv
 int ProcessCommandLine(int argc,char * argv[],OptionsType * Options) {
 
@@ -199,7 +199,7 @@ Options->Format != oldtptp) {
 
     return(optind);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 READFILE OpenInputREADFILE(OptionsType Options,char * FileName,
 char * IncludingFileName) {
 
@@ -214,15 +214,14 @@ char * IncludingFileName) {
         return(NULL);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void MakeOutputFileName(OptionsType Options,char * FileName,char * Uniquifier,
 String OutputFileName) {
 
     char * SlashDotP;
 
 //----If relative to current or not absolute, start with cwd
-    if (Options.OutputDirectory[0] == '.' ||
-Options.OutputDirectory[0] != '/') {
+    if (Options.OutputDirectory[0] == '.' || Options.OutputDirectory[0] != '/') {
         if (getcwd(OutputFileName,STRINGLENGTH) == NULL) {
             ReportError("OSError","Cannot get cwd",1);
         }
@@ -234,8 +233,7 @@ Options.OutputDirectory[0] != '/') {
         strcat(OutputFileName,"/");
     }
 //----If user output directory is not ., add it on
-    if (!(strlen(Options.OutputDirectory) == 1 &&
-Options.OutputDirectory[0] == '.')) {
+    if (!(strlen(Options.OutputDirectory) == 1 && Options.OutputDirectory[0] == '.')) {
         strcat(OutputFileName,Options.OutputDirectory);
     }
 //----If the directory does not end with /, add one
@@ -261,7 +259,7 @@ Options.OutputDirectory[0] == '.')) {
     strcat(OutputFileName,".");
     strcat(OutputFileName,PrintFormatToString(Options.Format));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 FILE * OpenOutputFILE(OptionsType Options,char * FileName,char * Uniquifier,
 String OutputFileName) {
 
@@ -282,19 +280,19 @@ String OutputFileName) {
 
     return(OutputHandle);
 }
-//-----------------------------------------------------------------------------
-void CloseAndReportOutputFile(OptionsType Options,char * FileName,
-FILE * OutputHandle,String OutputFileName) {
+//-------------------------------------------------------------------------------------------------
+void CloseAndReportOutputFile(OptionsType Options,char * FileName,FILE * OutputHandle,
+String OutputFileName) {
 
     if (OutputHandle != stdout) {
         fclose(OutputHandle);
         printf("%s -> %s\n",FileName,OutputFileName);
     }
 }
-//-----------------------------------------------------------------------------
-void ReformatAnnotatedFormula(OptionsType Options,READFILE Stream,
-SIGNATURE Signature,ANNOTATEDFORMULA AnnotatedFormula,FILE * OutputHandle,
-char * IncludeFilter,SyntaxType * LastNodeType) {
+//-------------------------------------------------------------------------------------------------
+void ReformatAnnotatedFormula(OptionsType Options,READFILE Stream,SIGNATURE Signature,
+ANNOTATEDFORMULA AnnotatedFormula,FILE * OutputHandle,char * IncludeFilter,
+SyntaxType * LastNodeType) {
 
     String NewIncludeFile;
     String NewIncludeFilter;
@@ -305,7 +303,7 @@ char * IncludeFilter,SyntaxType * LastNodeType) {
     GetName(AnnotatedFormula,FormulaName);
 //----Blank line after every formula
     if (Options.Pretty &&
-(*LastNodeType == tptp_thf || 
+(*LastNodeType == tptp_thf ||
  *LastNodeType == tptp_tff || *LastNodeType == tptp_tcf ||
  *LastNodeType == tptp_fof || *LastNodeType == tptp_cnf ||
 (*LastNodeType == tptp_tpi && ThisNodeType != tptp_tpi)) &&
@@ -316,26 +314,22 @@ ThisNodeType != blank_line) {
 //----Expand includes if necessary
     if (Options.ExpandIncludes && ThisNodeType == include) {
         GetIncludeParts(AnnotatedFormula,NewIncludeFile,NewIncludeFilter);
-        ReformatFile(Options,NewIncludeFile,NewIncludeFilter,
-Stream->FileName,1,OutputHandle);
+        ReformatFile(Options,NewIncludeFile,NewIncludeFilter,Stream->FileName,1,OutputHandle);
     } else if (LogicalAnnotatedFormula(AnnotatedFormula)) {
 //----Check if it passes the include filter
-        if (!strcmp(IncludeFilter,"all") ||
-RemoveNameFromList(FormulaName,IncludeFilter)) {
-            PrintAnnotatedTSTPNode(OutputHandle,AnnotatedFormula,Options.Format,
-Options.Pretty);
+        if (!strcmp(IncludeFilter,"all") || RemoveNameFromList(FormulaName,IncludeFilter)) {
+            PrintAnnotatedTSTPNode(OutputHandle,AnnotatedFormula,Options.Format,Options.Pretty);
         }
     } else if (!Options.Pretty && ThisNodeType == blank_line) {
 //----No blank lines if not pretty
     } else if(*LastNodeType != blank_line || ThisNodeType != blank_line) {
 //----Skip double blank lines
-        PrintAnnotatedTSTPNode(OutputHandle,AnnotatedFormula,Options.Format,
-Options.Pretty);
+        PrintAnnotatedTSTPNode(OutputHandle,AnnotatedFormula,Options.Format,Options.Pretty);
     }
     *LastNodeType = ThisNodeType;
     fflush(stdout);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 unsigned long long GetTimeInMillis() {
 
     struct timeval  tv;
@@ -343,10 +337,10 @@ unsigned long long GetTimeInMillis() {
     gettimeofday(&tv, NULL);
     return(tv.tv_sec * 1000ULL + tv.tv_usec / 1000);
 }
-//-----------------------------------------------------------------------------
-void ProcessFormulaeOneByOne(OptionsType Options,READFILE InputStream,
-SIGNATURE Signature,char * IncludeFilter,int RemoveHeader,int NumberNamesIndex,
-int MaximalNameLength,char * NumberNamesFormat,FILE * OutputHandle) {
+//-------------------------------------------------------------------------------------------------
+void ProcessFormulaeOneByOne(OptionsType Options,READFILE InputStream,SIGNATURE Signature,
+char * IncludeFilter,int RemoveHeader,int NumberNamesIndex,int MaximalNameLength,
+char * NumberNamesFormat,FILE * OutputHandle) {
 
     char * NamesBuffer;
     int NamesBufferSize;
@@ -380,21 +374,19 @@ AnnotatedFormulaUnion.Comment,"%---------------------------------") !=
 AnnotatedFormula->AnnotatedFormulaUnion.Comment));
         } else {
 //----Shorten this name
-            if (MaximalNameLength > 0 && LogicalAnnotatedFormula(
-AnnotatedFormula)) {
+            if (MaximalNameLength > 0 && LogicalAnnotatedFormula(AnnotatedFormula)) {
                 ShortenName(AnnotatedFormula,MaximalNameLength);
             }
 //----Add name index
             if (strstr(Options.Transformations,"numbernames") != NULL &&
 LogicalAnnotatedFormula(AnnotatedFormula)) {
-                AddNameIndex(AnnotatedFormula,NumberNamesIndex++,
-NumberNamesFormat);
+                AddNameIndex(AnnotatedFormula,NumberNamesIndex++,NumberNamesFormat);
             }
 //----Now check for uniqueness
             if (!Options.AllowDuplicateNames) {
                 CheckOneDuplicateName(AnnotatedFormula,
-strstr(Options.Transformations,"uniquenames") != NULL,&NamesBuffer,
-&NamesBufferSize,NumberNamesFormat,&NumberNamesIndex);
+strstr(Options.Transformations,"uniquenames") != NULL,&NamesBuffer,&NamesBufferSize,
+NumberNamesFormat,&NumberNamesIndex);
             }
 //----FOFify done before counting and output
             if (strstr(Options.Transformations,"fofify") != NULL) {
@@ -406,23 +398,21 @@ strstr(Options.Transformations,"uniquenames") != NULL,&NamesBuffer,
             }
 //----Output
             if (Options.Quietness < 3) {
-                if (Options.PrintDelayMax > 0 &&
-LogicalAnnotatedFormula(AnnotatedFormula)) {
+                if (Options.PrintDelayMax > 0 && LogicalAnnotatedFormula(AnnotatedFormula)) {
                     if (Options.PrintDelayMin == Options.PrintDelayMax) {
                         PrintDelay = Options.PrintDelayMax;
                     } else {
                         PrintDelay = Options.PrintDelayMin + random() *
 (Options.PrintDelayMax - Options.PrintDelayMin) / RAND_MAX;
                     }
-                    TimeToWait = PrintDelay -
-(GetTimeInMillis() - LastPrintTime);
+                    TimeToWait = PrintDelay - (GetTimeInMillis() - LastPrintTime);
                     if (TimeToWait > 0) {
                         usleep(TimeToWait * 1000);
                     }
                     LastPrintTime = GetTimeInMillis();
                 }
-                ReformatAnnotatedFormula(Options,InputStream,
-Signature,AnnotatedFormula,OutputHandle,IncludeFilter,&LastNodeType);
+                ReformatAnnotatedFormula(Options,InputStream,Signature,AnnotatedFormula,
+OutputHandle,IncludeFilter,&LastNodeType);
             }
         }
         FreeAnnotatedFormula(&AnnotatedFormula);
@@ -432,10 +422,10 @@ Signature,AnnotatedFormula,OutputHandle,IncludeFilter,&LastNodeType);
         Free((void **)&NamesBuffer);
     }
 }
-//-----------------------------------------------------------------------------
-void ProcessFormulaeAllTogether(OptionsType Options,READFILE InputStream,
-SIGNATURE Signature,char * IncludeFilter,int RemoveHeader,int NumberNamesIndex,
-int MaximalNameLength, char * NumberNamesFormat,FILE * OutputHandle) {
+//-------------------------------------------------------------------------------------------------
+void ProcessFormulaeAllTogether(OptionsType Options,READFILE InputStream,SIGNATURE Signature,
+char * IncludeFilter,int RemoveHeader,int NumberNamesIndex,int MaximalNameLength,
+char * NumberNamesFormat,FILE * OutputHandle) {
 
     LISTNODE AllAnnotatedFormulae;
     int NumberOfFOF;
@@ -451,8 +441,9 @@ int MaximalNameLength, char * NumberNamesFormat,FILE * OutputHandle) {
 strstr(Options.Transformations,"donum") != NULL) {
         SetAllowFOFNumbers(1);
     }
-    AllAnnotatedFormulae = ParseREADFILEOfFormulae(InputStream,Signature,
-Options.ExpandIncludes,NULL);
+    AllAnnotatedFormulae = ParseREADFILEOfFormulae(InputStream,Signature,Options.ExpandIncludes,
+NULL);
+    RemovedUnusedSymbols(Signature);
     SetAllowFOFNumbers(0);
 //----Shorten names
     if (MaximalNameLength > 0) {
@@ -465,8 +456,7 @@ Options.ExpandIncludes,NULL);
 //----Check for duplicate formula names
     if (!Options.AllowDuplicateNames) {
         CheckDuplicateNames(AllAnnotatedFormulae,
-strstr(Options.Transformations,"uniquenames") != NULL,
-NumberNamesFormat,&NumberNamesIndex);
+strstr(Options.Transformations,"uniquenames") != NULL,NumberNamesFormat,&NumberNamesIndex);
     }
 //----Randomizing done before all else, no worry
     if (strstr(Options.Transformations,"randomize") != NULL) {
@@ -507,10 +497,9 @@ NumberNamesFormat,&NumberNamesIndex);
     NumberOfFOF = ListCount(AllAnnotatedFormulae,fof_nodes);
     NumberOfCNF = ListCount(AllAnnotatedFormulae,cnf_nodes);
     if (strstr(Options.Transformations,"add_equality") != NULL &&
-(EqualityAxioms = AddEqualityAxioms(Options,Signature,NumberOfFOF,
-NumberOfCNF)) != NULL) {
-        AllAnnotatedFormulae = AppendListsOfAnnotatedTSTPNodes(
-AllAnnotatedFormulae,EqualityAxioms);
+(EqualityAxioms = AddEqualityAxioms(Options,Signature,NumberOfFOF,NumberOfCNF)) != NULL) {
+        AllAnnotatedFormulae = AppendListsOfAnnotatedTSTPNodes(AllAnnotatedFormulae,
+EqualityAxioms);
     }
     if (Options.Quietness < 3) {
 //----Burst out conjectures
@@ -519,35 +508,33 @@ AllAnnotatedFormulae,EqualityAxioms);
 &AllAnnotatedFormulae,conjecture,1);
             LastNext = GetLastNext(&AllAnnotatedFormulae);
             while (Conjectures != NULL) {
-                if ((OutputHandle = OpenOutputFILE(Options,
-InputStream->FileName,GetName(Conjectures->AnnotatedFormula,NULL),
-OutputFileName)) != NULL) {
+                if ((OutputHandle = OpenOutputFILE(Options,InputStream->FileName,
+GetName(Conjectures->AnnotatedFormula,NULL),OutputFileName)) != NULL) {
                     ThisConjecture = Conjectures;
                     Conjectures = Conjectures->Next;
                     ThisConjecture->Next = NULL;
                     *LastNext = ThisConjecture;
-                    PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,
-AllAnnotatedFormulae,Options.Format,Options.Pretty);
+                    PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,AllAnnotatedFormulae,
+Options.Format,Options.Pretty);
 //----Close the output file
-                    CloseAndReportOutputFile(Options,InputStream->FileName,
-OutputHandle,OutputFileName);
+                    CloseAndReportOutputFile(Options,InputStream->FileName,OutputHandle,
+OutputFileName);
                     *LastNext = NULL;
                 } else {
-                    sprintf(ErrorMessage,"Could not open output for %s\n",
-InputStream->FileName);
+                    sprintf(ErrorMessage,"Could not open output for %s\n",InputStream->FileName);
                     ReportError("OSError",ErrorMessage,1);
                 }
                 FreeAListNode(&ThisConjecture);
             }
             FreeListOfAnnotatedFormulae(&Conjectures);
         } else {
-            PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,
-AllAnnotatedFormulae,Options.Format,Options.Pretty);
+            PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,AllAnnotatedFormulae,
+Options.Format,Options.Pretty);
         }
     }
     FreeListOfAnnotatedFormulae(&AllAnnotatedFormulae);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ReformatFile(OptionsType Options,char * FileName,char * IncludeFilter,
 char * IncludingFileName,int RemoveHeader,FILE * OutputHandle) {
 
@@ -610,7 +597,7 @@ NumberNamesFormat,OutputHandle);
         ReportError("OSError","Could not open input file",1);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     OptionsType Options;
@@ -632,12 +619,10 @@ int main(int argc, char *argv[]) {
         strcpy(FileName,argv[ArgvFileIndex++]);
 //----If bursting conjectures, files are opened later
         if (strstr(Options.Transformations,"single_conjectures") == NULL) {
-            if ((OutputHandle = OpenOutputFILE(Options,FileName,NULL,
-OutputFileName)) != NULL) {
+            if ((OutputHandle = OpenOutputFILE(Options,FileName,NULL,OutputFileName)) != NULL) {
                 ReformatFile(Options,FileName,"all",NULL,0,OutputHandle);
 //----Close the output file
-                CloseAndReportOutputFile(Options,FileName,OutputHandle,
-OutputFileName);
+                CloseAndReportOutputFile(Options,FileName,OutputHandle,OutputFileName);
             } else {
                 sprintf(ErrorMessage,"Could not open output for %s\n",FileName);
                 ReportError("OSError",ErrorMessage,1);
@@ -649,4 +634,4 @@ OutputFileName);
 
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 #include "Modify.h"
 #include "PrintTSTP.h"
 #include "tptp4X.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * ChooseAlgorithm(OptionsType Options,String Algorithm) {
 
     String FOFifyPart;
@@ -32,7 +32,7 @@ char * ChooseAlgorithm(OptionsType Options,String Algorithm) {
 
     return(Algorithm);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 ANNOTATEDFORMULA DoFOFifyAnnotatedFormula(ANNOTATEDFORMULA AnnotatedFormula,
 char * Algorithm) {
 
@@ -59,7 +59,7 @@ char * Algorithm) {
 
     return(AnnotatedFormula);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 ANNOTATEDFORMULA FOFifyAnnotatedFormula(OptionsType Options,ANNOTATEDFORMULA 
 AnnotatedFormula) {
 
@@ -69,7 +69,7 @@ AnnotatedFormula) {
 Algorithm)));
 
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE FOFifyListOfAnnotatedFormulae(OptionsType Options,
 LISTNODE AllAnnotatedFormulae) {
 
@@ -86,4 +86,4 @@ LISTNODE AllAnnotatedFormulae) {
  
     return(AllAnnotatedFormulae);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

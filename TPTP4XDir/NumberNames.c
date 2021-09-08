@@ -9,7 +9,7 @@
 #include "Modify.h"
 #include "PrintTSTP.h"
 #include "tptp4X.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int GetMaximalNameLength(OptionsType Options) {
 
     String NumberNamesPart;
@@ -29,7 +29,7 @@ int GetMaximalNameLength(OptionsType Options) {
     }
     return(MaximalLength);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * MakeNumberNamesFormat(OptionsType Options,String Format) {
 
     String NumberNamesPart;
@@ -53,7 +53,7 @@ char * MakeNumberNamesFormat(OptionsType Options,String Format) {
         return(NULL);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ShortenName(ANNOTATEDFORMULA AnnotatedFormula,int MaximalNameLength) {
 
     SuperString Name;
@@ -64,7 +64,7 @@ void ShortenName(ANNOTATEDFORMULA AnnotatedFormula,int MaximalNameLength) {
         SetName(AnnotatedFormula,Name);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ShortenNames(LISTNODE Head,int MaximalNameLength) {
 
     while (Head != NULL) {
@@ -74,7 +74,7 @@ void ShortenNames(LISTNODE Head,int MaximalNameLength) {
         Head = Head->Next;
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void AddNameIndex(ANNOTATEDFORMULA AnnotatedFormula,int Index,char * Format) {
 
     SuperString OldName;
@@ -98,7 +98,7 @@ void AddNameIndex(ANNOTATEDFORMULA AnnotatedFormula,int Index,char * Format) {
     }
     assert(SetName(AnnotatedFormula,NewName));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void NumberNames(OptionsType Options,LISTNODE Head,char * Format) {
 
     int Index = 1;
@@ -108,7 +108,7 @@ void NumberNames(OptionsType Options,LISTNODE Head,char * Format) {
         Head = Head->Next;
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void CheckOneDuplicateName(ANNOTATEDFORMULA AnnotatedFormula,
 int FixDuplicateNames,char ** NamesBuffer,int * NamesBufferSize,
 char * NumberNamesFormat,int * NumberNamesIndex) {
@@ -134,7 +134,7 @@ NamesBufferSize);
         ExtendString(NamesBuffer,"\n",NamesBufferSize);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void CheckDuplicateNames(LISTNODE Head,int FixDuplicateNames,
 char * NumberNamesFormat,int * NumberNamesIndex) {
 
@@ -153,4 +153,4 @@ char * NumberNamesFormat,int * NumberNamesIndex) {
     }
     Free((void **)&NamesBuffer);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
