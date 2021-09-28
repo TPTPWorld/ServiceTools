@@ -352,7 +352,6 @@ void InitializeNewSymbols(OptionsType OptionValues,LISTNODE Head) {
 //----Get all the symbols in those formulae. They are stored in a static place in IsNewSymbol
     AllSymbols = NULL;
     GetListOfAnnotatedFormulaSymbolUsage(NonIntroducedLeaves,&AllSymbols,&Functors);
-printf("All symbols %s\n",AllSymbols);
     Symbol = strtok(AllSymbols,"\n");
     while (Symbol != NULL) {
 //----If a ''ed symbol, leap past the ''s in case there's a / in there
@@ -424,9 +423,8 @@ char * OutputPrefixForQuietness(OptionsType OptionValues) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-int GDVCheckTheorem(OptionsType OptionValues,SIGNATURE Signature,
-LISTNODE Axioms,ANNOTATEDFORMULA Conjecture,char * FileBaseName,
-char * Extension,int TestCounterTheorem) {
+int GDVCheckTheorem(OptionsType OptionValues,SIGNATURE Signature,LISTNODE Axioms,
+ANNOTATEDFORMULA Conjecture,char * FileBaseName,char * Extension,int TestCounterTheorem) {
 
     String OutputFileName;
     SyntaxType Syntax;
@@ -442,8 +440,7 @@ char * Extension,int TestCounterTheorem) {
         case tptp_cnf:
             Syntax = tptp_fof;
         case tptp_fof:
-            if (GetSyntax(Conjecture) == tptp_fof ||
-GetSyntax(Conjecture) == tptp_cnf) {
+            if (GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
                 TheoremProver = OptionValues.TheoremProver;
             } else if (GetSyntax(Conjecture) == tptp_tff) {
                 TheoremProver = OptionValues.TFFTheoremProver;
@@ -452,31 +449,31 @@ GetSyntax(Conjecture) == tptp_cnf) {
             } else {
                 CodingError("Mixed FOF/CNF with some weird conjecture");
             }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
-TestCounterTheorem,OptionValues.CounterSatisfiableProver,"CounterSatisfiable",
-OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",
-OptionValues.KeepFiles,OptionValues.KeepFilesDirectory,OutputFileName,
-OutputFileName));
-            break;
-        case tptp_mixed:
-            QPRINTF(OptionValues,1)(
-"WARNING: %s.%s has mixed language parents+conjecture, using THF tools for THM check\n",
-FileBaseName,Extension);
-        case tptp_tff:
-            if (GetSyntax(Conjecture) == tptp_tff || 
-GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
-                TheoremProver = OptionValues.TFFTheoremProver;
-            } else {
-                CodingError("Mixed THF with something");
-            }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
-TestCounterTheorem,OptionValues.THFCounterSatisfiableProver,
-"CounterSatisfiable",OptionValues.TimeLimit,
+            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
+OptionValues.CounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
 OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
+        case tptp_tcf:
+        case tptp_tff:
+            if (GetSyntax(Conjecture) == tptp_tff || GetSyntax(Conjecture) == tptp_tcf ||
+GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
+                TheoremProver = OptionValues.TFFTheoremProver;
+            } else {
+                CodingError("Mixed TFF with something");
+            }
+            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
+OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
+OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
+            break;
+        case tptp_mixed:
+printf("MIXED\n");
+            QPRINTF(OptionValues,1)(
+"WARNING: %s.%s has mixed language parents+conjecture, using THF tools for THM check\n",
+FileBaseName,Extension);
         case tptp_thf:
-            if (GetSyntax(Conjecture) == tptp_thf || 
+            if (GetSyntax(Conjecture) == tptp_thf || GetSyntax(Conjecture) == tptp_tcf ||
 GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
                 TheoremProver = OptionValues.THFTheoremProver;
             } else {
@@ -2980,8 +2977,7 @@ printf(" and got %s\n",SZSResultToString(SZSResult));
     StringToLower(SZSStatus);
 }
 //-------------------------------------------------------------------------------------------------
-int DerivedVerification(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature) {
+int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
 
     extern int GlobalInterrupted;
     LISTNODE Target;
@@ -3019,18 +3015,16 @@ VerifiedTag) == NULL) {
 //----Get the parents' in various ways
             AllParentNames = GetNodeParentNames(Target->AnnotatedFormula,NULL);
             NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
-            ListParentNames = MakePrintableList(ParentNames,NumberOfParents,
-NULL);
-            GetNodesForNames(Head,ParentNames,NumberOfParents,
-&ParentAnnotatedFormulae);
+            ListParentNames = MakePrintableList(ParentNames,NumberOfParents,NULL);
+            GetNodesForNames(Head,ParentNames,NumberOfParents,&ParentAnnotatedFormulae);
 //----Sneakily add all the type formulae for THF and TFF
             AddTypeFormulae(Head,&ParentAnnotatedFormulae,Target->AnnotatedFormula);
 
 //----Copied formula. Look at only the first (which ignores the type formulae
 //----added for THF)
             if (!strcmp(InferenceRule,"")) {
-                if (SameFormulaInAnnotatedFormulae(
-Target->AnnotatedFormula,ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
+                if (SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,
+ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
                     QPRINTF(OptionValues,2)(
 "SUCCESS: %s is a copy of %s\n",FormulaName,ParentNames[0]);
                     AddVerifiedTag(Target->AnnotatedFormula,Signature,"thm");
@@ -3041,8 +3035,7 @@ Target->AnnotatedFormula,ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
                     if (CorrectlyInferred(OptionValues,Signature,
 Target->AnnotatedFormula,FormulaName,ParentAnnotatedFormulae,ListParentNames,
 SZSStatus,FileName,-1,"")) {
-                        AddVerifiedTag(Target->AnnotatedFormula,Signature,
-SZSStatus);
+                        AddVerifiedTag(Target->AnnotatedFormula,Signature,SZSStatus);
                     } else {
                         QPRINTF(OptionValues,2)(
 "FAILURE: %s is not a copy or thm of %s\n",FormulaName,ParentNames[0]);
@@ -3053,8 +3046,8 @@ SZSStatus);
 //----Inferred formula
             } else {
 //----Get SZS status
-                if ((SZSArray = GetInferenceSZSStatuses(
-Target->AnnotatedFormula,NULL,&NumberOfSZSResults)) == NULL) {
+                if ((SZSArray = GetInferenceSZSStatuses(Target->AnnotatedFormula,NULL,
+&NumberOfSZSResults)) == NULL) {
                     QPRINTF(OptionValues,1)(
 "WARNING: Cannot get SZS status for %s",FormulaName);
 //----If none, then try special cases (one right now) - negated_conjecture
@@ -3063,23 +3056,19 @@ Target->AnnotatedFormula,NULL,&NumberOfSZSResults)) == NULL) {
 ParentAnnotatedFormulae->Next == NULL &&
 ParentAnnotatedFormulae->AnnotatedFormula->AnnotatedFormulaUnion.
 AnnotatedTSTPFormula.Status == conjecture &&
-Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == 
-negated_conjecture) {
+Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == negated_conjecture) {
                         strcpy(SZSStatus,"cth");
                     } else {
                         strcpy(SZSStatus,"thm");
                     }
                     QPRINTF(OptionValues,1)(", assuming %s\n",SZSStatus);
                 } else {
-                    CombineSZSStatusesForVerification(SZSArray,SZSStatus,
-NumberOfSZSResults);
+                    CombineSZSStatusesForVerification(SZSArray,SZSStatus,NumberOfSZSResults);
                     Free((void **)&SZSArray);
                 }
-                if (CorrectlyInferred(OptionValues,Signature,
-Target->AnnotatedFormula,FormulaName,ParentAnnotatedFormulae,ListParentNames,
-SZSStatus,FileName,-1,"")) {
-                    AddVerifiedTag(Target->AnnotatedFormula,Signature,
-SZSStatus);
+                if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,FormulaName,
+ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
+                    AddVerifiedTag(Target->AnnotatedFormula,Signature,SZSStatus);
                 } else {
                     OKSoFar = 0;
                 }
@@ -3186,6 +3175,17 @@ NULL) {
         QPRINTF(OptionValues,4)("ERROR: Could not parse %s\n",OptionValues.DerivationFileName);
         exit(EXIT_FAILURE);
     }
+
+//----Convert TCF to TFF for now, because it's not highly supported
+    QPRINTF(OptionValues,4)("WARNING: Converting TCF to TFF these days\n");
+    CopyOfHead = Head;
+    while (CopyOfHead != NULL) {
+        if (GetSyntax(CopyOfHead->AnnotatedFormula) == tptp_tcf) {
+            SetSyntax(CopyOfHead->AnnotatedFormula,tptp_tff);
+        }
+        CopyOfHead = CopyOfHead->Next;
+    }
+
     if (OptionValues.Quietness == 0) {
         printf("Derivation file contents:\n");
         fflush(stdout);
