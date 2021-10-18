@@ -38,6 +38,8 @@ sub(/ +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula> +>  RPAREN
 #----THF: Remove extra ()s around types
         Substitutions += \
 sub(/LPAREN \( +<<thf_atom_typing> +<RPAREN ) +</,"",Accumulator);
+        Substitutions += \
+sub(/LPAREN \( +<<thf_atom_typing> +<<thf_unitary_type> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_type> +<RPAREN ) +<RPAREN ) +</,"",Accumulator);
 #----THF: Remove extra ()s around formulae
         Substitutions += \
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulator);
@@ -46,9 +48,21 @@ sub(/<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<RPAREN ) +</,"",A
 #----THF: Add needed ()s around boolean variables
         Substitutions += \
 sub(/ +>  LPAREN \( +>  <thf_logic_formula> +>  <thf_unitary_formula> +>  RPAREN )/,"",Accumulator);
+#----THF: Add needed ()s around equations
+        Substitutions += \
+sub(/ +>  RPAREN ) +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula>/,"",Accumulator);
+#----THF: Add needed ()s around $ite arguments
+        Substitutions += \
+sub(/ +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula> +>  RPAREN )/,"",Accumulator);
     } while (Substitutions > 0);
 }
 END {
+    do {
+        Substitutions = 0;
+#----Too subtle for diff to remove the context
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +< +>  LPAREN \( +>  <thf_logic_formula> +>  <thf_unitary_formula>/,"",Accumulator);
+    } while (Substitutions > 0);
     if (Accumulator != "") {
         print "::" Accumulator "::";
     }
