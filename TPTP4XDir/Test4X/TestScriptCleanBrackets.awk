@@ -13,6 +13,9 @@ sub(/LPAREN \( +<<fof_logic_formula> +<<fof_unitary_formula> +<RPAREN ) +</,"",A
 #----FOF: Remove extra ()s around negated equalities
         Substitutions += \
 sub(/<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<RPAREN ) +</,"",Accumulated);
+#----FOF: Removed nested ()s in associative formulae
+        Substitutions += \
+sub(/LPAREN \( +<<fof_logic_formula> +<<fof_unitary_formula> +<<fof_unit_formula> +<<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<<fof_binary_formula> +<<fof_binary_assoc> +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
 #----TFF: Remove extra ()s around types
         Substitutions += \
 sub(/LPAREN \( +<<tff_atom_typing> +<RPAREN ) +</,"",Accumulated);
@@ -38,6 +41,16 @@ sub(/ +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula> +>  RPAREN
 sub(/LPAREN \( +<<thf_atom_typing> +<RPAREN ) +</,"",Accumulated);
         Substitutions += \
 sub(/LPAREN \( +<<thf_atom_typing> +<<thf_unitary_type> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_type> +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/<thf_unitary_type> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_type> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_type> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_type> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_type> +<<thf_unitary_formula> +<<thf_unitary_type> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/<thf_unitary_type> +\|  <thf_apply_type><thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_assoc> +<RPAREN ) +</,"",Accumulated);
 #----THF: Remove extra ()s around formulae
         Substitutions += \
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
@@ -64,6 +77,8 @@ function CleanLostContext(Accumulated) {
     do {
         Substitutions = 0;
 #----Too subtle for diff to remove the context
+        Substitutions += \
+sub(/<tff_unitary_formula> +<LPAREN \( +<<tff_logic_formula> +< +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula>/,"",Accumulated);
         Substitutions += \
 sub(/LPAREN \( +<<tff_logic_formula> +<<tff_unitary_formula> +< +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula>/,"",Accumulated);
         Substitutions += \
