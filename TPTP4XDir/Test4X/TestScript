@@ -45,6 +45,7 @@ foreach PathName ($*)
         $BNFParser < $OutputDir/$FileName | sed -e 's/^[^0-9]*[0-9] //' > $OutputDir/$FileName.parsed
         echo "TRYING: Parsing       Formatted   version            for $FileName"
         $BNFParser < $OutputDir/$FileName.formatted | sed -e 's/^[^0-9]*[0-9] //' > $OutputDir/$FileName.formatted.parsed
+        echo "DIFF+C: Original  and Formatted   parses             for $FileName"
         diff --suppress-common-lines --side-by-side --expand-tabs $OutputDir/$FileName.parsed $OutputDir/$FileName.formatted.parsed > $OutputDir/$FileName.parsed_diff
         TestScriptCleanBrackets.awk < $OutputDir/$FileName.parsed_diff > $OutputDir/$FileName.parsed_diff.cleaned
         if (`cat $OutputDir/$FileName.parsed_diff.cleaned | wc -l`) then

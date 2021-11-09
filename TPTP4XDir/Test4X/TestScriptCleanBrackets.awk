@@ -16,6 +16,12 @@ sub(/<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<RPAREN ) +</,"",A
 #----FOF: Removed nested ()s in associative formulae
         Substitutions += \
 sub(/LPAREN \( +<<fof_logic_formula> +<<fof_unitary_formula> +<<fof_unit_formula> +<<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<<fof_binary_formula> +<<fof_binary_assoc> +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
+#----FOF: Remove excess brackets in associative binary formulae
+        Substitutions += \
+sub(/LPAREN \( +<<fof_logic_formula> +<<fof_unitary_formula> +<<fof_unit_formula> +<<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<<fof_binary_formula> +<<fof_binary_assoc> +<RPAREN ) +<<fof_unit_formula> +<<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +<<fof_binary_formula> +<<fof_binary_assoc> +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
+#----FOF: Added brackets around inequalities, diff gets confused
+        Substitutions += \
+sub(/<fof_unitary_formula> +<LPAREN \( +<<fof_logic_formula> +< +>  <fof_unitary_formula> +>  LPAREN \( +>  <fof_logic_formula>/,"",Accumulated);
 #----TFF: Remove extra ()s around types
         Substitutions += \
 sub(/LPAREN \( +<<tff_atom_typing> +<RPAREN ) +</,"",Accumulated);
@@ -36,6 +42,7 @@ sub(/ +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula> +>  RPAREN
 #----TFF: Add needed ()s around quantified equations
         Substitutions += \
 sub(/ +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula> +>  RPAREN )/,"",Accumulated);
+
 #----THF: Remove extra ()s around types
         Substitutions += \
 sub(/LPAREN \( +<<thf_atom_typing> +<RPAREN ) +</,"",Accumulated);
@@ -55,7 +62,19 @@ sub(/<thf_unitary_type> +\|  <thf_apply_type><thf_unitary_formula> +<LPAREN \( +
         Substitutions += \
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
         Substitutions += \
+sub(/<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_unary_formula> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
 sub(/<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<RPAREN ) +</,"",Accumulated);
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unary_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
+#----THF: Remove extra ()s around negated formulae
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
+#----THF: Merge quantifications
+#        Substitutions += \
+#sub(/RBRKT ] +\|  COMMA ,COLON : +<<thf_unit_formula> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_quantified_formula> +<<thf_quantification> +<<thf_quantifier> +<<th0_quantifier> +<CARET \^ +<LBRKT \[ +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
+#        Substitutions += \
+#sub(/RBRKT ] +\|  COMMA ,COLON : +<<thf_unit_formula> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_quantified_formula> +<<thf_quantification> +<<thf_quantifier> +<<fof_quantifier> +<EXCLAMATION ! +<LBRKT \[ +</,"",Accumulated);
 #----THF: Add needed ()s around boolean variables
         Substitutions += \
 sub(/ +>  LPAREN \( +>  <thf_logic_formula> +>  <thf_unitary_formula> +>  RPAREN )/,"",Accumulated);
