@@ -58,6 +58,7 @@ sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_type
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_type> +<<thf_unitary_formula> +<<thf_unitary_type> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
         Substitutions += \
 sub(/<thf_unitary_type> +\|  <thf_apply_type><thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_binary_formula> +<<thf_binary_assoc> +<RPAREN ) +</,"",Accumulated);
+
 #----THF: Remove extra ()s around formulae
         Substitutions += \
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
@@ -70,32 +71,29 @@ sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unary_formula> +<<thf_unitary_formul
 #----THF: Remove extra ()s around negated formulae
         Substitutions += \
 sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_unitary_formula> +<RPAREN ) +</,"",Accumulated);
-#----THF: Merge quantifications
-#        Substitutions += \
-#sub(/RBRKT ] +\|  COMMA ,COLON : +<<thf_unit_formula> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_quantified_formula> +<<thf_quantification> +<<thf_quantifier> +<<th0_quantifier> +<CARET \^ +<LBRKT \[ +<RPAREN ) +<RPAREN ) +</,"",Accumulated);
-#        Substitutions += \
-#sub(/RBRKT ] +\|  COMMA ,COLON : +<<thf_unit_formula> +<<thf_unitary_formula> +<LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +<<thf_quantified_formula> +<<thf_quantification> +<<thf_quantifier> +<<fof_quantifier> +<EXCLAMATION ! +<LBRKT \[ +</,"",Accumulated);
+
 #----THF: Add needed ()s around boolean variables
         Substitutions += \
 sub(/ +>  LPAREN \( +>  <thf_logic_formula> +>  <thf_unitary_formula> +>  RPAREN )/,"",Accumulated);
-        Substitutions += \
-sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +< +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula>/,"",Accumulated);
 #----THF: Add needed ()s around equations
         Substitutions += \
 sub(/ +>  RPAREN ) +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula>/,"",Accumulated);
 #----THF: Add needed ()s around $ite arguments
         Substitutions += \
 sub(/ +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula> +>  RPAREN )/,"",Accumulated);
+
 #DEBUG print "!!" Accumulated "!!";
     } while (Substitutions > 0);
     return(Accumulated);
 }
 
+#----Too subtle for diff to remove the context
 function CleanLostContext(Accumulated) {
 
     do {
         Substitutions = 0;
-#----Too subtle for diff to remove the context
+        Substitutions += \
+sub(/LPAREN \( +<<thf_logic_formula> +<<thf_unitary_formula> +< +>  <thf_unitary_formula> +>  LPAREN \( +>  <thf_logic_formula>/,"",Accumulated);
         Substitutions += \
 sub(/<tff_unitary_formula> +<LPAREN \( +<<tff_logic_formula> +< +>  <tff_unitary_formula> +>  LPAREN \( +>  <tff_logic_formula>/,"",Accumulated);
         Substitutions += \
