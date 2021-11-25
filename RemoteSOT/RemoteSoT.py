@@ -35,13 +35,6 @@ DEFAULT_URL_PARAMETERS = {
     "ProblemSource": (None,'UPLOAD')
     }
 #--------------------------------------------------------------------------------------------------
-def runRemoteSoT(urlParameters):
-
-    print(urlParameters)
-
-    requestResult = requests.post(SystemOnTPTPFormReplyURL,files=urlParameters)
-    print(requestResult.text)
-#--------------------------------------------------------------------------------------------------
 def parseCommandLine(args: List[str]):
 
     urlParameters = DEFAULT_URL_PARAMETERS
@@ -50,13 +43,13 @@ def parseCommandLine(args: List[str]):
 #----Arguments
         args,
 #----Short option definitions
-        'vhfw:mr:q:t:c:l:s:SPp:a:y:',
+        'vhfwmr:q:t:c:l:s:fSPp:a:y:',
 #----Long option definitions
-        ["version", "help", "what", "recommend", "report", "quiet", "time-limit", "auto", \
-"limit", "system", "force", "tstp", "problem", "proxy" ])
+        ["version", "help", "what=", "recommend", "report=", "quiet=", "time-limit", "auto", \
+"limit=", "system=", "force", "tstp", "problem=", "password=", "proxy=" ])
 
     for option, parameter in options:
-        print(f"Option is {option} Parameter is {parameter}")
+#        print(f"Option is ==={option}=== Parameter is ==={parameter}===")
         if option in ("-v", "--version"):
             print(VERSION)
             sys.exit()
@@ -65,73 +58,50 @@ def parseCommandLine(args: List[str]):
             sys.exit()
         if option in ("-w", "--what"):
             urlParameters["SubmitButton"] = (None, 'ListSystems')
-            if parameter:
-                urlParameters["ListStatus"] = (None, 'parameter')
+            if option == "--what":
+                urlParameters["ListStatus"] = (None, parameter)
             else:
                 urlParameters["ListStatus"] = (None, 'READY')
             del urlParameters['AutoMode']
             del urlParameters['AutoModeSystemsLimit']
             del urlParameters['AutoModeTimeLimit']
+#----Remove expectation of a file parameter
             urlParameters['ProblemSource'] = (None, 'TPTP')
         if option in ("-m", "--recommend"):
             urlParameters["SubmitButton"] = (None, 'RecommendSystems')
             urlParameters["ReportFlag"] = (None, '-q0')
 #    -r<type><level> --report     - report type (i,c,s,t) at level (0,2)\n \
         if option in ("-r", "--report"):
-            if parameter:
-                if parameter == 'i':
-                    urlParameters["SystemInfo"] = (None, '1')
-                elif parameter == 'c':
-                    urlParameters["Completeness"] = (None, '1')
-                elif parameter == 's':
-                    urlParameters["Soundness"] = (None, '1')
-                elif parameter == 't':
-                    urlParameters["TSTPData"] = (None, '')
+            if parameter == 'i':
+                urlParameters["SystemInfo"] = (None, '1')
+            elif parameter == 'c':
+                urlParameters["Completeness"] = (None, '1')
+            elif parameter == 's':
+                urlParameters["Soundness"] = (None, '1')
+            elif parameter == 't':
+                urlParameters["TSTPData"] = (None, '')
 #TOFIX
-                urlParameters["ReportFlag"] = (None, '-q0')
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["ReportFlag"] = (None, '-q0')
             del urlParameters['AutoMode']
             del urlParameters['AutoModeSystemsLimit']
             del urlParameters['AutoModeTimeLimit']
 #    -q<quietness>   --quiet      - control amount of output\n \
         if option in ("-q", "--quiet"):
-            if parameter:
-                urlParameters["QuietFlag"] = (None, '-q'+parameter)
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["QuietFlag"] = (None, '-q'+parameter)
 #    -t<timelimit>   --time-limit - CPU time limit for system\n \
         if option in ("-t", "--time-limit"):
-            if parameter:
-                urlParameters["AutoModeTimeLimit"] = (None, parameter)
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["AutoModeTimeLimit"] = (None, parameter)
 #    -c<automode>    --auto       - one of N, E, S\n \
         if option in ("-c", "--auto"):
-            if parameter:
-                urlParameters["AutoMode"] = (None, '-c'+parameter)
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["AutoMode"] = (None, '-c'+parameter)
 #    -l<syslimit>    --limit      - maximal systems for automode\n \
         if option in ("-l", "--limit"):
-            if parameter:
-                urlParameters["AutoModeSystemsLimit"] = (None, parameter)
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["AutoModeSystemsLimit"] = (None, parameter)
 #    -s<system>      --system     - specified system to use\n \
         if option in ("-s", "--system"):
-            if parameter:
-                urlParameters["SubmitButton"] = (None, 'RunSelectedSystems')
-                urlParameters["System___"+parameter] = (None, parameter)
-                urlParameters["TimeLimit___"+parameter] = (None, urlParameters["AutoModeTimeLimit"])
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["SubmitButton"] = (None, 'RunSelectedSystems')
+            urlParameters["System___"+parameter] = (None, parameter)
+            urlParameters["TimeLimit___"+parameter] = (None, urlParameters["AutoModeTimeLimit"][1])
             del urlParameters['AutoMode']
             del urlParameters['AutoModeSystemsLimit']
             del urlParameters['AutoModeTimeLimit']
@@ -143,25 +113,16 @@ def parseCommandLine(args: List[str]):
             urlParameters["X2TPTP"] = (None, '-S')
 #    -p<filename>    --problem    - TPTP problem name\n \
         if option in ("-p", "--problem"):
-            if parameter:
-                urlParameters["ProblemSource"] = (None, 'TPTP')
-                urlParameters["TPTPProblem"] = (None, parameter)
-            else:
-                print(USAGE)
-                sys.exit()
+            urlParameters["ProblemSource"] = (None, 'TPTP')
+            urlParameters["TPTPProblem"] = (None, parameter)
 #    -y<proxy:port>  --proxy      - use this proxy:port\n \
         if option in ("-y", "--proxy"):
-            if parameter:
 #TODO not used yet
-                ProxyAndPort = parameter
-            else:
-                print(USAGE)
-                sys.exit()
+            ProxyAndPort = parameter
 #    <File name>                  - if not TPTP problem (-- for stdin)"
-    if urlParameters["ProblemSource"][0] == 'UPLOAD':
+    if urlParameters["ProblemSource"][1] == 'UPLOAD':
         if arguments:
-            urlParameters["UPLOADProblem"] = (None, arguments[0])
-            print(f"The file is {urlParameters['UPLOADProblem']}")
+            urlParameters["UPLOADProblem"] = open(arguments[0], 'r')
         else:
             print(USAGE)
             sys.exit()
@@ -176,7 +137,9 @@ def main() -> None:
         sys.exit()
     urlParameters = parseCommandLine(args)
 
-    runRemoteSoT(urlParameters)
+#    print(urlParameters)
+    requestResult = requests.post(SystemOnTPTPFormReplyURL,files=urlParameters)
+    print(requestResult.text)
 #--------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()

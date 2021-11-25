@@ -365,9 +365,8 @@ char * NumberNamesFormat,FILE * OutputHandle) {
 strstr(AnnotatedFormula->AnnotatedFormulaUnion.Comment,"% File     :") ==
 AnnotatedFormula->AnnotatedFormulaUnion.Comment) {
             do {
-                FreeAnnotatedFormula(&AnnotatedFormula);
-                AnnotatedFormula = ParseAndUseAnnotatedFormula(InputStream,
-Signature);
+                FreeAnnotatedFormula(&AnnotatedFormula,Signature);
+                AnnotatedFormula = ParseAndUseAnnotatedFormula(InputStream,Signature);
             } while (GetSyntax(AnnotatedFormula) == blank_line ||
 (GetSyntax(AnnotatedFormula) == comment && strstr(AnnotatedFormula->
 AnnotatedFormulaUnion.Comment,"%---------------------------------") !=
@@ -415,7 +414,7 @@ NumberNamesFormat,&NumberNamesIndex);
 OutputHandle,IncludeFilter,&LastNodeType);
             }
         }
-        FreeAnnotatedFormula(&AnnotatedFormula);
+        FreeAnnotatedFormula(&AnnotatedFormula,Signature);
     }
 //----Free names buffer
     if (!Options.AllowDuplicateNames) {
@@ -494,8 +493,8 @@ strstr(Options.Transformations,"uniquenames") != NULL,NumberNamesFormat,&NumberN
         StandardizeListOfAnnotatedTSTPNodes(AllAnnotatedFormulae);
     }
 //----Count number of each type
-    NumberOfFOF = ListCount(AllAnnotatedFormulae,fof_nodes);
-    NumberOfCNF = ListCount(AllAnnotatedFormulae,cnf_nodes);
+    NumberOfFOF = ListCount(Signature,AllAnnotatedFormulae,fof_nodes);
+    NumberOfCNF = ListCount(Signature,AllAnnotatedFormulae,cnf_nodes);
     if (strstr(Options.Transformations,"add_equality") != NULL &&
 (EqualityAxioms = AddEqualityAxioms(Options,Signature,NumberOfFOF,NumberOfCNF)) != NULL) {
         AllAnnotatedFormulae = AppendListsOfAnnotatedTSTPNodes(AllAnnotatedFormulae,
@@ -504,8 +503,8 @@ EqualityAxioms);
     if (Options.Quietness < 3) {
 //----Burst out conjectures
         if (strstr(Options.Transformations,"single_conjectures") != NULL) {
-            Conjectures = SelectListOfAnnotatedFormulaeWithType(
-&AllAnnotatedFormulae,conjecture,1);
+            Conjectures = SelectListOfAnnotatedFormulaeWithType(&AllAnnotatedFormulae,conjecture,
+1,Signature);
             LastNext = GetLastNext(&AllAnnotatedFormulae);
             while (Conjectures != NULL) {
                 if ((OutputHandle = OpenOutputFILE(Options,InputStream->FileName,
@@ -524,15 +523,15 @@ OutputFileName);
                     sprintf(ErrorMessage,"Could not open output for %s\n",InputStream->FileName);
                     ReportError("OSError",ErrorMessage,1);
                 }
-                FreeAListNode(&ThisConjecture);
+                FreeAListNode(&ThisConjecture,Signature);
             }
-            FreeListOfAnnotatedFormulae(&Conjectures);
+            FreeListOfAnnotatedFormulae(&Conjectures,Signature);
         } else {
             PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,AllAnnotatedFormulae,
 Options.Format,Options.Pretty);
         }
     }
-    FreeListOfAnnotatedFormulae(&AllAnnotatedFormulae);
+    FreeListOfAnnotatedFormulae(&AllAnnotatedFormulae,Signature);
 }
 //-------------------------------------------------------------------------------------------------
 void ReformatFile(OptionsType Options,char * FileName,char * IncludeFilter,
