@@ -51,11 +51,11 @@ int main(int argc, char *argv[]) {
     LISTNODE Head;
     SIGNATURE Signature;
     ROOTLIST RootListHead;
-    TreeStatisticsRecordType Statistics;
+    SolutionStatisticsType Statistics;
 
     ArgOffset = 0;
 
-    if (argc >= 3 && !strcmp(argv[ArgOffset+1],"-t")) {
+    if (argc > ArgOffset+2 && !strcmp(argv[ArgOffset+1],"-t")) {
         TimeLimit = atoi(argv[ArgOffset+2]);
         ArgOffset += 2;
     } else {
@@ -73,23 +73,25 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    Signature = NewSignature();
+    Signature = NewSignatureWithTypes();
     SetNeedForNonLogicTokens(0);
     SetAllowFreeVariables(1);
-    Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL);
-    if ((RootListHead = BuildRootList(Head)) != NULL) {
-//DEBUG PrintRootList(stdout,RootListHead);
-        if (GetTreeStatistics(RootListHead,&Statistics) != NULL) {
-            PrintTreeStatistics(stdout,Statistics);
+    if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) != NULL) {
+        RemovedUnusedSymbols(Signature);
+        Statistics = GetSolutionStatistics(Head,Signature,&RootListHead);
+// PrintRootList(stdout,RootListHead);
+// PrintSolutionStatistics(stdout,Statistics);
+        if (Statistics.Type != Non && Statistics.Type != nonszsoutput) {
+            PrintSolutionStatistics(stdout,Statistics);
         } else {
             printf("ERROR: MakeTreeStats fails\n");
         }
-        FreeRootList(&RootListHead,1);
+        FreeRootList(&RootListHead,1,Signature);
         assert(RootListHead == NULL);
     } else {
         printf("ERROR: BuildRootList fails\n");
     }
-    FreeListOfAnnotatedFormulae(&Head);
+    FreeListOfAnnotatedFormulae(&Head,Signature);
     assert(Head == NULL);
 
     return(0);

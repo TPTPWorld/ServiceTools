@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
@@ -24,32 +25,43 @@
 char * IsFOFEPRCommandFromTPTPHome = "SPCs/IsFOFEPR";
 char * IsFOFEPRCommandFlags = " -q --";
 char * DefaultTPTPHome = "/home/tptp";
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void XCPUHandler(int TheSignal) {
 
     printf("ERROR: MakeTreeStats ran out of CPU time\n");
     exit(EXIT_FAILURE);
 
 }
-//-----------------------------------------------------------------------------
-void DetermineTHFSPC(StatisticsType Statistics,String SPC) {
+//-------------------------------------------------------------------------------------------------
+void DetermineEqualityPresence(StatisticsType Statistics,String SPC) {
 
     if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0) {
         strcat(SPC,"_NEQ");
     } else {
         strcat(SPC,"_EQU");
     }
+}
+//-------------------------------------------------------------------------------------------------
+void DetermineArithmeticPresence(StatisticsType Statistics,String SPC) {
 
-    if (Statistics.SymbolStatistics.NumberOfMathPredicates == 0 &&
-Statistics.SymbolStatistics.NumberOfMathFunctions == 0 && 
-Statistics.SymbolStatistics.NumberOfNumbers == 0 &&
-Statistics.ConnectiveStatistics.NumberOfMathVariables == 0) {
-        strcat(SPC,"_NAR");
-    } else {
+    if (
+Statistics.FormulaStatistics.NumberOfMathAtoms > 0 ||
+Statistics.FormulaStatistics.NumberOfMathTerms > 0 ||
+Statistics.FormulaStatistics.NumberOfNumbers > 0 ||
+Statistics.ConnectiveStatistics.NumberOfMathVariables > 0 ||
+Statistics.SymbolStatistics.NumberOfMathTypes > 0) {
         strcat(SPC,"_ARI");
+    } else {
+        strcat(SPC,"_NAR");
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+void DetermineTHFSPC(StatisticsType Statistics,String SPC) {
+
+    DetermineEqualityPresence(Statistics,SPC);
+    DetermineArithmeticPresence(Statistics,SPC);
+}
+//-------------------------------------------------------------------------------------------------
 void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 
 //DEBUG printf("NumberOfMathPredicates %.0f NumberOfEqualityAtoms %.0f NumberOfPredicates %.0f NumberOfMathFunctions %.0f NumberOfNumbers %.0f NumberOfFunctors %.0f\n",Statistics.NumberOfMathPredicates,Statistics.NumberOfEqualityAtoms,Statistics.NumberOfPredicates,Statistics.NumberOfMathFunctions,Statistics.NumberOfNumbers,Statistics.NumberOfFunctors);
@@ -60,29 +72,17 @@ void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 //        strcat(SPC,"_EPR");
 //    } else {
 //        strcat(SPC,"_RFO");
-    if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0) {
-        strcat(SPC,"_NEQ");
+    DetermineEqualityPresence(Statistics,SPC);
 //    } else if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 
 //Statistics.NumberOfAtoms) {
 //        strcat(SPC,"_PEQ");
 //    } else {
 //        strcat(SPC,"_SEQ");
 //    }
-    } else {
-        strcat(SPC,"_EQU");
-    }
-//    }
 
-    if (Statistics.SymbolStatistics.NumberOfMathPredicates == 0 &&
-Statistics.SymbolStatistics.NumberOfMathFunctions == 0 && 
-Statistics.SymbolStatistics.NumberOfNumbers == 0 &&
-Statistics.ConnectiveStatistics.NumberOfMathVariables == 0) {
-        strcat(SPC,"_NAR");
-    } else {
-        strcat(SPC,"_ARI");
-    }
+    DetermineArithmeticPresence(Statistics,SPC);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
 
     String IsFOFEPRCommand;
@@ -91,7 +91,8 @@ int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
     int Status;
 
 //----Functions and (variables or equality) => NO
-    if (Statistics.SymbolStatistics.MaxFunctorArity >= 1 &&
+    if (
+Statistics.SymbolStatistics.MaxFunctorArity > 0 &&
 (Statistics.SymbolStatistics.NumberOfVariables > 0 || 
  Statistics.FormulaStatistics.NumberOfEqualityAtoms > 0)) {
         return(0);
@@ -129,7 +130,7 @@ int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
         return(0);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void DetermineFOFSPC(LISTNODE Head,SIGNATURE Signature,
 StatisticsType Statistics,String SPC) {
 
@@ -152,16 +153,17 @@ Statistics.FormulaStatistics.NumberOfAtoms) {
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void DetermineCNFSPC(StatisticsType Statistics,String SPC) {
 
     if (Statistics.SymbolStatistics.NumberOfPredicates == 
 Statistics.SymbolStatistics.NumberOfPropositions) {
         strcat(SPC,"_PRP");
     } else {
-        if (Statistics.SymbolStatistics.MaxFunctorArity < 1 ||
+        if (
+Statistics.SymbolStatistics.MaxFunctorArity < 1 ||
 (Statistics.SymbolStatistics.NumberOfVariables == 0 && 
-Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0)) {
+ Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0)) {
             strcat(SPC,"_EPR");
         } else {
             strcat(SPC,"_RFO");
@@ -193,8 +195,9 @@ Statistics.FormulaStatistics.NumberOfHornClauses) {
         } else if (strstr(SPC,"_SAT_") != NULL) {
             if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0) {
                strcat(SPC,"_NEQ");
-            } else if (Statistics.FormulaStatistics.NumberOfEqualityAtoms 
-== Statistics.FormulaStatistics.NumberOfAtoms && 
+            } else if (
+Statistics.FormulaStatistics.NumberOfEqualityAtoms == 
+Statistics.FormulaStatistics.NumberOfAtoms && 
 Statistics.FormulaStatistics.NumberOfFormulae ==
 Statistics.FormulaStatistics.NumberOfUnitFormulae) {
                 strcat(SPC,"_PEQ_UEQ");
@@ -207,7 +210,7 @@ Statistics.FormulaStatistics.NumberOfUnitFormulae) {
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Determine if THM or SAT based on existence of a conjecture
 void DetermineProvabability(char * Status,int HasAConjecture,String SPC) {
 
@@ -220,7 +223,7 @@ void DetermineProvabability(char * Status,int HasAConjecture,String SPC) {
         strcat(SPC,"SAT");
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Here it is done right, as opposed to SPCForTPTPProblem which puts
 //----Unknowns without a conjecture into NKC.
 void DetermineSPC(LISTNODE Head,SIGNATURE Signature,SyntaxType Syntax,
@@ -232,8 +235,8 @@ StatisticsType Statistics,char * Status,int HasAConjecture,String SPC) {
 
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
-        if (Statistics.ConnectiveStatistics.NumberOfPiBinders > 0 ||
-Statistics.ConnectiveStatistics.NumberOfTypedEquations > 0 ||
+        if (
+Statistics.ConnectiveStatistics.NumberOfTypedEqualitySymbols > 0 ||
 Statistics.ConnectiveStatistics.NumberOfPis > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmas > 0 ||
 Statistics.ConnectiveStatistics.NumberOfChoices > 0 ||
@@ -253,10 +256,20 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTHFSPC(Statistics,SPC);
     } else if (Syntax == tptp_tff) {
-        if (Statistics.ConnectiveStatistics.NumberOfPiBinders > 0) {
-            strcpy(SPC,"TF1_");
+        if (
+Statistics.FormulaStatistics.NumberOfNestedFormulae > 0 ||
+Statistics.SymbolStatistics.NumberOfBooleanVariables > 0 ||
+Statistics.FormulaStatistics.NumberOfTuples > 0 ||
+Statistics.FormulaStatistics.NumberOfITEs > 0 ||
+Statistics.FormulaStatistics.NumberOfLets > 0) {
+            strcpy(SPC,"TX");
         } else {
-            strcpy(SPC,"TF0_");
+            strcpy(SPC,"TF");
+        }
+        if (Statistics.ConnectiveStatistics.NumberOfPiBinders > 0) {
+            strcat(SPC,"1_");
+        } else {
+            strcat(SPC,"0_");
         }
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTFFSPC(Statistics,SPC);
@@ -282,8 +295,7 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
             ASyntax++;
         }
         ASyntax = SyntaxTypes;
-        while (*ASyntax != '\0' &&
-(CRPosition = strchr(ASyntax,'\n')) != NULL) {
+        while (*ASyntax != '\0' && (CRPosition = strchr(ASyntax,'\n')) != NULL) {
             *CRPosition = '\0';
             if (!strcmp(ASyntax,"THF")) {
                 strcat(SPC,"TH0");
@@ -304,8 +316,8 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
         strcpy(SPC,"UNK");
     }
 }
-//-----------------------------------------------------------------------------
-char * GetStatusFromHeader(char * FileName) {
+//-------------------------------------------------------------------------------------------------
+char * GetStatusFromHeader(char * FileName,SIGNATURE Signature) {
 
     LISTNODE Header;
     LISTNODE Target;
@@ -316,11 +328,10 @@ char * GetStatusFromHeader(char * FileName) {
     if ((Header = ParseFileOfHeader(FileName)) != NULL) {
         Target = Header;
         while (Target != NULL && Status == NULL) {
-            if (GetSyntax(Target->AnnotatedFormula) == comment &&
-strstr(Target->AnnotatedFormula->AnnotatedFormulaUnion.Comment,"% Status ") != 
-NULL &&
-(Status = strchr(Target->AnnotatedFormula->AnnotatedFormulaUnion.Comment,':')) != 
-NULL) {
+            if (
+GetSyntax(Target->AnnotatedFormula) == comment &&
+strstr(Target->AnnotatedFormula->AnnotatedFormulaUnion.Comment,"% Status ") != NULL &&
+(Status = strchr(Target->AnnotatedFormula->AnnotatedFormulaUnion.Comment,':')) != NULL) {
                 strcpy(StatusLine,Status+2);
                 while (StatusLine[strlen(StatusLine)-1] == ' ') {
                     StatusLine[strlen(StatusLine)-1] = '\0';
@@ -329,23 +340,23 @@ NULL) {
             }
             Target = Target->Next;
         }
-        FreeListOfAnnotatedFormulae(&Header);
+        FreeListOfAnnotatedFormulae(&Header,Signature);
     }
     return(Status);
 }
-//-----------------------------------------------------------------------------
-void RemoveLogicSpecifications(LISTNODE * Head) {
+//-------------------------------------------------------------------------------------------------
+void RemoveLogicSpecifications(LISTNODE * Head,SIGNATURE Signature) {
 
     while (*Head != NULL) {
         if (GetRole((*Head)->AnnotatedFormula,NULL) == logic) {
-printf("Removing %s",GetName((*Head)->AnnotatedFormula,NULL));
-            FreeAListNode(Head);
+// printf("Removing %s",GetName((*Head)->AnnotatedFormula,NULL));
+            FreeAListNode(Head,Signature);
         } else {
             Head = &((*Head)->Next);
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     LISTNODE Head;
@@ -371,13 +382,13 @@ int main(int argc, char *argv[]) {
     Signature = NewSignature();
     SetNeedForNonLogicTokens(0);
     if ((Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL)) != NULL) {
-        RemoveLogicSpecifications(&Head);
+        RemoveLogicSpecifications(&Head,Signature);
         Statistics = GetListStatistics(Head,Signature);
-        Status = GetStatusFromHeader(argv[1]);
-        DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,
-ThereIsAConjecture(Head),SPC);
+        Status = GetStatusFromHeader(argv[1],Signature);
+        DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,ThereIsAConjecture(Head),
+SPC);
         printf("%s\n",SPC);
-        FreeListOfAnnotatedFormulae(&Head);
+        FreeListOfAnnotatedFormulae(&Head,Signature);
         assert(Head == NULL);
     } else {
         printf("ERROR: Could not parse %s\n",argv[1]);
@@ -386,4 +397,4 @@ ThereIsAConjecture(Head),SPC);
     FreeSignature(&Signature);
     return(0);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

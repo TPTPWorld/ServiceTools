@@ -58,6 +58,8 @@ int main(int argc, char *argv[]) {
     char * Symbols;
     char * Predicates;
     char * Functors;
+    char * Variables;
+    char * Types;
     SuperString Name;
 
 //----Were we given any arguments at all?  If not, die.
@@ -106,7 +108,7 @@ int main(int argc, char *argv[]) {
             while (Target != NULL) {
                 Symbols = (char *)Malloc(sizeof(String));
                 Predicates = GetAnnotatedFormulaSymbolUsage(Target->
-AnnotatedFormula,&Symbols,&Functors);
+AnnotatedFormula,&Symbols,&Functors,&Variables,&Types);
                 PrologFormat(GetName(Target->AnnotatedFormula,Name),Predicates,
 Functors);
                 Free((void **)&Symbols);
@@ -116,13 +118,13 @@ Functors);
         case all:
             Symbols = (char *)Malloc(sizeof(String));
             Predicates = GetListOfAnnotatedFormulaSymbolUsage(Head,
-&Symbols,&Functors);
+&Symbols,&Functors,&Variables,&Types);
             PrologFormat("all",Predicates,Functors);
             Free((void **)&Symbols);
             break;
     }
 
-    FreeListOfAnnotatedFormulae(&Head);
+    FreeListOfAnnotatedFormulae(&Head,Signature);
     FreeSignature(&Signature);
     return(EXIT_SUCCESS);
 }
