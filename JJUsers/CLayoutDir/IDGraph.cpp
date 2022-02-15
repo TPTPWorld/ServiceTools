@@ -225,7 +225,7 @@ void IDGraph::SVGPrintGraph (ostream &out) {
       << "    <g id=\"nodes\" fill=\"white\" stroke=\"black\" stroke-width=\"0.1cm\" >" << endl;  
 
   // print nodes
-  StatusType SubStatus;
+  TERM SubStatus;
   for (int i = 0; i < (int)node.size(); i++) {    
     if (!node[i]->isVirtual()) {
       char *id = node[i]->getID();

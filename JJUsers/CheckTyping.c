@@ -15,9 +15,8 @@
 #include "List.h"
 #include "Tree.h"
 #include "PrintTSTP.h"
-//-----------------------------------------------------------------------------
-typedef enum {all,variables,nonvariables,predicates,functions,types} 
-SymbolTypes;
+//-------------------------------------------------------------------------------------------------
+typedef enum {all,realvariables,nonvariables,predicates,functions,types} SymbolTypes;
 
 typedef struct TypingTag {
     BinaryFormulaType * Typing;
@@ -25,7 +24,7 @@ typedef struct TypingTag {
 } TypingNodeType;
 
 typedef TypingNodeType * TYPINGNODE;
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----TypeCollector must be address of a malloced String
 int GetDeclaredTypes(LISTNODE Head,char ** TypeCollector,
 TYPINGNODE * AddTypingNodeHere) {
@@ -57,8 +56,7 @@ AnnotatedTSTPFormula.FormulaWithVariables->Formula;
             if (Formula->Type == binary) {
 //----If it's a type declaration, then we're interested. (It could be a subtype
 //----or what else?)
-                if (Formula->FormulaUnion.BinaryFormula.Connective ==
-typedeclaration) {
+                if (Formula->FormulaUnion.BinaryFormula.Connective == typecolon) {
                     TypingFormula = &(Formula->FormulaUnion.BinaryFormula);
 //----First check if a type has been declared (of type $tType)
                     if (TypingFormula->RHS->Type == atom &&
@@ -140,7 +138,7 @@ tptp,1);
 //DEBUG }
     return(NumberOfErrors);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CheckEachSymbolIsTyped(char * Symbols,TYPINGNODE TypingsListHead,
 int * NumberOfSymbols) {
 
@@ -180,7 +178,7 @@ GetSymbol(TypingNode->Typing->LHS->FormulaUnion.Atom))) {
     }
     return(NumberOfErrors);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CheckEachVariableIsTypedInFormula(char * Types,FORMULA Formula,
 int * NumberOfSymbols) {
 
@@ -249,7 +247,7 @@ Formula->FormulaUnion.LetFormula.LetBody,&NumberOfSymbolsInFormula);
     }
     return(NumberOfErrors);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int CheckEachVariableIsTyped(char * Types,LISTNODE Head,int * NumberOfSymbols) {
 
     int NumberOfErrors;
@@ -268,13 +266,15 @@ FormulaWithVariables->Formula,&NumberOfSymbolsInFormula);
     }
     return(NumberOfErrors);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void DoCheckTyping(LISTNODE Head,char * FileName,SymbolTypes WhatToCheck) {
 
     char * Types;
     char * Symbols;
     char * Predicates;
     char * Functors;
+    char * Variables;
+    char * TypeSymbols;
     TYPINGNODE TypingsListHead;
     TYPINGNODE TypingNode;
     int NumberOfErrors;
@@ -285,39 +285,33 @@ void DoCheckTyping(LISTNODE Head,char * FileName,SymbolTypes WhatToCheck) {
     Types = (char *)Malloc(sizeof(String));
     TypingsListHead = NULL;
     NumberOfErrors = GetDeclaredTypes(Head,&Types,&TypingsListHead);
-    if (WhatToCheck == all || WhatToCheck == nonvariables || 
-WhatToCheck == predicates || WhatToCheck == functions) {
+    if (WhatToCheck == all || WhatToCheck == nonvariables || WhatToCheck == predicates || 
+WhatToCheck == functions) {
         Symbols = (char *)Malloc(sizeof(String));
-        Predicates = GetListOfAnnotatedFormulaSymbolUsage(Head,&Symbols,
-&Functors);
+        Predicates = GetListOfAnnotatedFormulaSymbolUsage(Head,&Symbols,&Functors,&Variables,
+&TypeSymbols);
     } else {
         Symbols = NULL;
     }
 
     switch (WhatToCheck) {
         case all:
-            NumberOfErrors += CheckEachSymbolIsTyped(Symbols,TypingsListHead,
-&NumberOfSymbols);
-            NumberOfErrors +=  CheckEachVariableIsTyped(Types,Head,
-&NumberOfVariables);
+            NumberOfErrors += CheckEachSymbolIsTyped(Symbols,TypingsListHead,&NumberOfSymbols);
+            NumberOfErrors +=  CheckEachVariableIsTyped(Types,Head,&NumberOfVariables);
             NumberOfSymbols += NumberOfVariables;
             break;
-        case variables:
-            NumberOfErrors += CheckEachVariableIsTyped(Types,Head,
-&NumberOfSymbols);
+        case realvariables:
+            NumberOfErrors += CheckEachVariableIsTyped(Types,Head,&NumberOfSymbols);
             break;
         case nonvariables:
-            NumberOfErrors += CheckEachSymbolIsTyped(Symbols,TypingsListHead,
-&NumberOfSymbols);
+            NumberOfErrors += CheckEachSymbolIsTyped(Symbols,TypingsListHead,&NumberOfSymbols);
             break;
         case predicates:
             *Functors = '\0';
-            NumberOfErrors += CheckEachSymbolIsTyped(Predicates,TypingsListHead,
-&NumberOfSymbols);
+            NumberOfErrors += CheckEachSymbolIsTyped(Predicates,TypingsListHead,&NumberOfSymbols);
             break;
         case functions:
-            NumberOfErrors += CheckEachSymbolIsTyped(Functors,TypingsListHead,
-&NumberOfSymbols);
+            NumberOfErrors += CheckEachSymbolIsTyped(Functors,TypingsListHead,&NumberOfSymbols);
             break;
         case types:
             printf("%s",Types);
@@ -326,8 +320,7 @@ WhatToCheck == predicates || WhatToCheck == functions) {
             printf("ERROR: How the fuck did I get here?\n");
             break;
     }
-    printf("%s: %d symbols checked, %d errors\n",FileName,NumberOfSymbols,
-NumberOfErrors);
+    printf("%s: %d symbols checked, %d errors\n",FileName,NumberOfSymbols,NumberOfErrors);
 
     while (TypingsListHead != NULL) {
         TypingNode = TypingsListHead;
@@ -339,7 +332,7 @@ NumberOfErrors);
         Free((void **)&Symbols);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     SIGNATURE Signature;
@@ -355,7 +348,7 @@ int main(int argc, char *argv[]) {
             WhatToCheck = all;
             ArgOffset++;
         } else if (!strcmp(argv[ArgOffset],"-variables")) {
-            WhatToCheck = variables;
+            WhatToCheck = realvariables;
             ArgOffset++;
         } else if (!strcmp(argv[ArgOffset],"-nonvariables")) {
             WhatToCheck = nonvariables;
@@ -382,7 +375,7 @@ int main(int argc, char *argv[]) {
             Signature = NewSignature();
             Head = ParseFileOfFormulae(argv[ArgOffset],NULL,Signature,1,NULL);
             DoCheckTyping(Head,argv[ArgOffset],WhatToCheck);
-            FreeListOfAnnotatedFormulae(&Head);
+            FreeListOfAnnotatedFormulae(&Head,Signature);
             FreeSignature(&Signature);
             ArgOffset++;
         }
@@ -390,10 +383,10 @@ int main(int argc, char *argv[]) {
         Signature = NewSignature();
         Head = ParseFILEOfFormulae("--",stdin,Signature,1,NULL);
         DoCheckTyping(Head,"stdin",WhatToCheck);
-        FreeListOfAnnotatedFormulae(&Head);
+        FreeListOfAnnotatedFormulae(&Head,Signature);
         FreeSignature(&Signature);
     }
 
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

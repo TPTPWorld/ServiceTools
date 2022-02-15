@@ -21,9 +21,9 @@
 #include "Tree.h"
 #include "PrintTSTP.h"
 #include "Interpret.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 typedef enum {tptpform,parentform,longform,shortform,lemmaform} OutputFormType;
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void ProcessCommandLine(int argc,char * argv[],OutputFormType * OutputForm,
 char ** DerivationFileName) {
 
@@ -79,7 +79,7 @@ char ** DerivationFileName) {
         *DerivationFileName = argv[optind];
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * SetOriginalName(ANNOTATEDFORMULA AnnotatedFormula,char * Name) {
 
     SuperString Source;
@@ -97,8 +97,8 @@ char * SetOriginalName(ANNOTATEDFORMULA AnnotatedFormula,char * Name) {
     } 
     return(Name);
 }
-//-----------------------------------------------------------------------------
-ANNOTATEDFORMULA GetInferredForTree(ROOTLIST TargetTree,LISTNODE * Leaves,
+//-------------------------------------------------------------------------------------------------
+ANNOTATEDFORMULA GetInferredForTree(SIGNATURE Signature,ROOTLIST TargetTree,LISTNODE * Leaves,
 ANNOTATEDFORMULA * RefutationRoot) {
 
     LISTNODE Conjectures = NULL;
@@ -109,8 +109,7 @@ ANNOTATEDFORMULA * RefutationRoot) {
     if ((FalseRootNode = GetFalseRootNode(TargetTree)) != NULL) {
         *RefutationRoot = FalseRootNode->AnnotatedFormula;
 //----For refutations extract the conjecture from the leaves
-        Conjectures = SelectListOfAnnotatedFormulaeWithType(Leaves,
-conjecture,1);
+        Conjectures = SelectListOfAnnotatedFormulaeWithType(Leaves,conjecture,1,Signature);
         if (Conjectures != NULL) {
 //DEBUG printf("============ Conjectures\n");
 //----If one conjecture inferred is the conjecture
@@ -131,10 +130,10 @@ conjecture,1);
         printf("%% The conjecture was proved directly\n");
         *RefutationRoot = NULL;
     } 
-    FreeListOfAnnotatedFormulae(&Conjectures);
+    FreeListOfAnnotatedFormulae(&Conjectures,Signature);
     return(Inferred);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void PrintSummary(LISTNODE Leaves,ANNOTATEDFORMULA Inferred,
 OutputFormType OutputForm,SIGNATURE Signature) {
 
@@ -158,12 +157,11 @@ OutputFormType OutputForm,SIGNATURE Signature) {
             strcat(ParentList,Name);
             NumberOfParents++;
 //----Output parent if in parent or tptp form
-            if (OutputForm == tptpform || OutputForm == parentform || 
-OutputForm == lemmaform) {
+            if (OutputForm == tptpform || OutputForm == parentform || OutputForm == lemmaform) {
                 if (OutputForm == lemmaform) {
                     FOFify(Target->AnnotatedFormula,universal);
                     if (DerivedAnnotatedFormula(Target->AnnotatedFormula)) {
-                        SetStatus(Target->AnnotatedFormula,lemma,nonstatus);
+                        SetStatus(Target->AnnotatedFormula,lemma,NULL);
                     }
                 }
                 PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
@@ -176,7 +174,7 @@ OutputForm == lemmaform) {
 
 //----Set the inferred to it's theorem form
     SetOriginalName(Inferred,Name);
-    SetStatus(Inferred,theorem,nonstatus);
+    SetStatus(Inferred,theorem,NULL);
     sprintf(InferenceTerm,"inference(summary,[status(thm)],%s)",ParentList);
     SetSourceFromString(Inferred,Signature,InferenceTerm);
 
@@ -193,7 +191,7 @@ OutputForm == lemmaform) {
         }
     } 
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void AddUndischargedAssumptions(ANNOTATEDFORMULA Inferred,LISTNODE Leaves,
 LISTNODE * Lemmas) {
 
@@ -228,8 +226,8 @@ AssumptionNames[AssumptionNumber]);
         Free((void **)&FormulaAssumptions);
     }
 }
-//-----------------------------------------------------------------------------
-void RemoveDischargedAssumptions(ANNOTATEDFORMULA Inferred,LISTNODE * Leaves) {
+//-------------------------------------------------------------------------------------------------
+void RemoveDischargedAssumptions(SIGNATURE Signature,ANNOTATEDFORMULA Inferred,LISTNODE * Leaves) {
 
     TERM FormulaAssumptionsTerm;
     char * FormulaAssumptions;
@@ -249,7 +247,7 @@ void RemoveDischargedAssumptions(ANNOTATEDFORMULA Inferred,LISTNODE * Leaves) {
         strcat(LeafName,",");
         if (GetRole((*Leaves)->AnnotatedFormula,NULL) == assumption &&
 (FormulaAssumptions == NULL || strstr(FormulaAssumptions,LeafName) == NULL)) {
-            FreeAListNode(Leaves);
+            FreeAListNode(Leaves,Signature);
         } else {
             Leaves = &((*Leaves)->Next);
         }
@@ -258,7 +256,7 @@ void RemoveDischargedAssumptions(ANNOTATEDFORMULA Inferred,LISTNODE * Leaves) {
         Free((void **)&FormulaAssumptions);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     OutputFormType OutputForm;
@@ -281,7 +279,7 @@ int main(int argc, char *argv[]) {
 //DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
 
 //----Build tree
-    RootListHead = BuildRootList(Head);
+    RootListHead = BuildRootList(Head,Signature);
 
     printf("%% SZS status Success for %s\n",DerivationFileName);
     printf("%% SZS output start Summary\n");
@@ -292,7 +290,7 @@ int main(int argc, char *argv[]) {
         GetRootLeafList(TargetTree->TheTree,&Leaves,1);
 //DEBUG printf("============ Leaves\n");
 //DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Signature,Leaves,tptp,1);
-        Inferred = GetInferredForTree(TargetTree,&Leaves,&RefutationRoot);
+        Inferred = GetInferredForTree(Signature,TargetTree,&Leaves,&RefutationRoot);
         Lemmas = NULL;
         if (OutputForm == lemmaform) {
             if (!GetRootLemmaList(TargetTree->TheTree,&Lemmas,0)) {
@@ -306,22 +304,22 @@ int main(int argc, char *argv[]) {
         }
         if (OutputForm == lemmaform) {
             PrintSummary(Lemmas,Inferred,OutputForm,Signature);
-            FreeListOfAnnotatedFormulae(&Lemmas);
+            FreeListOfAnnotatedFormulae(&Lemmas,Signature);
         } else {
-            RemoveDischargedAssumptions(Inferred,&Leaves);
+            RemoveDischargedAssumptions(Signature,Inferred,&Leaves);
 //DEBUG printf("============ Leaves\n");
 //DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Signature,Leaves,tptp,1);
             PrintSummary(Leaves,Inferred,OutputForm,Signature);
         }
-        FreeListOfAnnotatedFormulae(&Leaves);
+        FreeListOfAnnotatedFormulae(&Leaves,Signature);
         TargetTree = TargetTree->Next;
     }
     printf("%% SZS output end Summary\n");
 
 //----Free Willie!
-    FreeRootList(&RootListHead,1);
-    FreeListOfAnnotatedFormulae(&Head);
+    FreeRootList(&RootListHead,1,Signature);
+    FreeListOfAnnotatedFormulae(&Head,Signature);
     FreeSignature(&Signature);
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

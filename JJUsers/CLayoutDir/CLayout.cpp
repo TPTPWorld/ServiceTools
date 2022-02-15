@@ -69,7 +69,7 @@ int main (int argc, char*argv[]) {
     if (GetRole((*Target)->AnnotatedFormula,NULL) == type) {
         Destroy = *Target;
         *Target = (*Target)->Next;
-        FreeAListNode(&Destroy);
+        FreeAListNode(&Destroy,Signature);
     } else {
         Target = &((*Target)->Next);
     }
@@ -110,7 +110,7 @@ int main (int argc, char*argv[]) {
 
   // work on freeing memory and memory leak checking later
   delete idv;
-  FreeListOfAnnotatedFormulae(&Head);
+  FreeListOfAnnotatedFormulae(&Head,Signature);
   FreeSignature(&Signature);
 
   return(EXIT_SUCCESS);

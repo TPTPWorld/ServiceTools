@@ -79,7 +79,8 @@ int main(int argc, char *argv[]) {
     if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) != NULL) {
         RemovedUnusedSymbols(Signature);
         Statistics = GetSolutionStatistics(Head,Signature,&RootListHead);
-// PrintRootList(stdout,RootListHead);
+//DEBUG printf("Try print root list\n");
+//DEBUG PrintRootList(stdout,RootListHead);
 // PrintSolutionStatistics(stdout,Statistics);
         if (Statistics.Type != Non && Statistics.Type != nonszsoutput) {
             PrintSolutionStatistics(stdout,Statistics);

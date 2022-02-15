@@ -13,9 +13,8 @@
 #include "List.h"
 #include "ListStatistics.h"
 #include "PrintTSTP.h"
-//-----------------------------------------------------------------------------
-int HasNegatedConjectureAncestor(ANNOTATEDFORMULA AnnotatedFormula,LISTNODE
-Head) {
+//-------------------------------------------------------------------------------------------------
+int HasNegatedConjectureAncestor(ANNOTATEDFORMULA AnnotatedFormula,LISTNODE Head) {
 
     String AllParentNames;
     int NumberOfParents;
@@ -29,21 +28,17 @@ Head) {
         return(GetRole(AnnotatedFormula,NULL) == negated_conjecture);
     } else {
         for (ParentNumber=0;ParentNumber < NumberOfParents;ParentNumber++) {
-            if (strstr(ParentNames[ParentNumber],"theory(") !=
-ParentNames[ParentNumber]) {
-                Parent = GetAnnotatedFormulaFromListByName(Head,
-ParentNames[ParentNumber]);
+            if (strstr(ParentNames[ParentNumber],"theory(") != ParentNames[ParentNumber]) {
+                Parent = GetAnnotatedFormulaFromListByName(Head,ParentNames[ParentNumber]);
                 if (HasNegatedConjectureAncestor(Parent,Head)) {
                     return(1);
                 }
             }
         }
     }
-
     return(0);
-
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     SIGNATURE Signature;
@@ -51,10 +46,11 @@ int main(int argc, char *argv[]) {
     LISTNODE Target;
     LISTNODE * DiscardTarget;
     PrintFormatType Format;
+    int Pretty;
     int ArgOffset;
     int KeepNonLogicals;
-    int Pretty;
-    StatusType Status,SubStatus;
+    StatusType Status;
+    TERM SubStatus;
 
     Format = tptp;
     Pretty = 1;
@@ -80,21 +76,19 @@ int main(int argc, char *argv[]) {
 
 //----Read in derivation
     SetNeedForNonLogicTokens(KeepNonLogicals);
-    if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) !=
-NULL) {
+    if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) != NULL) {
         Target = Head;
         while (Target != NULL) {
             if (LogicalAnnotatedFormula(Target->AnnotatedFormula)) {
                 Status = GetRole(Target->AnnotatedFormula,&SubStatus);
-                if (Status == derived || SubStatus == derived) {
-                    if (!HasNegatedConjectureAncestor(
-Target->AnnotatedFormula,Head)) {
-                        SetStatus(Target->AnnotatedFormula,lemma,nonstatus);
+                if (Status == derived || !strcmp(GetSymbol(SubStatus),"derived")) {
+                    if (!HasNegatedConjectureAncestor(Target->AnnotatedFormula,Head)) {
+                        SetStatus(Target->AnnotatedFormula,lemma,NULL);
                     } else {
-                        SetStatus(Target->AnnotatedFormula,derived,nonstatus);
+                        SetStatus(Target->AnnotatedFormula,derived,NULL);
                     }
                 } else if (Status != negated_conjecture) {
-                    SetStatus(Target->AnnotatedFormula,axiom,nonstatus);
+                    SetStatus(Target->AnnotatedFormula,axiom,NULL);
                 }
             }
             Target = Target->Next;
@@ -102,19 +96,18 @@ Target->AnnotatedFormula,Head)) {
 //----Discard those that are derived - have some negated conjecture in them
         DiscardTarget = &Head;
         while (*DiscardTarget != NULL) {
-            if ((Status = GetRole((*DiscardTarget)->AnnotatedFormula,
-&SubStatus)) == derived) {
-                FreeAListNode(DiscardTarget);
+            if ((Status = GetRole((*DiscardTarget)->AnnotatedFormula,&SubStatus)) == derived) {
+                FreeAListNode(DiscardTarget,Signature);
             } else {
                 DiscardTarget = &((*DiscardTarget)->Next);
             }
         }
 
-        PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
-        FreeListOfAnnotatedFormulae(&Head);
+        PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,Format,Pretty);
+        FreeListOfAnnotatedFormulae(&Head,Signature);
     } 
     FreeSignature(&Signature);
 
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
