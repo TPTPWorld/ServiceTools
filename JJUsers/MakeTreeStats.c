@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) != NULL) {
         RemovedUnusedSymbols(Signature);
         ParseFileForSZSResults(argv[ArgOffset+1],&SZSResult,&SZSOutput);
-printf("The file claims SZS status %s and SZS output %s\n",SZSResultToUserString(SZSResult),SZSOutputToUserString(SZSOutput));
+//DEBUG printf("The file claims SZS status %s and SZS output %s\n",SZSResultToUserString(SZSResult),SZSOutputToUserString(SZSOutput));
         Statistics = GetSolutionStatistics(Head,Signature,&RootListHead,SZSResult,SZSOutput);
 //DEBUG printf("Try print root list\n");
 //DEBUG PrintRootList(stdout,RootListHead);
@@ -94,7 +94,7 @@ printf("The file claims SZS status %s and SZS output %s\n",SZSResultToUserString
         FreeRootList(&RootListHead,1,Signature);
         assert(RootListHead == NULL);
     } else {
-        printf("ERROR: BuildRootList fails\n");
+        printf("ERROR: Parsing solution fails\n");
     }
     FreeListOfAnnotatedFormulae(&Head,Signature);
     FreeSignature(&Signature);
