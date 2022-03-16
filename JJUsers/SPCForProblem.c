@@ -236,6 +236,8 @@ StatisticsType Statistics,char * Status,int HasAConjecture,String SPC) {
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
         if (
+Statistics.ConnectiveStatistics.NumberOfPiBinders > 0 ||
+Statistics.ConnectiveStatistics.NumberOfSigmaBinders > 0 ||
 Statistics.ConnectiveStatistics.NumberOfTypedEqualitySymbols > 0 ||
 Statistics.ConnectiveStatistics.NumberOfPis > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmas > 0 ||
