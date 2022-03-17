@@ -235,6 +235,13 @@ StatisticsType Statistics,char * Status,int HasAConjecture,String SPC) {
 
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
+//DEBUG printf("PiB %.0f TE %.0f Pi %.0f Sig %.0f Ch %.0f De %.0f\n",
+//DEBUG Statistics.ConnectiveStatistics.NumberOfPiBinders,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfTypedEquations,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfPis,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfSigmas,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfChoices,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfDescriptions);
         if (
 Statistics.ConnectiveStatistics.NumberOfPiBinders > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmaBinders > 0 ||
@@ -243,14 +250,6 @@ Statistics.ConnectiveStatistics.NumberOfPis > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmas > 0 ||
 Statistics.ConnectiveStatistics.NumberOfChoices > 0 ||
 Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
-//DEBUG printf("PiB %.0f TE %.0f Pi %.0f Sig %.0f Ch %.0f De %.0f\n",
-//DEBUG Statistics.ConnectiveStatistics.NumberOfPiBinders,
-//DEBUG Statistics.ConnectiveStatistics.NumberOfTypedEquations,
-//DEBUG Statistics.ConnectiveStatistics.NumberOfPis,
-//DEBUG Statistics.ConnectiveStatistics.NumberOfSigmas,
-//DEBUG Statistics.ConnectiveStatistics.NumberOfChoices,
-//DEBUG Statistics.ConnectiveStatistics.NumberOfDescriptions);
-
             strcpy(SPC,"TH1_");
         } else {
             strcpy(SPC,"TH0_");
@@ -258,6 +257,12 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTHFSPC(Statistics,SPC);
     } else if (Syntax == tptp_tff) {
+//DEBUG printf("NF %d BV %d Tu %d ITE %d Let %d\n",
+//DEBUG Statistics.FormulaStatistics.NumberOfNestedFormulae,
+//DEBUG Statistics.SymbolStatistics.NumberOfBooleanVariables,
+//DEBUG Statistics.FormulaStatistics.NumberOfTuples,
+//DEBUG Statistics.FormulaStatistics.NumberOfITEs,
+//DEBUG Statistics.FormulaStatistics.NumberOfLets);
         if (
 Statistics.FormulaStatistics.NumberOfNestedFormulae > 0 ||
 Statistics.SymbolStatistics.NumberOfBooleanVariables > 0 ||
@@ -347,18 +352,6 @@ strstr(Target->AnnotatedFormula->AnnotatedFormulaUnion.Comment,"% Status ") != N
     return(Status);
 }
 //-------------------------------------------------------------------------------------------------
-void RemoveLogicSpecifications(LISTNODE * Head,SIGNATURE Signature) {
-
-    while (*Head != NULL) {
-        if (GetRole((*Head)->AnnotatedFormula,NULL) == logic) {
-// printf("Removing %s",GetName((*Head)->AnnotatedFormula,NULL));
-            FreeAListNode(Head,Signature);
-        } else {
-            Head = &((*Head)->Next);
-        }
-    }
-}
-//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     LISTNODE Head;
@@ -381,11 +374,13 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    Signature = NewSignature();
+    Signature = NewSignatureWithTypes();
     SetNeedForNonLogicTokens(0);
     if ((Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL)) != NULL) {
-        RemoveLogicSpecifications(&Head,Signature);
+        RemoveAnnotatedFormulaWithType(&Head,Signature,logic);
+        RemovedUnusedSymbols(Signature);
         Statistics = GetListStatistics(Head,Signature);
+PrintListStatistics(stdout,Statistics);
         Status = GetStatusFromHeader(argv[1],Signature);
         DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,ThereIsAConjecture(Head),
 SPC);
