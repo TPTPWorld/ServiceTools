@@ -109,7 +109,7 @@ ANNOTATEDFORMULA * RefutationRoot) {
     if ((FalseRootNode = GetFalseRootNode(TargetTree)) != NULL) {
         *RefutationRoot = FalseRootNode->AnnotatedFormula;
 //----For refutations extract the conjecture from the leaves
-        Conjectures = SelectListOfAnnotatedFormulaeWithType(Leaves,conjecture,1,Signature);
+        Conjectures = SelectListOfAnnotatedFormulaeWithRole(Leaves,conjecture,1,Signature);
         if (Conjectures != NULL) {
 //DEBUG printf("============ Conjectures\n");
 //----If one conjecture inferred is the conjecture

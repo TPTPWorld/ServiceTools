@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 //DEBUG printf("PROGRESS: about to read\n");
     if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,ExpandIncludes,NULL)) != 
 NULL) {
-        RemoveAnnotatedFormulaWithType(&Head,Signature,logic);
+        RemoveAnnotatedFormulaWithRole(&Head,Signature,logic);
         RemovedUnusedSymbols(Signature);
 //DEBUG printf("PROGRESS: read complete\n");
         Statistics = GetListStatistics(Head,Signature);

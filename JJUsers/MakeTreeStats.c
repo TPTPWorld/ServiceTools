@@ -75,17 +75,17 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    ParseFileForSZSResults(argv[ArgOffset+1],&SZSResult,&SZSOutput);
+//DEBUG printf("The file claims SZS status %s and SZS output %s\n",SZSResultToUserString(SZSResult),SZSOutputToUserString(SZSOutput));
     Signature = NewSignatureWithTypes();
     SetNeedForNonLogicTokens(0);
     SetAllowFreeVariables(1);
     if ((Head = ParseFileOfFormulae(argv[ArgOffset+1],NULL,Signature,1,NULL)) != NULL) {
         RemovedUnusedSymbols(Signature);
-        ParseFileForSZSResults(argv[ArgOffset+1],&SZSResult,&SZSOutput);
-//DEBUG printf("The file claims SZS status %s and SZS output %s\n",SZSResultToUserString(SZSResult),SZSOutputToUserString(SZSOutput));
         Statistics = GetSolutionStatistics(Head,Signature,&RootListHead,SZSResult,SZSOutput);
 //DEBUG printf("Try print root list\n");
 //DEBUG PrintRootList(stdout,RootListHead);
-// PrintSolutionStatistics(stdout,Statistics);
+//DEBUG PrintSolutionStatistics(stdout,Statistics);
         if (Statistics.Type != Non && Statistics.Type != nonszsoutput) {
             PrintSolutionStatistics(stdout,Statistics);
         } else {

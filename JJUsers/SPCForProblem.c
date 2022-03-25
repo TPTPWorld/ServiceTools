@@ -377,10 +377,9 @@ int main(int argc, char *argv[]) {
     Signature = NewSignatureWithTypes();
     SetNeedForNonLogicTokens(0);
     if ((Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL)) != NULL) {
-        RemoveAnnotatedFormulaWithType(&Head,Signature,logic);
+        RemoveAnnotatedFormulaWithRole(&Head,Signature,logic);
         RemovedUnusedSymbols(Signature);
         Statistics = GetListStatistics(Head,Signature);
-PrintListStatistics(stdout,Statistics);
         Status = GetStatusFromHeader(argv[1],Signature);
         DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,ThereIsAConjecture(Head),
 SPC);
