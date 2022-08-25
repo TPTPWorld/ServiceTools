@@ -9,11 +9,18 @@ git submodule update --init
 
 - How to build:
 ```bash
-npm install
+npm install     % To update dependencies
 cd TPTP-ANTLR4-Grammar
-antlr4 -Dlanguage=JavaScript tptp_v7_0_0_0.g4
-webpack
+java -jar antlr-4.10.1-complete.jar -Dlanguage=JavaScript TPTP.g4
+cd ..
+npm run build
 ```
+
+To compile a Java parser
+java -jar antlr-4.10.1-complete.jar -o JavaParser TPTP.g4
+cd JavaParser
+javac *.java
+java org.antlr.v4.gui.TestRig TPTP tptp_file -tree FILENAME
 
 - How to setup with Apache using mod-wsgi.
 mod-wsgi works better if python is compiled using the --enable-shared flag:

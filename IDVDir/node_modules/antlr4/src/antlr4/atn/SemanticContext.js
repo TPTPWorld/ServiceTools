@@ -1,9 +1,11 @@
-/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
+/* Copyright (c) 2012-2022 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
  */
 
-const {Set, Hash} = require('./../Utils');
+import equalArrays from "../utils/equalArrays.js";
+import HashCode from "../misc/HashCode.js";
+import HashSet from "../misc/HashSet.js";
 
 /**
  * A tree structure used to record the semantic context in which
@@ -13,9 +15,10 @@ const {Set, Hash} = require('./../Utils');
  * <p>I have scoped the {@link AND}, {@link OR}, and {@link Predicate} subclasses of
  * {@link SemanticContext} within the scope of this outer class.</p>
  */
-class SemanticContext {
+export default class SemanticContext {
+
 	hashCode() {
-		const hash = new Hash();
+		const hash = new HashCode();
 		this.updateHashCode(hash);
 		return hash.finish();
 	}
@@ -92,97 +95,6 @@ class SemanticContext {
 }
 
 
-class Predicate extends SemanticContext {
-	constructor(ruleIndex, predIndex, isCtxDependent) {
-		super();
-		this.ruleIndex = ruleIndex === undefined ? -1 : ruleIndex;
-		this.predIndex = predIndex === undefined ? -1 : predIndex;
-		this.isCtxDependent = isCtxDependent === undefined ? false : isCtxDependent; // e.g., $i ref in pred
-	}
-
-	evaluate(parser, outerContext) {
-		const localctx = this.isCtxDependent ? outerContext : null;
-		return parser.sempred(localctx, this.ruleIndex, this.predIndex);
-	}
-
-	updateHashCode(hash) {
-		hash.update(this.ruleIndex, this.predIndex, this.isCtxDependent);
-	}
-
-	equals(other) {
-		if (this === other) {
-			return true;
-		} else if (!(other instanceof Predicate)) {
-			return false;
-		} else {
-			return this.ruleIndex === other.ruleIndex &&
-					this.predIndex === other.predIndex &&
-					this.isCtxDependent === other.isCtxDependent;
-		}
-	}
-
-	toString() {
-		return "{" + this.ruleIndex + ":" + this.predIndex + "}?";
-	}
-}
-
-/**
- * The default {@link SemanticContext}, which is semantically equivalent to
- * a predicate of the form {@code {true}?}
- */
-SemanticContext.NONE = new Predicate();
-
-
-class PrecedencePredicate extends SemanticContext {
-	constructor(precedence) {
-		super();
-		this.precedence = precedence === undefined ? 0 : precedence;
-	}
-
-	evaluate(parser, outerContext) {
-		return parser.precpred(outerContext, this.precedence);
-	}
-
-	evalPrecedence(parser, outerContext) {
-		if (parser.precpred(outerContext, this.precedence)) {
-			return SemanticContext.NONE;
-		} else {
-			return null;
-		}
-	}
-
-	compareTo(other) {
-		return this.precedence - other.precedence;
-	}
-
-	updateHashCode(hash) {
-		hash.update(31);
-	}
-
-	equals(other) {
-		if (this === other) {
-			return true;
-		} else if (!(other instanceof PrecedencePredicate)) {
-			return false;
-		} else {
-			return this.precedence === other.precedence;
-		}
-	}
-
-	toString() {
-		return "{"+this.precedence+">=prec}?";
-	}
-
-	static filterPrecedencePredicates(set) {
-		const result = [];
-		set.values().map( function(context) {
-			if (context instanceof PrecedencePredicate) {
-				result.push(context);
-			}
-		});
-		return result;
-	}
-}
 
 class AND extends SemanticContext {
 	/**
@@ -191,7 +103,7 @@ class AND extends SemanticContext {
 	 */
 	constructor(a, b) {
 		super();
-		const operands = new Set();
+		const operands = new HashSet();
 		if (a instanceof AND) {
 			a.opnds.map(function(o) {
 				operands.add(o);
@@ -206,7 +118,7 @@ class AND extends SemanticContext {
 		} else {
 			operands.add(b);
 		}
-		const precedencePredicates = PrecedencePredicate.filterPrecedencePredicates(operands);
+		const precedencePredicates = filterPrecedencePredicates(operands);
 		if (precedencePredicates.length > 0) {
 			// interested in the transition with the lowest precedence
 			let reduced = null;
@@ -217,7 +129,7 @@ class AND extends SemanticContext {
 			});
 			operands.add(reduced);
 		}
-		this.opnds = operands.values();
+		this.opnds = Array.from(operands.values());
 	}
 
 	equals(other) {
@@ -226,7 +138,7 @@ class AND extends SemanticContext {
 		} else if (!(other instanceof AND)) {
 			return false;
 		} else {
-			return this.opnds === other.opnds;
+			return equalArrays(this.opnds, other.opnds);
 		}
 	}
 
@@ -280,11 +192,8 @@ class AND extends SemanticContext {
 	}
 
 	toString() {
-		let s = "";
-		this.opnds.map(function(o) {
-			s += "&& " + o.toString();
-		});
-		return s.length > 3 ? s.slice(3) : s;
+		const s = this.opnds.map(o => o.toString());
+		return (s.length > 3 ? s.slice(3) : s).join("&&");
 	}
 }
 
@@ -296,7 +205,7 @@ class OR extends SemanticContext {
 	 */
 	constructor(a, b) {
 		super();
-		const operands = new Set();
+		const operands = new HashSet();
 		if (a instanceof OR) {
 			a.opnds.map(function(o) {
 				operands.add(o);
@@ -312,7 +221,7 @@ class OR extends SemanticContext {
 			operands.add(b);
 		}
 
-		const precedencePredicates = PrecedencePredicate.filterPrecedencePredicates(operands);
+		const precedencePredicates = filterPrecedencePredicates(operands);
 		if (precedencePredicates.length > 0) {
 			// interested in the transition with the highest precedence
 			const s = precedencePredicates.sort(function(a, b) {
@@ -321,7 +230,7 @@ class OR extends SemanticContext {
 			const reduced = s[s.length-1];
 			operands.add(reduced);
 		}
-		this.opnds = operands.values();
+		this.opnds = Array.from(operands.values());
 	}
 
 	equals(other) {
@@ -330,7 +239,7 @@ class OR extends SemanticContext {
 		} else if (!(other instanceof OR)) {
 			return false;
 		} else {
-			return this.opnds === other.opnds;
+			return equalArrays(this.opnds, other.opnds);
 		}
 	}
 
@@ -382,16 +291,17 @@ class OR extends SemanticContext {
 	}
 
 	toString() {
-		let s = "";
-		this.opnds.map(function(o) {
-			s += "|| " + o.toString();
-		});
-		return s.length > 3 ? s.slice(3) : s;
+		const s = this.opnds.map(o => o.toString());
+		return (s.length > 3 ? s.slice(3) : s).join("||");
 	}
 }
 
-module.exports = {
-	SemanticContext,
-	PrecedencePredicate,
-	Predicate
+function filterPrecedencePredicates(set) {
+	const result = [];
+	set.values().map( function(context) {
+		if (context instanceof SemanticContext.PrecedencePredicate) {
+			result.push(context);
+		}
+	});
+	return result;
 }

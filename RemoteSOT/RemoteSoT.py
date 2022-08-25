@@ -3,7 +3,7 @@
 import sys,requests,getopt
 from typing import List, Tuple
 
-SystemOnTPTPFormReplyURL = "http://www.tptp.org/cgi-bin/SystemOnTPTPFormReply"
+SystemOnTPTPFormReplyURL = "https://www.tptp.org/cgi-bin/SystemOnTPTPFormReply"
 
 USAGE = f"Usage: RemoteSOT <options> [<File name>]\n \
     <options> are ...\n \

@@ -21,6 +21,7 @@ install: all install-most
 	mv CLayoutDir/CLayout $(TPTP_HOME)/Systems/IDV---0.0
 
 install-most: install-some
+	cp SPCForProblem $(TPTP_HOME)/Systems/SPCForProblem---1.0
 	mv SPCForProblem $(TPTP_HOME)/SPCs/SPCForProblem
 
 install-some: some

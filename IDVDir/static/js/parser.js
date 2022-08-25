@@ -1,9 +1,9 @@
 import * as antlr4 from 'antlr4';
 window.antlr4 = antlr4;
 
-import {default as Lexer} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Lexer';
-import {default as Parser} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Parser';
-import {default as Listener} from '../../TPTP-ANTLR4-Grammar/tptp_v7_0_0_0Listener';
+import {default as Lexer} from '../../TPTP-ANTLR4-Grammar/TPTPLexer';
+import {default as Parser} from '../../TPTP-ANTLR4-Grammar/TPTPParser';
+import {default as Listener} from '../../TPTP-ANTLR4-Grammar/TPTPListener';
 
 function stripParens(formula){
 	return formula.replace(/\s+/g,'').replace(/[()]/g, '');
@@ -273,9 +273,9 @@ let proofToGV = function (nodes) {
 
 
 let parseProof = function (proofText) {
-	let chars = new antlr4.InputStream(proofText);
+	let chars = new antlr4.default.InputStream(proofText);
 	let lexer = new Lexer(chars);
-	let tokens = new antlr4.CommonTokenStream(lexer);
+	let tokens = new antlr4.default.CommonTokenStream(lexer);
 	let parser = new Parser(tokens);
 	// parser.removeErrorListeners();
 	parser.buildParseTrees = true;
@@ -286,7 +286,7 @@ let parseProof = function (proofText) {
 	console.log("Beginning parsing...");
 	while ((tree = parser.tptp_input())) {
 		if (tree.getText() == "<EOF>") break;
-		antlr4.tree.ParseTreeWalker.DEFAULT.walk(formatter, tree);
+		antlr4.default.tree.ParseTreeWalker.DEFAULT.walk(formatter, tree);
 	}
 	console.log("Finished parsing!")
 

@@ -6,7 +6,14 @@ module.exports = {
     path: path.resolve(__dirname, 'static/js'),
     filename: 'bundle.js'
   },
-  node: { module: "empty", net: "empty", fs: "empty" },
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".css"],
+    fallback: {
+      fs: false,
+      module: false,
+      net: false,
+    },
+  },
   mode:"development",
   module: {
     rules: [
