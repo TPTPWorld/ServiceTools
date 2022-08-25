@@ -503,7 +503,7 @@ EqualityAxioms);
     if (Options.Quietness < 3) {
 //----Burst out conjectures
         if (strstr(Options.Transformations,"single_conjectures") != NULL) {
-            Conjectures = SelectListOfAnnotatedFormulaeWithType(&AllAnnotatedFormulae,conjecture,
+            Conjectures = SelectListOfAnnotatedFormulaeWithRole(&AllAnnotatedFormulae,conjecture,
 1,Signature);
             LastNext = GetLastNext(&AllAnnotatedFormulae);
             while (Conjectures != NULL) {

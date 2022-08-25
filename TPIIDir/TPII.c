@@ -20,11 +20,11 @@
 #include "SystemOnTPTP.h"
 #include "PrintTSTP.h"
 #include "TPII.h"
-//-----------------------------------------------------------------------------
-int Interpret(OptionsType Options,char * FileName,
-LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,SIGNATURE Signature,
-char * IncludeFilter,GroupNamesType GroupNames,int * NumberOfGroups);
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+int Interpret(OptionsType Options,char * FileName,LISTNODE * LogicalFormulae,
+LISTNODE ** AddLogicalHere,SIGNATURE Signature,char * IncludeFilter,GroupNamesType GroupNames,
+int * NumberOfGroups);
+//-------------------------------------------------------------------------------------------------
 void DeleteTemporaryFiles(void) {
 
     int FileNumber;
@@ -45,13 +45,13 @@ void DeleteTemporaryFiles(void) {
         }
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void exit_SZS_NoSuccess(void) {
 
     printf("%% SZS status Error\n");
     exit(EXIT_FAILURE);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Return the first index for files in argv
 int ProcessCommandLine(int argc,char * argv[],OptionsType * Options) {
 
@@ -95,7 +95,7 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * Options) {
 
     return(optind);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 READFILE OpenInputREADFILE(OptionsType Options,char * FileName) {
 
     READFILE InputStream; 
@@ -107,7 +107,7 @@ READFILE OpenInputREADFILE(OptionsType Options,char * FileName) {
         return(NULL);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void CommandDetailsError(char * CommandName,StatusType Command,
 FORMULA CommandDetails) {
 
@@ -117,7 +117,7 @@ CommandName,StatusToString(Command));
     printf("\n");
     exit_SZS_NoSuccess();
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Checks this is an atom - propositional or $getenv or $getargv
 void CheckCommandDetailsAtom(char * CommandName,StatusType Command,
 FORMULA CommandDetails,TERM Atom) {
@@ -130,7 +130,7 @@ FORMULA CommandDetails,TERM Atom) {
         CommandDetailsError(CommandName,Command,CommandDetails);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void CheckCommandDetailsType(char * CommandName,StatusType Command,
 FORMULA CommandDetails,FormulaTypeType ExpectedDetailsType,
 int MustBeAtomic) {
@@ -144,7 +144,7 @@ int MustBeAtomic) {
 CommandDetails->FormulaUnion.Atom);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * GetGetValue(char * GetFunction,char * GetArgument) {
 
     int CommandLinePosition;
@@ -174,7 +174,7 @@ char * GetGetValue(char * GetFunction,char * GetArgument) {
     }
     return(OriginalSymbol);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----The returned memory is malloced. The user code is expected to free
 //----the memory when done.
 char * GetAtomSymbol(TERM Atom) {
@@ -232,7 +232,7 @@ strlen(CopiedSymbol)+strlen(OriginalSymbol)+strlen(Rest)+1);
     }
     return(CopiedSymbol);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----The returned memory is malloced. The user code is expected to free
 //----the memory when done.
 char * GetCommandDetailsAtom(FORMULA CommandDetails) {
@@ -240,7 +240,7 @@ char * GetCommandDetailsAtom(FORMULA CommandDetails) {
     assert(CommandDetails->Type == atom);
     return(GetAtomSymbol(CommandDetails->FormulaUnion.Atom));
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void GetCommandDetailsEqualityAtoms(char * CommandName,StatusType Command,
 FORMULA CommandDetails, char ** LHS,char ** RHS) {
 
@@ -253,7 +253,7 @@ CommandDetails->FormulaUnion.Atom->Arguments[1]);
 CommandDetails->FormulaUnion.Atom->Arguments[0]);
     *RHS = GetAtomSymbol(CommandDetails->FormulaUnion.Atom->Arguments[1]);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int LogicalFormulaInGroup(LISTNODE LogicalFormula,char * GroupName) {
 
     int OccurenceNumber;
@@ -269,7 +269,7 @@ int LogicalFormulaInGroup(LISTNODE LogicalFormula,char * GroupName) {
     }
     return(0);
  }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int ActiveLogicalFormula(LISTNODE LogicalFormula) {
 
     TERM GroupTerm;
@@ -288,7 +288,7 @@ GetName(LogicalFormula->AnnotatedFormula,NULL));
         return(0);
     }
  }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 LISTNODE GetListOfActiveLogicalFormulaeInGroups(LISTNODE LogicalFormulae,
 char * Groups) {
 
@@ -327,7 +327,7 @@ SelectLogicalFormula->AnnotatedFormula);
     }
     return(LogicalFormulaeInGroups);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void SetTPIState(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,
 char * State) {
 
@@ -339,7 +339,7 @@ Signature,"tpi_state");
     AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,
 StateTag);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void SetTPIStateForCommand(char * CommandName,StatusType Command,
 FORMULA CommandDetails,LISTNODE LogicalFormulae,SIGNATURE Signature,
 char * State) {
@@ -359,7 +359,7 @@ FormulaName);
     }
     Free((void **)&FormulaName);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void SetTPIStateForGroup(char * CommandName,StatusType Command,
 FORMULA CommandDetails,LISTNODE LogicalFormulae,SIGNATURE Signature,
 char * State) {
@@ -376,7 +376,7 @@ char * State) {
     }
     Free((void **)&GroupName);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int FindGroupNumber(char * GroupName,GroupNamesType GroupNames,
 int NumberOfGroups) {
 
@@ -389,7 +389,7 @@ int NumberOfGroups) {
     }
     return(-1);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void DoStartGroup(char * StartedGroupName,GroupNamesType GroupNames,
 int * NumberOfGroups) {
 
@@ -402,7 +402,7 @@ int * NumberOfGroups) {
         (*NumberOfGroups)++;
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void DoEndGroup(int GroupNumber,GroupNamesType GroupNames,
 int * NumberOfGroups) {
 
@@ -413,14 +413,14 @@ int * NumberOfGroups) {
     }
     (*NumberOfGroups)--;
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void EndAllGroups(GroupNamesType GroupNames,int * NumberOfGroups) {
 
     while (*NumberOfGroups > 0) {
         DoEndGroup(*NumberOfGroups - 1,GroupNames,NumberOfGroups);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int TPIInput(OptionsType Options,char * CommandName,FORMULA CommandDetails,
 char * FileName,LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,
 SIGNATURE Signature,GroupNamesType GroupNames,int * NumberOfGroups) {
@@ -462,7 +462,7 @@ Signature,"all",GroupNames,NumberOfGroups);
     }
     return(Continue);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIOutput(char * CommandName,FORMULA CommandDetails,
 LISTNODE LogicalFormulae,SIGNATURE Signature) {
 
@@ -501,29 +501,29 @@ tptp,1);
 LogicalFormulaeToPrint,tptp,1);
         fclose(OutputHandle);
     }
-    FreeListOfAnnotatedFormulae(&LogicalFormulaeToPrint);
+    FreeListOfAnnotatedFormulae(&LogicalFormulaeToPrint,Signature);
     Free((void **)&OutputFileName);
     if (GroupNameMalloced) {
         Free((void **)&GroupToOutput);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIActivate(char * CommandName,FORMULA CommandDetails,
 LISTNODE LogicalFormulae,SIGNATURE Signature) {
 
     SetTPIStateForCommand(CommandName,tpi_activate,CommandDetails,
 LogicalFormulae,Signature,"active");
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIDeactivate(char * CommandName,FORMULA CommandDetails,
 LISTNODE LogicalFormulae,SIGNATURE Signature) {
 
     SetTPIStateForCommand(CommandName,tpi_deactivate,CommandDetails,
 LogicalFormulae,Signature,"inactive");
 }
-//-----------------------------------------------------------------------------
-void TPIDelete(char * CommandName,FORMULA CommandDetails,
-LISTNODE * LogicalFormulae,SIGNATURE Signature,LISTNODE ** AddLogicalHere) {
+//-------------------------------------------------------------------------------------------------
+void TPIDelete(char * CommandName,FORMULA CommandDetails,LISTNODE * LogicalFormulae,
+SIGNATURE Signature,LISTNODE ** AddLogicalHere) {
 
     LISTNODE * NodePointer;
     char * FormulaName;
@@ -535,37 +535,36 @@ FormulaName)) != NULL) {
         if (*AddLogicalHere == &((*NodePointer)->Next)) {
             *AddLogicalHere = NodePointer;
         }
-        FreeAListNode(NodePointer);
+        FreeAListNode(NodePointer,Signature);
     } else {
         printf("ERROR: Cannot delete non-existent formula %s\n",FormulaName);
         exit_SZS_NoSuccess();
     }
 }
-//-----------------------------------------------------------------------------
-void TPISetRole(char * CommandName,FORMULA CommandDetails,
-LISTNODE LogicalFormulae,SIGNATURE Signature) {
+//-------------------------------------------------------------------------------------------------
+void TPISetRole(char * CommandName,FORMULA CommandDetails,LISTNODE LogicalFormulae,
+SIGNATURE Signature) {
 
     char * FormulaName;
     char * NewRoleString;
     ANNOTATEDFORMULA AnnotatedFormula;
     StatusType NewRole;
 
-    if (CommandDetails->Type != atom ||
-strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
+    if (CommandDetails->Type != atom || strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
         CommandDetailsError(CommandName,tpi_set_role,CommandDetails);
     }
-    GetCommandDetailsEqualityAtoms(CommandName,tpi_set_role,CommandDetails,
-&FormulaName,&NewRoleString);
+    GetCommandDetailsEqualityAtoms(CommandName,tpi_set_role,CommandDetails,&FormulaName,
+&NewRoleString);
     if ((AnnotatedFormula = GetAnnotatedFormulaFromListByName(LogicalFormulae,
 FormulaName)) == NULL || 
-(NewRole = CheckStringToStatus(NewRoleString)) == nonstatus ||
-!SetStatus(AnnotatedFormula,NewRole,nonstatus)) {
+(NewRole = StringToStatus(NewRoleString)) == nonstatus ||
+!SetStatus(AnnotatedFormula,NewRole,NULL)) {
         CommandDetailsError(CommandName,tpi_set_role,CommandDetails);
     }
     Free((void **)&FormulaName);
     Free((void **)&NewRoleString);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIStartGroup(char * CommandName,FORMULA CommandDetails,
 GroupNamesType GroupNames,int * NumberOfGroups) {
 
@@ -576,7 +575,7 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
     StartedGroupName = GetCommandDetailsAtom(CommandDetails);
     DoStartGroup(StartedGroupName,GroupNames,NumberOfGroups);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIEndGroup(char * CommandName,FORMULA CommandDetails,
 GroupNamesType GroupNames,int * NumberOfGroups) {
 
@@ -595,37 +594,35 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
         exit_SZS_NoSuccess();
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIActivateGroup(char * CommandName,FORMULA CommandDetails,
 LISTNODE * LogicalFormulae,SIGNATURE Signature) {
 
     SetTPIStateForGroup(CommandName,tpi_activate_group,CommandDetails,
 *LogicalFormulae,Signature,"active");
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIDeactivateGroup(char * CommandName,FORMULA CommandDetails,
 LISTNODE * LogicalFormulae,SIGNATURE Signature) {
 
     SetTPIStateForGroup(CommandName,tpi_deactivate_group,CommandDetails,
 *LogicalFormulae,Signature,"inactive");
 }
-//-----------------------------------------------------------------------------
-void TPIDeleteGroup(char * CommandName,FORMULA CommandDetails,
-char * GroupName,LISTNODE * LogicalFormulae,SIGNATURE Signature,
-LISTNODE ** AddLogicalHere) {
+//-------------------------------------------------------------------------------------------------
+void TPIDeleteGroup(char * CommandName,FORMULA CommandDetails,char * GroupName,
+LISTNODE * LogicalFormulae,SIGNATURE Signature,LISTNODE ** AddLogicalHere) {
 
     int MallocedGroupName;
 
     if (GroupName == NULL) {
-        CheckCommandDetailsType(CommandName,tpi_delete_group,CommandDetails,
-atom,1);
+        CheckCommandDetailsType(CommandName,tpi_delete_group,CommandDetails,atom,1);
         GroupName = GetCommandDetailsAtom(CommandDetails);
         MallocedGroupName = 1;
     } else {
         MallocedGroupName = 0;
     }
     if (!strcmp(GroupName,"tpi")) {
-        FreeListOfAnnotatedFormulae(LogicalFormulae);
+        FreeListOfAnnotatedFormulae(LogicalFormulae,Signature);
         *AddLogicalHere = LogicalFormulae;
     } else {
         while (*LogicalFormulae != NULL) {
@@ -633,7 +630,7 @@ atom,1);
                 if (*AddLogicalHere == &((*LogicalFormulae)->Next)) {
                     *AddLogicalHere = LogicalFormulae;
                 }
-                FreeAListNode(LogicalFormulae);
+                FreeAListNode(LogicalFormulae,Signature);
             } else {
                 LogicalFormulae = &((*LogicalFormulae)->Next);
             }
@@ -643,18 +640,17 @@ atom,1);
         Free((void **)&GroupName);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPISetenv(char * CommandName,FORMULA CommandDetails) {
 
     char * EnvironmentVariable;
     char * EnvironmentVariableValue;
 
-    if (CommandDetails->Type != atom ||
-strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
+    if (CommandDetails->Type != atom || strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
         CommandDetailsError(CommandName,tpi_setenv,CommandDetails);
     }
-    GetCommandDetailsEqualityAtoms(CommandName,tpi_setenv,CommandDetails,
-&EnvironmentVariable,&EnvironmentVariableValue);
+    GetCommandDetailsEqualityAtoms(CommandName,tpi_setenv,CommandDetails,&EnvironmentVariable,
+&EnvironmentVariableValue);
     if (strlen(EnvironmentVariable) == 0) {
         CommandDetailsError(CommandName,tpi_setenv,CommandDetails);
     }
@@ -662,7 +658,7 @@ strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
     Free((void **)&EnvironmentVariable);
     Free((void **)&EnvironmentVariableValue);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIWaitenv(char * CommandName,FORMULA CommandDetails) {
 
     char * EnvironmentVariables[MAX_WAITENV_VARIABLES];
@@ -680,14 +676,12 @@ GetCommandDetailsAtom(CommandDetails->FormulaUnion.BinaryFormula.LHS);
         NumberOfWaitenvVariables++;
     }
     CheckCommandDetailsType(CommandName,tpi_waitenv,CommandDetails,atom,1);
-    EnvironmentVariables[NumberOfWaitenvVariables] = GetCommandDetailsAtom(
-CommandDetails);
+    EnvironmentVariables[NumberOfWaitenvVariables] = GetCommandDetailsAtom(CommandDetails);
     NumberOfWaitenvVariables++;
 
     NeedToWait = 1;
     while (NeedToWait) {
-        for (Index = 0; NeedToWait && Index < NumberOfWaitenvVariables; 
-Index++) {
+        for (Index = 0; NeedToWait && Index < NumberOfWaitenvVariables;Index++) {
             if (getenv(EnvironmentVariables[Index]) != NULL) {
                 NeedToWait = 0;
             }
@@ -701,7 +695,7 @@ Index++) {
         Free((void **)&(EnvironmentVariables[NumberOfWaitenvVariables]));
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIUnsetenv(char * CommandName,FORMULA CommandDetails) {
 
     char * EnvironmentVariable;
@@ -711,11 +705,11 @@ void TPIUnsetenv(char * CommandName,FORMULA CommandDetails) {
     unsetenv(EnvironmentVariable);
     Free((void **)&EnvironmentVariable);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Groups contains a comma separated list of group names to write to a
 //----temporary file, whose name gets stored in FileName. Note this inserts
 //----\0 into Groups, i.e., it's destructive.
-void WriteActiveLogicalFormulaeToFile(LISTNODE LogicalFormulae,char * Groups,
+void WriteActiveLogicalFormulaeToFile(SIGNATURE Signature,LISTNODE LogicalFormulae,char * Groups,
 char * FileName) {
 
     extern TemporaryFileNamesArray MktempFileNames;
@@ -734,16 +728,16 @@ LogicalFormulaeInGroups,nonstatus,NULL,nonstatus)) {
         }
         strcpy(MktempFileNames[NumberOfTemporaryFileNames],FileName);
         NumberOfTemporaryFileNames++;
-        FreeListOfAnnotatedFormulae(&LogicalFormulaeInGroups);
+        FreeListOfAnnotatedFormulae(&LogicalFormulaeInGroups,Signature);
     } else {
         printf("ERROR: Could not write logical formulae to file\n");
         exit_SZS_NoSuccess();
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 //----Replace $getgroups commands in ExecuteCommand by names of files
 //----containing the formulae. If GropsUsed is not null, record their names.
-void ReplaceLogicalFormulaeGroups(LISTNODE LogicalFormulae,
+void ReplaceLogicalFormulaeGroups(SIGNATURE Signature,LISTNODE LogicalFormulae,
 char * ExecuteCommand,char * GroupsUsed,char * CommandName) {
 
     char * GetGroups;
@@ -772,16 +766,16 @@ GetGroups,CommandName);
             }
             strcat(GroupsUsed,Groups);
         }
-        WriteActiveLogicalFormulaeToFile(LogicalFormulae,Groups,FileName);
+        WriteActiveLogicalFormulaeToFile(Signature,LogicalFormulae,Groups,FileName);
         ExecuteCommand = (char *)Realloc(ExecuteCommand,
 strlen(ExecuteCommand)+strlen(FileName)+strlen(Close)+1);
         strcat(ExecuteCommand,FileName);
         strcat(ExecuteCommand,Suffix);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIExecute(OptionsType Options,char * CommandName,FORMULA CommandDetails,
-LISTNODE LogicalFormulae,char * FilterOutputFileName,char * GroupsUsed,
+SIGNATURE Signature,LISTNODE LogicalFormulae,char * FilterOutputFileName,char * GroupsUsed,
 pthread_mutex_t * ThreadMutex,pthread_cond_t * ThreadCondition) {
 
     char * EnvironmentVariable;
@@ -857,8 +851,7 @@ strstr(ExecuteCommand,"---") != NULL) {
             strcpy(GroupsUsed,SubstringPosition);
         }
 //----All is well, output logical formulae to file
-        WriteActiveLogicalFormulaeToFile(LogicalFormulae,SubstringPosition,
-FileName);
+        WriteActiveLogicalFormulaeToFile(Signature,LogicalFormulae,SubstringPosition,FileName);
 //----Decide where to send output, stdout or FilterOutputFileName
         KeepOutputFile = Options.Quietness < 2;
         strcpy(OutputFileName,"stdout");
@@ -880,7 +873,7 @@ FileName);
 SZSOutputStatus);
     } else {
 //----Otherwise do directly. Replace $getgroups terms.
-        ReplaceLogicalFormulaeGroups(LogicalFormulae,ExecuteCommand,
+        ReplaceLogicalFormulaeGroups(Signature,LogicalFormulae,ExecuteCommand,
 GroupsUsed,CommandName);
 //----If there is a FilterOutputFileName then output is redirected to that
         if (FilterOutputFileName != NULL) {
@@ -924,7 +917,7 @@ SubstringPosition+strlen("SZS status")+1);
     }
     Free((void **)&ExecuteCommand);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void * ExecuteThread(void * ThreadData) {
 
     ExecuteDataType * ExecuteData;
@@ -934,6 +927,7 @@ void * ExecuteThread(void * ThreadData) {
     TPIExecute((OptionsType)ExecuteData->Options,
 (char *)ExecuteData->CommandName,
 (FORMULA)ExecuteData->CommandDetails,
+(SIGNATURE)ExecuteData->Signature,
 (LISTNODE)ExecuteData->LogicalFormulae,NULL,NULL,
 (pthread_mutex_t *)ExecuteData->ThreadMutex,
 (pthread_cond_t *)ExecuteData->ThreadCondition);
@@ -941,9 +935,9 @@ void * ExecuteThread(void * ThreadData) {
     Free(&ThreadData);
     return(NULL);
 }
-//-----------------------------------------------------------------------------
-void TPIExecuteAsync(OptionsType Options,char * CommandName,
-FORMULA CommandDetails,LISTNODE LogicalFormulae) {
+//-------------------------------------------------------------------------------------------------
+void TPIExecuteAsync(OptionsType Options,char * CommandName,FORMULA CommandDetails,
+SIGNATURE Signature,LISTNODE LogicalFormulae) {
 
     pthread_t AsyncThread;
     pthread_mutex_t ThreadMutex;
@@ -957,6 +951,7 @@ FORMULA CommandDetails,LISTNODE LogicalFormulae) {
     ExecuteData->Options = Options;
     ExecuteData->CommandName = CommandName;
     ExecuteData->CommandDetails = CommandDetails;
+    ExecuteData->Signature = Signature;
     ExecuteData->LogicalFormulae = LogicalFormulae;
     ExecuteData->ThreadMutex = &ThreadMutex;
     ExecuteData->ThreadCondition = &ThreadCondition;
@@ -977,7 +972,7 @@ CommandName,StatusToString(tpi_execute_async));
     pthread_cond_wait(&ThreadCondition,&ThreadMutex);
     pthread_mutex_unlock(&ThreadMutex);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIWrite(char * CommandName,FORMULA ToWrite) {
 
     char * ToWriteAtom;
@@ -993,7 +988,7 @@ void TPIWrite(char * CommandName,FORMULA ToWrite) {
         TPIWrite(CommandName,ToWrite->FormulaUnion.BinaryFormula.RHS);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 char * TPIMktemp(char * CommandName,FORMULA CommandDetails) {
 
     char * EnvironmentVariable;
@@ -1028,7 +1023,7 @@ char * TPIMktemp(char * CommandName,FORMULA CommandDetails) {
     }
     return(MktempFileNames[NumberOfTemporaryFileNames-1]);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int TPIAssert(char * CommandName,FORMULA Assertion) {
 
     FORMULA PositiveAssertion;
@@ -1064,7 +1059,7 @@ strcmp(GetSymbol(PositiveAssertion->FormulaUnion.Atom),"=")) {
         return(EXIT_SUCCESS);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int TPIClean(char * CommandName,FORMULA CommandDetails) {
 
     if (strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"clean")) {
@@ -1073,7 +1068,7 @@ int TPIClean(char * CommandName,FORMULA CommandDetails) {
     DeleteTemporaryFiles();
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int TPIExit(char * CommandName,FORMULA ExitCode) {
 
     if (strcmp(GetSymbol(ExitCode->FormulaUnion.Atom),"exit")) {
@@ -1085,7 +1080,7 @@ int TPIExit(char * CommandName,FORMULA ExitCode) {
         return(EXIT_SUCCESS);
     }
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIFilter(OptionsType Options,char * CommandName,FORMULA CommandDetails,
 LISTNODE * LogicalFormulae,SIGNATURE Signature,LISTNODE ** AddLogicalHere,
 GroupNamesType GroupNames,int * NumberOfGroups) {
@@ -1095,19 +1090,18 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
     char * GroupName;
 
     FilterOutputFileName = TPIMktemp(CommandName,NULL);
-    TPIExecute(Options,CommandName,CommandDetails,*LogicalFormulae,
-FilterOutputFileName,GroupsUsed,NULL,NULL);
+    TPIExecute(Options,CommandName,CommandDetails,Signature,*LogicalFormulae,FilterOutputFileName,
+GroupsUsed,NULL,NULL);
     GroupName = strtok(GroupsUsed,",");
     while (GroupName != NULL) {
         Trim(GroupName);
-        TPIDeleteGroup(CommandName,NULL,GroupName,LogicalFormulae,Signature,
-AddLogicalHere);
+        TPIDeleteGroup(CommandName,NULL,GroupName,LogicalFormulae,Signature,AddLogicalHere);
         GroupName = strtok(NULL,",");
     }
     TPIInput(Options,CommandName,NULL,FilterOutputFileName,LogicalFormulae,
 AddLogicalHere,Signature,GroupNames,NumberOfGroups);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void TPIGenerate(OptionsType Options,char * CommandName,FORMULA CommandDetails,
 LISTNODE * LogicalFormulae,SIGNATURE Signature,LISTNODE ** AddLogicalHere,
 GroupNamesType GroupNames,int * NumberOfGroups) {
@@ -1115,12 +1109,12 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
     char * GenerateOutputFileName;
 
     GenerateOutputFileName = TPIMktemp(CommandName,NULL);
-    TPIExecute(Options,CommandName,CommandDetails,*LogicalFormulae,
+    TPIExecute(Options,CommandName,CommandDetails,Signature,*LogicalFormulae,
 GenerateOutputFileName,NULL,NULL,NULL);
-    TPIInput(Options,CommandName,NULL,GenerateOutputFileName,LogicalFormulae,
-AddLogicalHere,Signature,GroupNames,NumberOfGroups);
+    TPIInput(Options,CommandName,NULL,GenerateOutputFileName,LogicalFormulae,AddLogicalHere,
+Signature,GroupNames,NumberOfGroups);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int InterpretCommand(OptionsType Options,ANNOTATEDFORMULA AnnotatedFormula,
 LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,SIGNATURE Signature,
 GroupNamesType GroupNames,int * NumberOfGroups) {
@@ -1192,12 +1186,11 @@ Signature,AddLogicalHere);
         case tpi_set_logic:
             break;
         case tpi_execute:
-            TPIExecute(Options,CommandName,CommandDetails,*LogicalFormulae,
+            TPIExecute(Options,CommandName,CommandDetails,Signature,*LogicalFormulae,
 NULL,NULL,NULL,NULL);
             break;
         case tpi_execute_async:
-            TPIExecuteAsync(Options,CommandName,CommandDetails,
-*LogicalFormulae);
+            TPIExecuteAsync(Options,CommandName,CommandDetails,Signature,*LogicalFormulae);
             break;
         case tpi_filter:
             TPIFilter(Options,CommandName,CommandDetails,LogicalFormulae,
@@ -1231,7 +1224,7 @@ EXIT_FAILURE) {
     }
     return(Continue);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void AddGroupTags(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,
 GroupNamesType GroupNames,int NumberOfGroups) {
 
@@ -1244,10 +1237,10 @@ GroupNamesType GroupNames,int NumberOfGroups) {
 GroupTag);
     }
 }
-//-----------------------------------------------------------------------------
-int Interpret(OptionsType Options,char * FileName,
-LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,SIGNATURE Signature,
-char * IncludeFilter,GroupNamesType GroupNames,int * NumberOfGroups) {
+//-------------------------------------------------------------------------------------------------
+int Interpret(OptionsType Options,char * FileName,LISTNODE * LogicalFormulae,
+LISTNODE ** AddLogicalHere,SIGNATURE Signature,char * IncludeFilter,GroupNamesType GroupNames,
+int * NumberOfGroups) {
 
     ANNOTATEDFORMULA AnnotatedFormula;
     READFILE InputStream; 
@@ -1267,8 +1260,7 @@ char * IncludeFilter,GroupNamesType GroupNames,int * NumberOfGroups) {
             if (ThisNodeType == include) {
                 GetIncludeParts(AnnotatedFormula,NewIncludeFile,
 NewIncludeFilter);
-                FreeTerm(&(AnnotatedFormula->
-AnnotatedFormulaUnion.Include),NULL);
+                FreeTerm(&(AnnotatedFormula->AnnotatedFormulaUnion.Include),Signature,NULL);
                 Free((void **)&AnnotatedFormula);
                 Continue = Interpret(Options,NewIncludeFile,LogicalFormulae,
 AddLogicalHere,Signature,NewIncludeFilter,GroupNames,NumberOfGroups);
@@ -1288,7 +1280,7 @@ AddLogicalHere,Signature,NewIncludeFilter,GroupNames,NumberOfGroups);
 //DEBUG fflush(stdout);
                 Continue = InterpretCommand(Options,AnnotatedFormula,
 LogicalFormulae,AddLogicalHere,Signature,GroupNames,NumberOfGroups);
-                FreeAnnotatedTSTPFormula(&AnnotatedFormula);
+                FreeAnnotatedTSTPFormula(&AnnotatedFormula,Signature);
             } else {
                 CodingError("Unknown syntax for TPII\n");
                 exit_SZS_NoSuccess();
@@ -1300,14 +1292,14 @@ LogicalFormulae,AddLogicalHere,Signature,GroupNames,NumberOfGroups);
     }
     return(Continue);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void SIGQUITHandler(int Signal) {
 
     extern int GlobalQUIT;
     
     GlobalQUIT = 1;
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     OptionsType Options;
@@ -1352,14 +1344,14 @@ int main(int argc, char *argv[]) {
         strcpy(FileName,argv[ArgvFileIndex++]);
         FirstArgument = &(argv[ArgvFileIndex]);
         NumberOfArguments = argc - ArgvFileIndex;
-        Continue = Interpret(Options,FileName,&LogicalFormulae,&AddLogicalHere,
-Signature,"all",GroupNames,&NumberOfGroups);
+        Continue = Interpret(Options,FileName,&LogicalFormulae,&AddLogicalHere,Signature,"all",
+GroupNames,&NumberOfGroups);
     }
 //----If still going, do an execute,self
     if (!GlobalQUIT && Continue) {
-        TPIExecute(Options,"implicit",NULL,LogicalFormulae,NULL,NULL,NULL,NULL);
+        TPIExecute(Options,"implicit",NULL,Signature,LogicalFormulae,NULL,NULL,NULL,NULL);
     }
-    FreeListOfAnnotatedFormulae(&LogicalFormulae);
+    FreeListOfAnnotatedFormulae(&LogicalFormulae,Signature);
     assert(LogicalFormulae == NULL);
 //DEBUG PrintSignature(Signature);
 //----Clean and delete the signature (should be empty here)
@@ -1371,11 +1363,11 @@ Signature,"all",GroupNames,&NumberOfGroups);
 
     return(ExitSuccessValue);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 TemporaryFileNamesArray MktempFileNames;
 int NumberOfTemporaryFileNames;
 int ExitSuccessValue;
 char ** FirstArgument;
 int NumberOfArguments;
 int GlobalQUIT;
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

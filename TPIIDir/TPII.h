@@ -20,6 +20,7 @@ typedef struct {
     OptionsType Options;
     char * CommandName;
     FORMULA CommandDetails;
+    SIGNATURE Signature;
     LISTNODE LogicalFormulae;
     pthread_mutex_t * ThreadMutex;
     pthread_cond_t * ThreadCondition;
