@@ -7,6 +7,9 @@ function CleanAddedLine(Accumulated) {
 #----CNF: Extra ()s around clause
         Substitutions += \
 sub(/LPAREN \( +<RPAREN ) +</,"",Accumulated);
+#----CNF: Remove extra ()s around cnf_formulae
+        Substitutions += \
+sub(/LPAREN \( +<<cnf_formula> +<<fof_unitary_formula> +<RPAREN ) +</,"",Accumulated);
 #----FOF: Remove extra ()s around formulae
         Substitutions += \
 sub(/LPAREN \( +<<fof_logic_formula> +<<fof_unitary_formula> +<RPAREN ) +</,"",Accumulated);

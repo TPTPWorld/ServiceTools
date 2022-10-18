@@ -26,8 +26,7 @@ typedef struct TypingTag {
 typedef TypingNodeType * TYPINGNODE;
 //-------------------------------------------------------------------------------------------------
 //----TypeCollector must be address of a malloced String
-int GetDeclaredTypes(LISTNODE Head,char ** TypeCollector,
-TYPINGNODE * AddTypingNodeHere) {
+int GetDeclaredTypes(LISTNODE Head,char ** TypeCollector,TYPINGNODE * AddTypingNodeHere) {
 
     FORMULA Formula;
     BinaryFormulaType * TypingFormula;
@@ -83,15 +82,13 @@ GetSymbol(TypingFormula->LHS->FormulaUnion.Atom));
                     } else {
                         ExtendString(&TypedCollector,GetSymbol(
 TypingFormula->LHS->FormulaUnion.Atom),&TypedCollectorLength);
-                        ExtendString(&TypedCollector,"\n",
-&TypedCollectorLength);
+                        ExtendString(&TypedCollector,"\n",&TypedCollectorLength);
                     }
-                } else if (Formula->FormulaUnion.BinaryFormula.Connective ==
-subtype) {
+                } else if (Formula->FormulaUnion.BinaryFormula.Connective == subtype) {
                     TypingFormula = &(Formula->FormulaUnion.BinaryFormula);
 //----Check both types have been declared
-                    if (!NameInList(GetSymbol(
-TypingFormula->LHS->FormulaUnion.Atom),TypedCollector)) {
+                    if (!NameInList(GetSymbol(TypingFormula->LHS->FormulaUnion.Atom),
+TypedCollector)) {
                         printf("ERROR: No type for %s\n",
 GetSymbol(TypingFormula->LHS->FormulaUnion.Atom));
                         NumberOfErrors++;

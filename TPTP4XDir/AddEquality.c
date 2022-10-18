@@ -107,16 +107,16 @@ String TermX,String TermY,String Variables) {
 //DEBUG printf("pair %d of %d for %s are ==%s==%s==\n",Position,Arity,Symbol,TermX,TermY);
 }
 //-------------------------------------------------------------------------------------------------
-LISTNODE MakeFunctionSubstitution(char * Symbol,int Arity,int Position,
-SyntaxType Syntax,SIGNATURE Signature) {
+LISTNODE MakeFunctionSubstitution(char * Symbol,int Arity,int Position,SyntaxType Syntax,
+SIGNATURE Signature) {
 
-    String Axiom;
-    String TermX,TermY,Variables;
-    String AxiomName;
-    String TransformedSymbol;
+    SuperString Axiom;
+    SuperString TermX,TermY,Variables;
+    SuperString AxiomName;
+    SuperString TransformedSymbol;
 
     strcpy(TransformedSymbol,"");
-
+ 
     MakeTermSubstitutionPair(Symbol,Arity,Position,TermX,TermY,Variables);
 
     if (Symbol[0] != '\'') {

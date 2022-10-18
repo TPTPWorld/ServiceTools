@@ -21,14 +21,17 @@ function hideLoadingSpinner() {
 }
 
 
+
 function ancestors(node, depth = 0, proofObj = window.proof){
 	let l = [];
 	let queue = [[node, depth]];
 
+    let interpretationOffset = node.level;
+
 	let nodeName;
 	while(queue.length > 0){
 		[node, depth] = queue.shift();
-		let parents = node.parents.map(name => [proofObj[name], depth-1]);
+		let parents = node.parents.map(name => [proofObj[name], window.interpretation ? proofObj[name].level - interpretationOffset : depth-1]);
 		l.push(...parents);
 		queue.push(...parents);
 	}
@@ -42,10 +45,12 @@ function descendants(node, depth = 0, proofObj = window.proof){
 	let l = [];
 	let queue = [[node, depth]];
 
+    let interpretationOffset = node.level;
+
 	let nodeName;
 	while(queue.length > 0){
 		[node, depth] = queue.shift();
-		let children = node.children.map(name => [proofObj[name], depth+1]);
+		let children = node.children.map(name => [proofObj[name], window.interpretation ? proofObj[name].level - interpretationOffset : depth+1]);
 		l.push(...children);
 		queue.push(...children);
 	}

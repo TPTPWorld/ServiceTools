@@ -17,7 +17,7 @@
 	<div id="settings" class="box">
 		<h1 class="settingsHeader" onclick="collapseBox(this)">Settings/Tools <span class="triangle"></span></h1>
 		<div class="collapsable" style="height:0px;">
-			<div class="box">
+			<div id="nodeInfoContainer" class="box">
 				<h2 class="settingsHeader" onclick="collapseBox(this)">Node Information <span class="triangle"></span></h2>
 				<div class="collapsable" id="nodeInfo" style="height:0px">
 						<h3><i>Hover over a node to see info about it here!</i></h3>
@@ -43,7 +43,7 @@
 			</div>
 
 			<div id="about" class="box">
-				<h2 class="settingsHeader" onclick="collapseBox(this)">About IDV <span class="triangle"></span></h2>
+				<h2 class="settingsHeader" onclick="collapseBox(this)">About<span class="triangle"></span></h2>
 				<div class="collapsable" style="height:0px; font-size:12pt">
 					<hr>
 					<ul>
@@ -51,6 +51,7 @@
 						<li>Steven Trac wrote the original IDV as a Java applet.</li>
 						<li>Joe Masterjohn started the conversion to a web app.</li>
 						<li>Jack McKeown finished the conversion and deployment.</li>
+                        <li>Jack McKeown adapted it for viewing intepretations.</li>
 					</ul>
 				</div>
 
@@ -72,8 +73,12 @@
 	<script src="/idv/static/js/bundle.js"></script>
 	<script>
 		window.interestScalingBool = false;
-		
-		
+		window.interpretation = {{interpretation}};
+
+	
+        if (window.interpretation){
+            document.querySelector("#interestingnessOptions").hidden = true;
+        }	
 		function show_original_graph(){
 			setTimeout(function(){
 				window.proofText = document.getElementById("proofText").innerText;
@@ -85,6 +90,7 @@
 	
 				// hack
 				document.querySelector("#settings").children[0].click();
+                setTimeout(()=>document.querySelector("#nodeInfoContainer > .settingsHeader").click(),500);
 			}, 200);
 		}
 

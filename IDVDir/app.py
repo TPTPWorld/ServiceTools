@@ -18,7 +18,12 @@ def idv():
     except Exception as e:
         proof = request.form["proof"]
 
-    return render_template("idv.html", proof_string=proof)
+    try:
+        interpretation = request.form['interpretation']
+    except Exception as e:
+        interpretation = "false"
+
+    return render_template("idv.html", proof_string=proof, interpretation=interpretation)
 
 
 @app.route('/interestingness', methods=["POST"])

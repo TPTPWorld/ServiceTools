@@ -9,6 +9,11 @@ function stripParens(formula){
 	return formula.replace(/\s+/g,'').replace(/[()]/g, '');
 }
 
+function graphVizFormula(node){
+	let s = node.formula.replace(/"/g, '\\"');
+    return s.split(":")[0]
+}
+
 function getNodeShape(node) {
 	let shapeMap = {
 		axiom: "invtriangle",
@@ -19,6 +24,11 @@ function getNodeShape(node) {
 	if (stripParens(node.formula) == "$false") {
 		return "box";
 	}
+
+    if (window.interpretation && stripParens(node.formula) == "$true"){
+        return "box";
+    }
+
 	return shapeMap[node.role];
 }
 
@@ -107,6 +117,25 @@ function getParentsFromSource(source, node){
 }
 
 
+
+function getNodeLevel(source, node){
+    // console.log("Getting node level", node, source);
+    let regex = /level\(([0-9]+)\)/;
+    
+    try{
+        node.level = parseInt(node.inference_record.match(regex)[1]);
+    }
+    catch(e){
+        window.source = source;
+        node.level = parseInt(
+            source.internal_source().getText().match(regex)[1]
+        );
+    }
+}
+
+
+
+
 // this class exists to format the relevant parts of the parse tree for ease of use.
 // It makes it JSON. To see the schema, look at the "process" method.
 class Formatter extends Listener {
@@ -153,6 +182,7 @@ class Formatter extends Listener {
 			parents: [],
 			inference_record: "",
 			info: {},
+            level: undefined,
 			tptp: ctx.parentCtx.parentCtx.getText()
 		};
 
@@ -171,13 +201,21 @@ class Formatter extends Listener {
 		}
 
 		// try to get source...(contains parents)
+	    
+        let source = ctx.annotations().source();
 		try {
-			let source = ctx.annotations().source();
 			getParentsFromSource(source, node);
 		}
 		catch (e) {
 			console.log(`"${node.name}" has no sources (or we failed getting them).`)
 		}
+        
+        try {
+            getNodeLevel(source, node);
+        }
+        catch (e) {
+            console.log(`"${node.name}" has no level (or we failed getting it).`);
+        }
 
 		this.node_map[node.name] = node;
 	}
@@ -192,9 +230,11 @@ function nodeToGV(s) {
 			return
 		}
 
+		let label = window.interpretation ? graphVizFormula(node) : node.name;
+		label = node.graphviz.inviz ? "" : label
 		s.push(`${node.name} [
 			fixedsize=true,
-			label="${node.graphviz.invis ? "" : node.name}",
+			label="${label}",
 			${node.graphviz.invis ? "style=invis," : ""}
 			shape=${node.graphviz.invis ? "point" : node.graphviz.shape},
 			color="${node.graphviz.color}",
@@ -203,8 +243,6 @@ function nodeToGV(s) {
 			height="${node.graphviz.height}",
 			penwidth="3.0"
 		]`);
-		let arrowOrNot = node.graphviz.invis ? " [dir=none] " : "";
-		node.parents.forEach(function (p) { s.push(p + " -> " + node.name + arrowOrNot); });
 	}
 }
 
@@ -235,8 +273,13 @@ let proofToGV = function (nodes) {
 	// will become string segments of the "dot" file graphviz file.
 	let s = [];
 
-	let top_row = list.filter(e => e.parents.length == 0);
-	let others = list.filter(e => e.parents.length != 0);
+    let top_row = [];
+    let others = list;
+
+    if (!window.interpretation){
+	    top_row = list.filter(e => e.parents.length == 0);
+	    others = list.filter(e => e.parents.length != 0);
+    }
 
 	let ns = {}; // namespace for simplifying redundant ops on thf/tff/tcf/fof/cnf...
 	let langs = ["thf", "tff", "tcf", "fof", "cnf"];
@@ -250,22 +293,54 @@ let proofToGV = function (nodes) {
 	s.push("node [style=filled];");
 	s.push("newrank=\"true\"");
 
+    // let clusterColor = 'lightgrey';
+    let clusterColor = 'transparent';
+
 
 	//begin Top Row...
 	s.push("subgraph clusterAxioms {");
-	s.push("pencolor=transparent");
+	s.push(`pencolor=${clusterColor}`);
 	top_row.forEach(nodeToGV(s));
-	s.push("{rank=same; " + top_row.map((e) => e.name).join(' ') + "}");
+    if (!window.interpretation)
+	    s.push("{rank=same; " + top_row.map((e) => e.name).join(' ') + "}");
 	s.push("}");
 	//end Top Row
 
 	for(let lang of langs){
-		s.push(`subgraph cluster${lang}s {`);
-		s.push(`pencolor=transparent`);
+        if (!window.interpretation){
+	    	s.push(`subgraph cluster${lang}s {`);
+            s.push(`pencolor=${clusterColor}`);
+        }
 		ns[lang].forEach(nodeToGV(s));
-		s.push(`{rank=same; ` + ns[`top_${lang}`].map((e) => e.name).join(' ') + `}`);
-		s.push(`}`);
+        if (!window.interpretation) {
+		    s.push(`{rank=same; ` + ns[`top_${lang}`].map((e) => e.name).join(' ') + `}`);
+		    s.push(`}`);
+        }
 	}
+
+
+    // Add Level Information to GraphViz
+    window.levels = {};
+    for(let node of list){
+        if (typeof node.level == 'number'){
+            if (!Object.keys(levels).includes(`${node.level}`)){
+                console.log(`Level ${node.level} not in levels, making new`);
+                levels[node.level] = [];
+            }
+            levels[node.level].push(node.name);
+        }
+    }
+
+    for(const [level, names] of Object.entries(levels)){
+		s.push(`{rank=same; ${names.join(' ')}}`);
+    }
+
+    //s.push("{ranksep=equally}");
+
+    for(let node of list){
+		let arrowOrNot = node.graphviz.invis ? " [dir=none] " : "";
+        node.parents.forEach(function (p) {s.push(p + " -> " + node.name + arrowOrNot)});
+    }
 
 	s.push("}");
 	return s.join('\n');
