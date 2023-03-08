@@ -92,6 +92,8 @@ function nodeIsUninteresting(node){
 let graphviz = d3.select("#graph").graphviz();
 window.graphviz = graphviz;
 
+graphviz.zoomScaleExtent([0.01,100])
+
 graphviz.transition(function () {
 	return d3.transition("main").duration(500);
 });
@@ -103,6 +105,9 @@ graphviz.engine("dot");
 //// end graphviz setup /////////////////////////////
 
 
+function getNodeName(hovered){
+	return window.interpretation ? hovered.querySelector("text").getAttribute("proofKey") : hovered.querySelector("text").innerHTML;
+}
 
 function showGV(dot) {
 	showLoadingSpinner()
@@ -112,7 +117,7 @@ function showGV(dot) {
 		// it where to find the svg nodes corresponding to "proof"/json nodes
 		for (let node of document.querySelectorAll("g.node")) {
 			node.addEventListener("mouseenter", nodeHoverEventListener);
-			let nodeName = node.querySelector("title").innerHTML;
+			let nodeName = getNodeName(node);
 			try{
 				window.proof[nodeName].svgNode = node.querySelector("polygon, ellipse");
 			}
@@ -130,7 +135,7 @@ function nodeHoverEventListener(e) {
 	if (e.buttons != 0) {
 		return
 	}
-	let nodeName = e.currentTarget.children[0].innerHTML;
+	let nodeName = getNodeName(e.currentTarget);
 	let node = proof[nodeName];
 
 	let nodeInfo = document.getElementById("nodeInfo");

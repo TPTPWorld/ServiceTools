@@ -36,9 +36,8 @@ void RandomizeCommutativeFormulae(LISTNODE * Head) {
     while (*Target != NULL) {
         if (
 (*Target)->AnnotatedFormula->Syntax == include ||
-( LogicalAnnotatedFormula((*Target)->AnnotatedFormula) &&
-  ( CheckAnnotatedFormulaRole((*Target)->AnnotatedFormula,type) ||
-    CheckAnnotatedFormulaRole((*Target)->AnnotatedFormula,definition)))) {
+( LogicalAnnotatedFormulaWithRole((*Target)->AnnotatedFormula,type) ||
+  LogicalAnnotatedFormulaWithRole((*Target)->AnnotatedFormula,definition))) {
             *AddHere = *Target;
             *Target = (*Target)->Next;
             (*AddHere)->Next = NULL;

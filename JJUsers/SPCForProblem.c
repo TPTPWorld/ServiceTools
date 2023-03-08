@@ -66,13 +66,16 @@ void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 
 //DEBUG printf("NumberOfMathPredicates %.0f NumberOfEqualityAtoms %.0f NumberOfPredicates %.0f NumberOfMathFunctions %.0f NumberOfNumbers %.0f NumberOfFunctors %.0f\n",Statistics.NumberOfMathPredicates,Statistics.NumberOfEqualityAtoms,Statistics.NumberOfPredicates,Statistics.NumberOfMathFunctions,Statistics.NumberOfNumbers,Statistics.NumberOfFunctors);
 
-//    if (Statistics.NumberOfPredicates == Statistics.NumberOfPropositions) {
-//        strcat(SPC,"_PRP");
+    if (Statistics.SymbolStatistics.NumberOfPredicates == 
+Statistics.SymbolStatistics.NumberOfPropositions) {
+        strcat(SPC,"_PRP");
 //    } else if (FOFEPRProblem(Statistics,Head,Signature)) {
 //        strcat(SPC,"_EPR");
-//    } else {
-//        strcat(SPC,"_RFO");
-    DetermineEqualityPresence(Statistics,SPC);
+    } else {
+        strcat(SPC,"_RFO");
+        DetermineEqualityPresence(Statistics,SPC);
+        DetermineArithmeticPresence(Statistics,SPC);
+    }
 //    } else if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 
 //Statistics.NumberOfAtoms) {
 //        strcat(SPC,"_PEQ");
@@ -80,7 +83,6 @@ void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 //        strcat(SPC,"_SEQ");
 //    }
 
-    DetermineArithmeticPresence(Statistics,SPC);
 }
 //-------------------------------------------------------------------------------------------------
 int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
@@ -232,9 +234,20 @@ StatisticsType Statistics,char * Status,int HasAConjecture,String SPC) {
     String SyntaxTypes;
     char * ASyntax;
     char * CRPosition;
+    char * Classicality;
+
+//----Check if non-classical
+    if (
+Statistics.FormulaStatistics.NumberOfAppliedConnectives > 0 ||
+Statistics.ConnectiveStatistics.NumberOfNTFConnectives > 0) {
+        Classicality = "N";
+    } else {
+        Classicality = "T";
+    }
 
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
+        strcpy(SPC,Classicality);
 //DEBUG printf("PiB %.0f TE %.0f Pi %.0f Sig %.0f Ch %.0f De %.0f\n",
 //DEBUG Statistics.ConnectiveStatistics.NumberOfPiBinders,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfTypedEquations,
@@ -250,13 +263,14 @@ Statistics.ConnectiveStatistics.NumberOfPis > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmas > 0 ||
 Statistics.ConnectiveStatistics.NumberOfChoices > 0 ||
 Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
-            strcpy(SPC,"TH1_");
+            strcat(SPC,"H1_");
         } else {
-            strcpy(SPC,"TH0_");
+            strcat(SPC,"H0_");
         }
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTHFSPC(Statistics,SPC);
     } else if (Syntax == tptp_tff) {
+        strcpy(SPC,Classicality);
 //DEBUG printf("NF %d BV %d Tu %d ITE %d Let %d\n",
 //DEBUG Statistics.FormulaStatistics.NumberOfNestedFormulae,
 //DEBUG Statistics.SymbolStatistics.NumberOfBooleanVariables,
@@ -264,14 +278,16 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
 //DEBUG Statistics.FormulaStatistics.NumberOfITEs,
 //DEBUG Statistics.FormulaStatistics.NumberOfLets);
         if (
+//----All non-classical are N
+!strcmp(Classicality,"N") ||
 Statistics.FormulaStatistics.NumberOfNestedFormulae > 0 ||
 Statistics.SymbolStatistics.NumberOfBooleanVariables > 0 ||
 Statistics.FormulaStatistics.NumberOfTuples > 0 ||
 Statistics.FormulaStatistics.NumberOfITEs > 0 ||
 Statistics.FormulaStatistics.NumberOfLets > 0) {
-            strcpy(SPC,"TX");
+            strcat(SPC,"X");
         } else {
-            strcpy(SPC,"TF");
+            strcat(SPC,"F");
         }
         if (Statistics.ConnectiveStatistics.NumberOfPiBinders > 0) {
             strcat(SPC,"1_");
@@ -280,6 +296,7 @@ Statistics.FormulaStatistics.NumberOfLets > 0) {
         }
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTFFSPC(Statistics,SPC);
+
     } else if (Syntax == tptp_fof) {
         strcpy(SPC,"FOF_");
         DetermineProvabability(Status,HasAConjecture,SPC);
@@ -293,6 +310,7 @@ Statistics.FormulaStatistics.NumberOfLets > 0) {
             strcat(SPC,"UNS");
         }
         DetermineCNFSPC(Statistics,SPC);
+
     } else if (Syntax == tptp_mixed) {
         strcpy(SPC,"MIX_");
         GetListSyntaxTypes(Head,SyntaxTypes);

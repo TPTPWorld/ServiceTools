@@ -9,10 +9,21 @@ function stripParens(formula){
 	return formula.replace(/\s+/g,'').replace(/[()]/g, '');
 }
 
-function graphVizFormula(node){
-	let s = node.formula.replace(/"/g, '\\"');
-    return s.split(":")[0]
+
+
+function interpretationLabel(node){
+    let s = node.formula.replace(/"/g, '\\"');
+    let lastColonPos = s.lastIndexOf(":");
+    let beforeColon = s.substr(0,lastColonPos).trim();
+    if (beforeColon.startsWith("'") && beforeColon.endsWith("'")){
+        return s.split("'")[1];
+    }
+    return (lastColonPos == -1) ? s : beforeColon;
 }
+
+
+
+
 
 function getNodeShape(node) {
 	let shapeMap = {
@@ -36,7 +47,7 @@ function getNodeColor(node) {
 	let colorMap = {
 		thf: "blue",
 		tff: "orange",
-		tcf: "black",
+		tcf: "grey30",
 		fof: "green",
 		cnf: "red"
 	}
@@ -226,13 +237,15 @@ class Formatter extends Listener {
 // must be a higher order function so it can take in s as input...
 function nodeToGV(s) {
 	return function (node) {
-		if(node.children.length == 0 && node.parents.length == 0){
-			return
-		}
 
-		let label = window.interpretation ? graphVizFormula(node) : node.name;
+		// What was this for? I commented it to fix an IIV bug, but I can't remember why it was here to begin with.
+        /*if(node.children.length == 0 && node.parents.length == 0){
+			return
+		}*/
+
+		let label = window.interpretation ? interpretationLabel(node) : node.name;
 		label = node.graphviz.inviz ? "" : label
-		s.push(`${node.name} [
+		s.push(`"${node.name}" [
 			fixedsize=true,
 			label="${label}",
 			${node.graphviz.invis ? "style=invis," : ""}
@@ -268,20 +281,20 @@ let proofToGV = function (nodes) {
 		}
 	}
 
-	let list = Object.values(nodes);
+	let nodeList = Object.values(nodes);
 
 	// will become string segments of the "dot" file graphviz file.
-	let s = [];
+	let gvLines = [];
 
     let top_row = [];
-    let others = list;
+    let others = nodeList;
 
     if (!window.interpretation){
-	    top_row = list.filter(e => e.parents.length == 0);
-	    others = list.filter(e => e.parents.length != 0);
+	    top_row = nodeList.filter(e => e.parents.length == 0);
+	    others = nodeList.filter(e => e.parents.length != 0);
     }
 
-	let ns = {}; // namespace for simplifying redundant ops on thf/tff/tcf/fof/cnf...
+	window.ns = {}; // namespace for simplifying redundant ops on thf/tff/tcf/fof/cnf...
 	let langs = ["thf", "tff", "tcf", "fof", "cnf"];
 
 	for(let lang of langs){
@@ -289,39 +302,39 @@ let proofToGV = function (nodes) {
 		ns[`top_${lang}`] = ns[lang].filter(isTopRow(lang));
 	}
 
-	s.push("digraph G {");
-	s.push("node [style=filled];");
-	s.push("newrank=\"true\"");
+	gvLines.push("digraph G {");
+	gvLines.push("node [style=filled];");
+	gvLines.push("newrank=\"true\"");
 
     // let clusterColor = 'lightgrey';
     let clusterColor = 'transparent';
 
 
 	//begin Top Row...
-	s.push("subgraph clusterAxioms {");
-	s.push(`pencolor=${clusterColor}`);
-	top_row.forEach(nodeToGV(s));
+	gvLines.push("subgraph clusterAxioms {");
+	gvLines.push(`pencolor=${clusterColor}`);
+	top_row.forEach(nodeToGV(gvLines));
     if (!window.interpretation)
-	    s.push("{rank=same; " + top_row.map((e) => e.name).join(' ') + "}");
-	s.push("}");
+	    gvLines.push("{rank=same; " + top_row.map((e) => `"${e.name}"`).join(' ') + "}");
+	gvLines.push("}");
 	//end Top Row
 
 	for(let lang of langs){
         if (!window.interpretation){
-	    	s.push(`subgraph cluster${lang}s {`);
-            s.push(`pencolor=${clusterColor}`);
+	    	gvLines.push(`subgraph cluster${lang}s {`);
+            gvLines.push(`pencolor=${clusterColor}`);
         }
-		ns[lang].forEach(nodeToGV(s));
+		ns[lang].forEach(nodeToGV(gvLines));
         if (!window.interpretation) {
-		    s.push(`{rank=same; ` + ns[`top_${lang}`].map((e) => e.name).join(' ') + `}`);
-		    s.push(`}`);
+		    gvLines.push(`{rank=same; ` + ns[`top_${lang}`].map((e) => `"${e.name}"`).join(' ') + `}`);
+		    gvLines.push(`}`);
         }
 	}
 
 
     // Add Level Information to GraphViz
     window.levels = {};
-    for(let node of list){
+    for(let node of nodeList){
         if (typeof node.level == 'number'){
             if (!Object.keys(levels).includes(`${node.level}`)){
                 console.log(`Level ${node.level} not in levels, making new`);
@@ -332,18 +345,17 @@ let proofToGV = function (nodes) {
     }
 
     for(const [level, names] of Object.entries(levels)){
-		s.push(`{rank=same; ${names.join(' ')}}`);
+		gvLines.push(`{rank=same; ${names.map(x=>`"${x}"`).join(' ')}}`);
     }
 
-    //s.push("{ranksep=equally}");
 
-    for(let node of list){
+    for(let node of nodeList){
 		let arrowOrNot = node.graphviz.invis ? " [dir=none] " : "";
-        node.parents.forEach(function (p) {s.push(p + " -> " + node.name + arrowOrNot)});
+        node.parents.forEach(function (p) {gvLines.push(`"${p}"` + " -> " + `"${node.name}"` + arrowOrNot)});
     }
 
-	s.push("}");
-	return s.join('\n');
+	gvLines.push("}");
+	return gvLines.join('\n');
 }
 
 
@@ -374,7 +386,7 @@ let parseProof = function (proofText) {
 		node.graphviz = {
 			shape: getNodeShape(node),
 			color: getNodeColor(node),
-			fillcolor: "grey",
+			fillcolor: "#c0c0c0",
 		};
 
 		if (node.info['interesting'] !== undefined) {

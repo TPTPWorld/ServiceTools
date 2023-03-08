@@ -1,0 +1,34 @@
+#!/bin/tcsh
+
+set TPTP4X = "$TPTP_HOME/ServiceTools/tptp4X"
+set AGMMV = "$TPTP_HOME/ServiceTools/AGMVDir/AGMMV"
+set GCMV = "$TPTP_HOME/ServiceTools/AGMVDir/GCMV"
+set MinimalPerFormulaCPULimit = 10
+
+#----Check that there is a problem file and an interpretation file
+if ($#argv != 3) then
+    echo "Usage: $0 <time_limit> <problem file> <interpretation file>"
+    exit
+else 
+    set CPULimit = $1
+    set ProblemFile = $2
+    set ModelFile = $3
+    if (!(`grep -E -c '^ *..f\(.*, *axiom(-local|-global)? *,' $ProblemFile`) && \
+        !(`grep -E -c '^ *..f\(.*, *conjecture *,' $ProblemFile`)) then
+        echo "The problem file must have an axiom or a conjecture"
+        exit
+    end
+    if (!(`grep -E -c '^ *..f\(.*, *interpretation *,' $ModelFile`) && \
+        echo "The interpretation file must have an interpretation"
+        exit
+    end
+endif
+
+#----Check if classical or modal
+if (`grep -c '$ki_world' $ModelFile`) then
+    echo "% This is a Kripke model, using modal verification"
+    $AGMMV $CPULimit $ProblemFile $ModelFile
+else
+    echo "% This is a Tarskian model, using classical verification"
+    $GCMV -t $CPULimit $ProblemFile $ModelFile
+endif
