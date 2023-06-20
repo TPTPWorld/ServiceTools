@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/types.h>
 #include <sys/time.h>
+#include <sys/resource.h>
+#include <signal.h>
 #include "DataTypes.h"
 #include "Utilities.h"
 #include "FileUtilities.h"
@@ -46,8 +49,10 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * Options) {
     strcpy(Options->Transformations,"");
     Options->PrintDelayMin = 0;
     Options->PrintDelayMax = 0;
+    Options->CPUTimeLimit = 0;
+    Options->WCTimeLimit = 0;
 
-    while ((OptionChar = getopt(argc,argv,"q:d:f:r:t:u:VNxcwzvh")) != -1) {
+    while ((OptionChar = getopt(argc,argv,"q:d:f:r:t:u:l:VNxcwzvh")) != -1) {
         switch (OptionChar) {
             case 'q':
                 Options->Quietness = atoi(optarg);
@@ -120,6 +125,14 @@ Options->Format != oldtptp) {
 //----Set in JJParser
                 SetSZSStatusReporting(1);
                 break;
+            case 'l':
+                if ((Colon = strchr(optarg,':')) !=  NULL) {
+//----Random delay
+                    *Colon = '\0';
+                    Options->CPUTimeLimit = atoi(optarg);
+                    Options->WCTimeLimit = atoi(Colon+1);
+                }
+                break;
             case 'v':
                 printf("TPTP4X %s\n",VERSION_NUMBER);
                 exit(0);
@@ -164,6 +177,7 @@ Options->Format != oldtptp) {
                 printf("  -c              - clean away non-logicals (no)\n");
                 printf("  -w              - warnings (no)\n");
                 printf("  -z              - SZS ontology status output (no)\n");
+                printf("  -l<CPU:WC>      - CPU and Wall Clock time limits, 0 is none (none)\n");
                 printf("  -v              - print version number\n");
                 printf("  -h              - print this help\n");
                 printf("<files> are ...\n");
@@ -597,6 +611,48 @@ NumberNamesFormat,OutputHandle);
     }
 }
 //-------------------------------------------------------------------------------------------------
+void XCPUHandler(int TheSignal) {
+
+    printf("ERROR: Ran out of CPU time\n");
+    exit(EXIT_FAILURE);
+}
+//-------------------------------------------------------------------------------------------------
+void ALRMHandler(int TheSignal) {
+
+    printf("ERROR: Ran out of WC time\n");
+    exit(EXIT_FAILURE);
+}
+//-------------------------------------------------------------------------------------------------
+void SetTimeLimits(OptionsType Options) {
+
+    struct rlimit ResourceLimits;
+
+    if (Options.CPUTimeLimit > 0) {
+//----Limit the memory. Need to get old one for hard limit field
+        if (getrlimit(RLIMIT_CPU,&ResourceLimits) == -1) {
+            perror("Getting resource limit:");
+            exit(EXIT_FAILURE);
+        }
+//----Set new CPU limit 
+        ResourceLimits.rlim_cur = Options.CPUTimeLimit;
+        if (setrlimit(RLIMIT_CPU,&ResourceLimits) == -1) {
+            perror("Cannot set CPU time limit\n");
+            exit(EXIT_FAILURE);
+        }
+        if (signal(SIGXCPU,XCPUHandler) == SIG_ERR) {
+            perror("Could not set SIGXCPU handler");
+            exit(EXIT_FAILURE);
+        }
+    }
+    if (Options.WCTimeLimit > 0) {
+        alarm(Options.WCTimeLimit);
+        if (signal(SIGALRM,ALRMHandler) == SIG_ERR) {
+            perror("Could not set SIGALRM handler");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     OptionsType Options;
@@ -607,6 +663,7 @@ int main(int argc, char *argv[]) {
     String ErrorMessage;;
 
     ArgvFileIndex = ProcessCommandLine(argc,argv,&Options);
+    SetTimeLimits(Options);
 
     SetNeedForNonLogicTokens(Options.KeepNonLogicals);
     SetAllowFreeVariables(Options.AllowFreeVariables);

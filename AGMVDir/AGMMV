@@ -16,15 +16,15 @@ else
     set CPULimit = $1
     set ProblemFile = $2
     set ModelFile = $3
-    if (!(`grep -E -c '^ *tff\(.*, *axiom(-local|-global)? *,' $ProblemFile`) && \
-        !(`grep -E -c '^ *tff\(.*, *conjecture *,' $ProblemFile`)) then
+    if (!(`grep -E -c '^ *tff\([^,]*, *axiom(-local|-global)? *,' $ProblemFile`) && \
+        !(`grep -E -c '^ *tff\([^,]*, *conjecture *,' $ProblemFile`)) then
         echo "The problem file must have an axiom or a conjecture"
         exit
-    end
-    if (!(`grep -E -c '^ *tff\(.*, *interpretation *,' $ModelFile`) && \
+    endif
+    if (!(`grep -E -c '^ *tff\(.*, *interpretation *,' $ModelFile`)) then
         echo "The interpretation file must have an interpretation"
         exit
-    end
+    endif
 endif
 
 onintr cleanup
@@ -66,8 +66,8 @@ echo "% Extracted the types"
 
 #----Extract the interpretation from the interpretation file
 $TPTP4X -u machine $ModelFile | grep -E '^ *tff\(.*, *interpretation *,' | \
-sed -e 's/$distinct(\([^,]*\),\([^,)]*\))/ \1 != \2 /g' | \
-sed -e 's/$distinct(\([^,]*\),\([^,)]*\),\([^)]*\))/ ( \1 != \2 \& \1 != \3 \& \2 != \3 ) /g' | \
+# sed -e 's/$distinct(\([^,]*\),\([^,)]*\))/ \1 != \2 /g' | \
+# sed -e 's/$distinct(\([^,]*\),\([^,)]*\),\([^)]*\))/ ( \1 != \2 \& \1 != \3 \& \2 != \3 ) /g' | \
 $TPTP4X -- >> $VerificationFile
 echo "" >> $VerificationFile
 echo "% Extracted the interpretation"
@@ -95,7 +95,9 @@ $TPTP4X -u machine $ProblemFile | \
     $TPTP4X -- >> $VerificationFile
 echo "% Extracted the conjecture"
 
+#DEBUG echo "--------- The AGMMV VerificationFile --------------"
 #DEBUG cat $VerificationFile
+#DEBUG echo "---------------------------------------------------"
 
 echo "% Running the modal model verifier $ModalModelVerifier"
 #DEBUG echo -n "% ";date '+%T %N'

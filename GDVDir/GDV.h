@@ -5,12 +5,14 @@ typedef struct {
     int AutoMode;
     int ForceContinue;
     int Quietness;
-    int VerifyLeaves;
-    int VerifyUserSemantics;
-    int VerifyDAGInferences;
+    int VerifyLeaves;        //----Verify leaves can be derived from input
+    int VerifyUserSemantics; //----Check if the leaf axioms are satisfiable
+    int VerifyDAGInferences; //----System-specific rules, e.g., E's apply_def, splitting, and
+                             //----then the standard inference checking
+    int GenerateObligations; //----Only generate obligations, don't call ATP
     int NoExpensiveChecks;
-    int GenerateDefinitions;
-    int DerivationExtract;
+    int GenerateDefinitions; //----Something special for E's psuedo splitting
+    int DerivationExtract;   //----Not a full derivation, so parents can be missing
     String ProblemFileName;
     int CheckParentRelevance;
     int CheckRefutation;

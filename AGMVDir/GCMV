@@ -18,7 +18,7 @@ my $TPTP4X = "$TPTPDirectory/ServiceTools/tptp4X";
 my $TryToProve = "$TPTPDirectory/ServiceTools/TryToProve";
 
 #----Global for use in END statements
-my $GlobalTemporaryDirectory = "/tmp/AGMV_$$";
+my $GlobalTemporaryDirectory = "/tmp/GCMV_$$";
 my $ModelAsAxiomFile;   #----Set below
 my $GlobalInterrupted = 0;
 my %GlobalOptions;
@@ -92,14 +92,15 @@ sub DoMain {
     }
 
 #----Convert the interpretation formula in model file to axiom
-    system("$TPTP4X -x -c -u machine $ModelFile | sed -e 's/^\\(...([^,]*,\\)interpretation\\(,.*\\)/\\1axiom\\2/' > $ModelAsAxiomFile");
+    system("$TPTP4X -x -c -u machine $ModelFile | sed -e 's/^\\(...([^,]*,\\)fi_[a-z]*\\(,.*\\)/\\1axiom\\2/' -e 's/^\\(...([^,]*,\\)interpretation\\(,.*\\)/\\1axiom\\2/' > $ModelAsAxiomFile");
     QuietPrint("% Testing model status",1);
     ($Result) = TryToProve($ModelAsAxiomFile,undef,
 # 'fof(prove_false,conjecture,$false).',
 "0",$GlobalOptions{'-m'},$GlobalOptions{'-t'});
     QuietPrint("% Model is $Result",1);
     if (($Result eq "Unknown" && $GlobalOptions{'-f'}) || $Result eq "Satisfiable") {
-        $NumberOfProblemFormulaeToVerify = `grep -c -E '^(cnf|fof|tff|thf)' $ProblemFile`;
+        $NumberOfProblemFormulaeToVerify = `grep -c -E '^(cnf|fof|tff|thf)' $ProblemFile` -
+`grep -c ', *type *,' $ProblemFile`;
         chomp($NumberOfProblemFormulaeToVerify);
         $CPULimitPerProblemFormula = int($GlobalOptions{'-t'} * 2 /
 $NumberOfProblemFormulaeToVerify);
@@ -113,7 +114,7 @@ sub Usage {
 
     print("
 Usage 
-    AGMV [-qN] [-f0/1] [-tN] [-p prover] [-m model_finder] [-k dir] model_file problem_file
+    GCMV [-qN] [-f0/1] [-tN] [-p prover] [-m model_finder] [-k dir] model_file problem_file
 ");
 }
 #--------------------------------------------------------------------------------------------------
@@ -135,7 +136,7 @@ sub VerifyModel {
     my $Result;
     my $AllResult;
 
-    open(PROBLEM,"$TPTP4X -x -c -u machine $ProblemFile |") || 
+    open(PROBLEM,"$TPTP4X -x -c -u machine $ProblemFile | grep -v ', *type *,' |") || 
 die("ERROR, Cannot open $ProblemFile\n");
 #----For each line (formula) in the problem
 #----If failure, continue only if requested

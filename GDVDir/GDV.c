@@ -45,6 +45,7 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
     OptionValues->VerifyLeaves = 0;
     OptionValues->VerifyUserSemantics = 1;
     OptionValues->VerifyDAGInferences = 1;
+    OptionValues->GenerateObligations = 0;
     OptionValues->NoExpensiveChecks = 0;
     OptionValues->GenerateDefinitions = 0;
     OptionValues->DerivationExtract = 0;
@@ -95,6 +96,9 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
                 break;
             case 'd':
                 OptionValues->VerifyDAGInferences = 0;
+                break;
+            case 'g':
+                OptionValues->GenerateObligations = 1;
                 break;
             case 'x':
                 OptionValues->NoExpensiveChecks = 1;
@@ -162,6 +166,7 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
                 printf("-l             - verify leaves (no)\n");
                 printf("-U             - (don't) verify user leaf semantics (yes)\n");
                 printf("-d             - (don't) verify derivation (yes)\n");
+                printf("-g             - only generate obligations, don't call ATP\n");
                 printf("-x             - suppress expensive checks (no)\n");
                 printf("-n             - generate definitions (no)\n");
                 printf("-e             - derivation extract (no)\n");
@@ -203,32 +208,24 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
         printf("    Quietness %d\n",OptionValues->Quietness);
         printf("    ForceContinue %d\n",OptionValues->ForceContinue);
         printf("    VerifyLeaves %s\n",OptionValues->VerifyLeaves?
-(!strcmp(OptionValues->ProblemFileName,"")?"from derivation":
-OptionValues->ProblemFileName):"0");
-        printf("    Verify user leaf semantics %d\n",
-OptionValues->VerifyUserSemantics);
-        printf("    Verify DAG inferences %d\n",
-OptionValues->VerifyDAGInferences);
+(!strcmp(OptionValues->ProblemFileName,"")?"from derivation": OptionValues->ProblemFileName):"0");
+        printf("    Verify user leaf semantics %d\n",OptionValues->VerifyUserSemantics);
+        printf("    Verify DAG inferences %d\n",OptionValues->VerifyDAGInferences);
         printf("    NoExpensiveChecks %d\n",OptionValues->NoExpensiveChecks);
-        printf("    GenerateDefinitions %d\n",
-OptionValues->GenerateDefinitions);
+        printf("    GenerateDefinitions %d\n",OptionValues->GenerateDefinitions);
         printf("    DerivationExtract %d\n",OptionValues->DerivationExtract);
         printf("    ForceContinue %d\n",OptionValues->ForceContinue);
-        printf("    CheckParentRelevance %d\n",
-OptionValues->CheckParentRelevance);
+        printf("    CheckParentRelevance %d\n",OptionValues->CheckParentRelevance);
         printf("    CheckRefutation %d\n",OptionValues->CheckRefutation);
         printf("    THFTheoremProver %s\n",OptionValues->THFTheoremProver);
         printf("    THFModelFinder %s\n",OptionValues->THFModelFinder);
         printf("    TheoremProver %s\n",OptionValues->TheoremProver);
         printf("    ModelFinder %s\n",OptionValues->ModelFinder);
         printf("    Saturator %s\n",OptionValues->Saturator);
-        printf("    UnsatisfiabilityChecker %s\n",
-OptionValues->UnsatisfiabilityChecker);
-        printf("    CounterSatisfiableProver %s\n",
-OptionValues->CounterSatisfiableProver);
+        printf("    UnsatisfiabilityChecker %s\n",OptionValues->UnsatisfiabilityChecker);
+        printf("    CounterSatisfiableProver %s\n",OptionValues->CounterSatisfiableProver);
         printf("    TimeLimit %d\n",OptionValues->TimeLimit);
-        printf("    KeepFiles %s\n",OptionValues->KeepFiles?
-OptionValues->KeepFilesDirectory:"0");
+        printf("    KeepFiles %s\n",OptionValues->KeepFiles? OptionValues->KeepFilesDirectory:"0");
         printf("    DerivationFileName %s\n",OptionValues->DerivationFileName);
     }
 
@@ -471,7 +468,6 @@ OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
         case tptp_mixed:
-printf("MIXED\n");
             QPRINTF(OptionValues,1)(
 "WARNING: %s.%s has mixed language parents+conjecture, using THF tools for THM check\n",
 FileBaseName,Extension);
@@ -494,8 +490,8 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
     }
 }
 //-------------------------------------------------------------------------------------------------
-int GDVCheckSatisfiable(OptionsType OptionValues,LISTNODE Formulae,
-char * FileBaseName,char * Extension,int TestUnsatisfiability) {
+int GDVCheckSatisfiable(OptionsType OptionValues,LISTNODE Formulae,char * FileBaseName,
+char * Extension,int TestUnsatisfiability) {
 
     String OutputFileName;
     int CheckResult;
@@ -508,7 +504,7 @@ char * FileBaseName,char * Extension,int TestUnsatisfiability) {
             Syntax = tptp_fof;
         case tptp_fof:
             if (ListOfAnnotatedFormulaTrueInInterpretation(Formulae,positive)) {
-                if (OptionValues.KeepFiles) {
+                if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
                     strcat(OutputFileName,".");
                     strcat(OutputFileName,Extension);
@@ -521,7 +517,7 @@ OutputFileName,NULL,OutputFileName);
                 }
                 return(1);
             } else if (ListOfAnnotatedFormulaTrueInInterpretation(Formulae,negative)) {
-                if (OptionValues.KeepFiles) {
+                if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
                     strcat(OutputFileName,".");
                     strcat(OutputFileName,Extension);
@@ -540,10 +536,9 @@ OutputFileName,NULL,OutputFileName);
                 strcat(OutputFileName,".");
                 strcat(OutputFileName,Extension);
                 strcat(OutputFileName,"_model.dis");
-                if ((CheckResult = SystemOnTPTP(Formulae,NULL,
-OptionValues.ModelFinder,"Satisfiable",TestUnsatisfiability,
-OptionValues.UnsatisfiabilityChecker,"Unsatisfiable",OptionValues.TimeLimit,
-OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+                if ((CheckResult = SystemOnTPTP(Formulae,NULL,OptionValues.ModelFinder,
+"Satisfiable",TestUnsatisfiability,OptionValues.UnsatisfiabilityChecker,"Unsatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName)) != 0) {
                     return(CheckResult);
                 } else {
@@ -552,9 +547,8 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName)) != 0) {
                     strcat(OutputFileName,".");
                     strcat(OutputFileName,Extension);
                     strcat(OutputFileName,"_saturate.dis");
-                    return(SystemOnTPTP(Formulae,NULL,OptionValues.Saturator,
-"Satisfiable",0,NULL,NULL,OptionValues.TimeLimit,
-OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+                    return(SystemOnTPTP(Formulae,NULL,OptionValues.Saturator,"Satisfiable",0,NULL,
+NULL,OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
                 }
             }    
@@ -568,22 +562,20 @@ FileBaseName,Extension);
             strcat(OutputFileName,".");
             strcat(OutputFileName,Extension);
             strcat(OutputFileName,"_model.dis");
-            return(SystemOnTPTP(Formulae,NULL,OptionValues.THFModelFinder,
-"Satisfiable",TestUnsatisfiability,OptionValues.THFUnsatisfiabilityChecker,
-"Unsatisfiable",OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),
-"-force",OptionValues.KeepFiles,OptionValues.KeepFilesDirectory,OutputFileName,
-OutputFileName));
+            return(SystemOnTPTP(Formulae,NULL,OptionValues.THFModelFinder,"Satisfiable",
+TestUnsatisfiability,OptionValues.THFUnsatisfiabilityChecker,"Unsatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
         case tptp_tff:
             strcpy(OutputFileName,FileBaseName);
             strcat(OutputFileName,".");
             strcat(OutputFileName,Extension);
             strcat(OutputFileName,"_model.dis");
-            return(SystemOnTPTP(Formulae,NULL,OptionValues.TFFModelFinder,
-"Satisfiable",TestUnsatisfiability,OptionValues.TFFUnsatisfiabilityChecker,
-"Unsatisfiable",OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),
-"-force",OptionValues.KeepFiles,OptionValues.KeepFilesDirectory,OutputFileName,
-OutputFileName));
+            return(SystemOnTPTP(Formulae,NULL,OptionValues.TFFModelFinder,"Satisfiable",
+TestUnsatisfiability,OptionValues.TFFUnsatisfiabilityChecker,"Unsatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
         default:
             CodingError("Unknown syntax for GDVCheckSatisfiable");
@@ -592,10 +584,9 @@ OutputFileName));
     }
 }
 //-------------------------------------------------------------------------------------------------
-int CorrectlyInferred(OptionsType OptionValues,SIGNATURE Signature,
-ANNOTATEDFORMULA Target,char * FormulaName,LISTNODE ParentAnnotatedFormulae,
-char * ParentNames,char * SZSStatus,char * FileBaseName,int OutcomeQuietness,
-char * Comment) {
+int CorrectlyInferred(OptionsType OptionValues,SIGNATURE Signature,ANNOTATEDFORMULA Target,
+char * FormulaName,LISTNODE ParentAnnotatedFormulae,char * ParentNames,char * SZSStatus,
+char * FileBaseName,int OutcomeQuietness,char * Comment) {
 
     OptionsType OutcomeOptionValues;
     int Correct;
@@ -613,12 +604,11 @@ char * Comment) {
 
     if (!strcmp(SZSStatus,"thm")) {
         if (OptionValues.CheckParentRelevance) {
-            if ((CheckResult = GDVCheckSatisfiable(OptionValues,
-ParentAnnotatedFormulae,FileBaseName,"parents.sat",1)) == 1) {
+            if ((CheckResult = GDVCheckSatisfiable(OptionValues,ParentAnnotatedFormulae,
+FileBaseName,"parents.sat",1)) == 1) {
                 Correct = 1;
                 QPRINTF(OutcomeOptionValues,2)(
-"SUCCESS: %s has sat parents %s %s\n",FormulaName,ParentNames,
-Comment != NULL?Comment:"");
+"SUCCESS: %s has sat parents %s %s\n",FormulaName,ParentNames,Comment != NULL?Comment:"");
 //----Looked for unsat and didn't find it, so that's also OK
             } else if (CheckResult == 0) {
                 Correct = 1;
@@ -626,15 +616,14 @@ Comment != NULL?Comment:"");
 "SUCCESS: %s does not have unsat parents %s %s\n",FormulaName,ParentNames,
 Comment != NULL?Comment:"");
 //----If single parent of the negated conjecture then can be unsatisfiable 
-            } else if (OptionValues.CheckRefutation &&
-ParentAnnotatedFormulae->Next == NULL && GetRole(
-ParentAnnotatedFormulae->AnnotatedFormula,NULL) == negated_conjecture) {
+            } else if (OptionValues.CheckRefutation && ParentAnnotatedFormulae->Next == NULL && 
+GetRole(ParentAnnotatedFormulae->AnnotatedFormula,NULL) == negated_conjecture) {
                 Correct = 1;
                 QPRINTF(OutcomeOptionValues,1)(
-"WARNING: %s does not have sat parents %s, tolerated because one is a negated_conjecture %s\n",FormulaName,ParentNames,Comment != NULL?Comment:"");
+"WARNING: %s does not have sat parents %s, tolerated because one is a negated_conjecture %s\n",
+FormulaName,ParentNames,Comment != NULL?Comment:"");
 //----Parents of false formulae can be satisfiable
-            } else if (OptionValues.CheckRefutation && 
-FalseAnnotatedFormula(Target)) {
+            } else if (OptionValues.CheckRefutation && FalseAnnotatedFormula(Target)) {
                 Correct = 1;
                 QPRINTF(OutcomeOptionValues,1)(
 "WARNING: %s does not have sat parents %s, tolerated because it's $false %s\n",
@@ -642,8 +631,7 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
             } else {
                 Correct = 0;
                 QPRINTF(OutcomeOptionValues,2)(
-"FAILURE: %s does not have sat parents %s %s\n",FormulaName,ParentNames,
-Comment != NULL?Comment:"");
+"FAILURE: %s does not have sat parents %s %s\n",FormulaName,ParentNames,Comment != NULL?Comment:"");
             }
         } else {
             Correct = 1;
@@ -653,12 +641,11 @@ Comment != NULL?Comment:"");
             if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,
 ParentAnnotatedFormulae,Target,FileBaseName,"thm",1)) == 1) {
                 Correct = 1;
-                QPRINTF(OutcomeOptionValues,2)(
-"SUCCESS: %s is a %s", FormulaName,SZSStatus);
+                QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
             } else if (CheckResult == 0) {
                 Correct = 0;
-                QPRINTF(OutcomeOptionValues,2)(
-"FAILURE: %s fails to be a %s",FormulaName,SZSStatus);
+                QPRINTF(OutcomeOptionValues,2)("FAILURE: %s fails to be a %s",FormulaName,
+SZSStatus);
             } else {
                 Correct = 0;
                 QPRINTF(OutcomeOptionValues,2)(
@@ -1027,7 +1014,7 @@ Source->Arguments[2]),Signature,NULL);
 TheSymbol.NonVariable->NumberOfUses--;
 //----Set the principle symbol to introduced, arity 2
                 Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Source->
-TheSymbol.NonVariable = InsertIntoSignature(Signature,non_logical_data,"introduced",2,NULL);
+TheSymbol.NonVariable = InsertIntoSignature(Signature,non_logical_data,"introduced",2,-1,0,NULL);
                 break;
             }
         }
@@ -1886,8 +1873,8 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
     LeafAxioms = GetListOfAnnotatedFormulaeWithRole(Leaves,axiom_like,Signature);
     Types = GetListOfAnnotatedFormulaeWithRole(Leaves,type,Signature);
     LeafAxioms = AppendListsOfAnnotatedTSTPNodes(Types,LeafAxioms);
-    if (LeafAxioms == NULL || (Satisfiable = GDVCheckSatisfiable(OptionValues,
-LeafAxioms,"axioms","sat",1)) == 1) {
+    if (LeafAxioms == NULL || (Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"axioms",
+"sat",1)) == 1) {
         QPRINTF(OptionValues,2)("SUCCESS: Leaf axioms are satisfiable\n");
     } else if (Satisfiable == 0) {
         QPRINTF(OptionValues,2)("WARNING: Failed to find model of leaf axioms\n");
@@ -2481,7 +2468,7 @@ LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
     AddNeitherHere = NeitherHead;
     while (Head != NULL) {
         PositiveOrNegative = 0;
-        TypeFormula = CheckAnnotatedFormulaRole(Head->AnnotatedFormula,type);
+        TypeFormula = CheckRole(GetRole(Head->AnnotatedFormula,NULL),type);
         if (TypeFormula || AnnotatedFormulaTrueInInterpretation(Head->AnnotatedFormula,positive)) {
             AddListNode(AddPositiveHere,NULL,Head->AnnotatedFormula);
             AddPositiveHere = &((*AddPositiveHere)->Next);
@@ -2502,8 +2489,7 @@ LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
 //----Check if any left over
     if (*NeitherHead == NULL) {
         QPRINTF(OptionValues,2)("WOOHOOO: All problem formulae are positive or negative\n");
-    } else if (GDVCheckSatisfiable(OptionValues,*NeitherHead,"neither",
-"sat",0) == 1) {
+    } else if (GDVCheckSatisfiable(OptionValues,*NeitherHead,"neither","sat",0) == 1) {
         QPRINTF(OptionValues,2)("WOOHOOO: All problem formulae are in a satisfiable set\n");
     } else {
         QPRINTF(OptionValues,2)("WARNING: Some problem formulae are not in a satisfiable set\n");
@@ -2543,7 +2529,7 @@ Signature) {
     while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
 //----If not derived and a type and not verified
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
-CheckAnnotatedFormulaRole(Target->AnnotatedFormula,type) &&
+CheckRole(GetRole(Target->AnnotatedFormula,NULL),type) &&
 GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
             AddVerifiedTag(Target->AnnotatedFormula,Signature,"type");
         }
@@ -3063,6 +3049,9 @@ signal(SIGQUIT,GlobalInterruptHandler) == SIG_ERR) {
         QPRINTF(OptionValues,4)("ERROR: Invalid command line arguments\n");
         exit(EXIT_FAILURE);
     }
+    if (OptionValues.GenerateObligations) {
+        OptionValues.TimeLimit = 0;
+    }
 
 //----Read the derivation file
     Signature = NewSignature();
@@ -3187,16 +3176,16 @@ OptionValues.VerifyLeaves) {
     if (GlobalInterrupted) {
         OKSoFar = 0;
     } else {
-        QPRINTF(OptionValues,2)("CPUTIME: %.2f\n",GetTotalCPUTime());
-        QPRINTF(OptionValues,3)("%s\n",OKSoFar?"SUCCESS: Verified":
-"FAILURE: Not verified");
-        QPRINTF(OptionValues,3)("%s\n",OKSoFar?"SZS status Verified":
-"SZS status NotVerified");
-        fflush(stdout);
-        if (OKSoFar) {
-            QDO(OptionValues,1,ReportVerification(OptionValues,Head,CopyOfHead,
-Signature);)
+//----If the time limit is 0, nothing has been verified
+        if (OptionValues.TimeLimit > 0) {
+            QPRINTF(OptionValues,2)("CPUTIME: %.2f\n",GetTotalCPUTime());
+            QPRINTF(OptionValues,3)("%s\n",OKSoFar?"SUCCESS: Verified":"FAILURE: Not verified");
+            QPRINTF(OptionValues,3)("%s\n",OKSoFar?"SZS status Verified":"SZS status NotVerified");
             fflush(stdout);
+            if (OKSoFar) {
+                QDO(OptionValues,1,ReportVerification(OptionValues,Head,CopyOfHead,Signature);)
+                fflush(stdout);
+            }
         }
     }
 

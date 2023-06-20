@@ -66,23 +66,19 @@ void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 
 //DEBUG printf("NumberOfMathPredicates %.0f NumberOfEqualityAtoms %.0f NumberOfPredicates %.0f NumberOfMathFunctions %.0f NumberOfNumbers %.0f NumberOfFunctors %.0f\n",Statistics.NumberOfMathPredicates,Statistics.NumberOfEqualityAtoms,Statistics.NumberOfPredicates,Statistics.NumberOfMathFunctions,Statistics.NumberOfNumbers,Statistics.NumberOfFunctors);
 
-    if (Statistics.SymbolStatistics.NumberOfPredicates == 
-Statistics.SymbolStatistics.NumberOfPropositions) {
-        strcat(SPC,"_PRP");
+    DetermineEqualityPresence(Statistics,SPC);
+    DetermineArithmeticPresence(Statistics,SPC);
+
+//    if (Statistics.SymbolStatistics.NumberOfPredicates == 
+//Statistics.SymbolStatistics.NumberOfPropositions) {
+//        strcat(SPC,"_PRP");
 //    } else if (FOFEPRProblem(Statistics,Head,Signature)) {
 //        strcat(SPC,"_EPR");
-    } else {
-        strcat(SPC,"_RFO");
-        DetermineEqualityPresence(Statistics,SPC);
-        DetermineArithmeticPresence(Statistics,SPC);
-    }
-//    } else if (Statistics.FormulaStatistics.NumberOfEqualityAtoms == 
-//Statistics.NumberOfAtoms) {
-//        strcat(SPC,"_PEQ");
 //    } else {
-//        strcat(SPC,"_SEQ");
+//        strcat(SPC,"_RFO");
+//        DetermineEqualityPresence(Statistics,SPC);
+//        DetermineArithmeticPresence(Statistics,SPC);
 //    }
-
 }
 //-------------------------------------------------------------------------------------------------
 int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {

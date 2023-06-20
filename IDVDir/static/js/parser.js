@@ -212,9 +212,9 @@ class Formatter extends Listener {
 		}
 
 		// try to get source...(contains parents)
-	    
-        let source = ctx.annotations().source();
+	    let source;
 		try {
+            source = ctx.annotations().source();
 			getParentsFromSource(source, node);
 		}
 		catch (e) {
