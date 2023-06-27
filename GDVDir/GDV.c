@@ -26,6 +26,7 @@
 #include "SystemOnTPTP.h"
 
 #include "GDV.h"
+#include "LambdaPi.h"
 //-------------------------------------------------------------------------------------------------
 void GlobalInterruptHandler(int TheSignal) {
 
@@ -39,46 +40,47 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
 
     int OptionChar;
 
+//----Options for processing
     OptionValues->Quietness = 1;
     OptionValues->AutoMode = 0;
     OptionValues->ForceContinue = 0;
+    OptionValues->NoExpensiveChecks = 0;
+    OptionValues->TimeLimit = DEFAULT_TIME_LIMIT;
+    OptionValues->KeepFiles = 0;
+    strcpy(OptionValues->KeepFilesDirectory,DEFAULT_KEEP_FILES_DIRECTORY);
+//----What to do
+    strcpy(OptionValues->DerivationFileName,"--");
+    strcpy(OptionValues->ProblemFileName,"");
     OptionValues->VerifyLeaves = 0;
     OptionValues->VerifyUserSemantics = 1;
     OptionValues->VerifyDAGInferences = 1;
     OptionValues->GenerateObligations = 0;
-    OptionValues->NoExpensiveChecks = 0;
     OptionValues->GenerateDefinitions = 0;
+    OptionValues->GenerateLambdaPiFiles = 0;
+    strcpy(OptionValues->LambdaPiDirectory,"");
+    OptionValues->LambdaPiProofHandle = NULL;
     OptionValues->DerivationExtract = 0;
-    strcpy(OptionValues->ProblemFileName,"");
     OptionValues->CheckParentRelevance = 0;
     OptionValues->CheckRefutation = 0;
-    strcpy(OptionValues->THFTheoremProver,DEFAULT_THF_THEOREM_PROVER);
-    strcpy(OptionValues->THFModelFinder,DEFAULT_THF_MODEL_FINDER);
-    strcpy(OptionValues->THFUnsatisfiabilityChecker,
-DEFAULT_THF_UNSATISFIABILITY_CHECKER);
-    strcpy(OptionValues->THFCounterSatisfiableProver,
-DEFAULT_THF_COUNTERSATISFIABLE_PROVER);
-    strcpy(OptionValues->TFFTheoremProver,DEFAULT_TFF_THEOREM_PROVER);
-    strcpy(OptionValues->TFFModelFinder,DEFAULT_TFF_MODEL_FINDER);
-    strcpy(OptionValues->TFFUnsatisfiabilityChecker,
-DEFAULT_TFF_UNSATISFIABILITY_CHECKER);
-    strcpy(OptionValues->TFFCounterSatisfiableProver,
-DEFAULT_TFF_COUNTERSATISFIABLE_PROVER);
+//----ATP systems
     strcpy(OptionValues->TheoremProver,DEFAULT_THEOREM_PROVER);
+    strcpy(OptionValues->CounterSatisfiableProver,DEFAULT_COUNTERSATISFIABLE_PROVER);
     strcpy(OptionValues->ModelFinder,DEFAULT_MODEL_FINDER);
+    strcpy(OptionValues->UnsatisfiabilityChecker,DEFAULT_UNSATISFIABILITY_CHECKER);
     strcpy(OptionValues->Saturator,DEFAULT_SATURATOR);
-    strcpy(OptionValues->UnsatisfiabilityChecker,
-DEFAULT_UNSATISFIABILITY_CHECKER);
-    strcpy(OptionValues->CounterSatisfiableProver,
-DEFAULT_COUNTERSATISFIABLE_PROVER);
-    OptionValues->TimeLimit = DEFAULT_TIME_LIMIT;
-    OptionValues->KeepFiles = 0;
-    strcpy(OptionValues->KeepFilesDirectory,DEFAULT_KEEP_FILES_DIRECTORY);
-    strcpy(OptionValues->DerivationFileName,"--");
+    strcpy(OptionValues->TFFTheoremProver,DEFAULT_TFF_THEOREM_PROVER);
+    strcpy(OptionValues->TFFCounterSatisfiableProver,DEFAULT_TFF_COUNTERSATISFIABLE_PROVER);
+    strcpy(OptionValues->TFFModelFinder,DEFAULT_TFF_MODEL_FINDER);
+    strcpy(OptionValues->TFFUnsatisfiabilityChecker,DEFAULT_TFF_UNSATISFIABILITY_CHECKER);
+    strcpy(OptionValues->THFTheoremProver,DEFAULT_THF_THEOREM_PROVER);
+    strcpy(OptionValues->THFCounterSatisfiableProver,DEFAULT_THF_COUNTERSATISFIABLE_PROVER);
+    strcpy(OptionValues->THFModelFinder,DEFAULT_THF_MODEL_FINDER);
+    strcpy(OptionValues->THFUnsatisfiabilityChecker,DEFAULT_THF_UNSATISFIABILITY_CHECKER);
     
-    while ((OptionChar = getopt(argc,argv,"q:aflUdxnei:k:vry:o:p:u:m:s:t:h")) 
+    while ((OptionChar = getopt(argc,argv,"q:afxt:K:k:i:lUdgnevrp:c:m:u:s:z:w:y:o:h")) 
 != -1) {
         switch (OptionChar) {
+//----Options for processing
             case 'q':
                 OptionValues->Quietness = atoi(optarg);
                 break;
@@ -87,6 +89,24 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
                 break;
             case 'f':
                 OptionValues->ForceContinue = 1;
+                break;
+            case 'x':
+                OptionValues->NoExpensiveChecks = 1;
+                break;
+            case 't':
+                OptionValues->TimeLimit = atoi(optarg);
+                break;
+            case 'K':     //----Note fall throughs K implies k
+                OptionValues->GenerateLambdaPiFiles = 1;
+            case 'k':
+                OptionValues->KeepFiles = 1;
+                strcpy(OptionValues->KeepFilesDirectory,optarg);
+                break;
+//----What to do
+//----Help is done down below
+//----DerivationFileName is a separate parameter
+            case 'i':
+                strcpy(OptionValues->ProblemFileName,optarg);
                 break;
             case 'l':
                 OptionValues->VerifyLeaves = 1;
@@ -100,21 +120,12 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
             case 'g':
                 OptionValues->GenerateObligations = 1;
                 break;
-            case 'x':
-                OptionValues->NoExpensiveChecks = 1;
-                break;
             case 'n':
                 OptionValues->GenerateDefinitions = 1;
                 break;
+//----GenerateLambdaPiFiles is done above with KeepFiles
             case 'e':
                 OptionValues->DerivationExtract = 1;
-                break;
-            case 'i':
-                strcpy(OptionValues->ProblemFileName,optarg);
-                break;
-            case 'k':
-                OptionValues->KeepFiles = 1;
-                strcpy(OptionValues->KeepFilesDirectory,optarg);
                 break;
             case 'v':
                 OptionValues->CheckParentRelevance = 1;
@@ -122,69 +133,71 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
             case 'r':
                 OptionValues->CheckRefutation = 1;
                 break;
-            case 'y':
-                strcpy(OptionValues->THFTheoremProver,optarg);
-                strcpy(OptionValues->THFUnsatisfiabilityChecker,optarg);
+//----ATP systems to be used
+            case 'p':
+                strcpy(OptionValues->TheoremProver,optarg);
                 break;
-            case 'o':
-                strcpy(OptionValues->THFModelFinder,optarg);
-                strcpy(OptionValues->THFCounterSatisfiableProver,optarg);
+            case 'c':
+                strcpy(OptionValues->CounterSatisfiableProver,optarg);
+                break;
+            case 'm':
+                strcpy(OptionValues->ModelFinder,optarg);
+                break;
+            case 'u':
+                strcpy(OptionValues->UnsatisfiabilityChecker,optarg);
+                break;
+            case 's':
+                strcpy(OptionValues->Saturator,optarg);
                 break;
             case 'z':
                 strcpy(OptionValues->TFFTheoremProver,optarg);
                 strcpy(OptionValues->TFFUnsatisfiabilityChecker,optarg);
                 break;
             case 'w':
-                strcpy(OptionValues->TFFModelFinder,optarg);
                 strcpy(OptionValues->TFFCounterSatisfiableProver,optarg);
+                strcpy(OptionValues->TFFModelFinder,optarg);
                 break;
-            case 'p':
-                strcpy(OptionValues->TheoremProver,optarg);
+            case 'y':
+                strcpy(OptionValues->THFTheoremProver,optarg);
+                strcpy(OptionValues->THFUnsatisfiabilityChecker,optarg);
                 break;
-            case 'u':
-                strcpy(OptionValues->UnsatisfiabilityChecker,optarg);
+            case 'o':
+                strcpy(OptionValues->THFCounterSatisfiableProver,optarg);
+                strcpy(OptionValues->THFModelFinder,optarg);
                 break;
-            case 'm':
-                strcpy(OptionValues->ModelFinder,optarg);
-                break;
-            case 'c':
-                strcpy(OptionValues->CounterSatisfiableProver,optarg);
-                break;
-            case 's':
-                strcpy(OptionValues->Saturator,optarg);
-                break;
-            case 't':
-                OptionValues->TimeLimit = atoi(optarg);
-                break;
+//----Help!!
             case 'h':
             case '?':
                 printf("Usage: %s <options> <derivation file>\n",argv[0]);
-                printf("<options> are ...\n");
-                printf("-q<quietness>  - control amount of output (1)\n");
-                printf("-a             - automode (no)\n");
-                printf("-f             - force continue on failure (no)\n");
-                printf("-l             - verify leaves (no)\n");
-                printf("-U             - (don't) verify user leaf semantics (yes)\n");
-                printf("-d             - (don't) verify derivation (yes)\n");
-                printf("-g             - only generate obligations, don't call ATP\n");
-                printf("-x             - suppress expensive checks (no)\n");
-                printf("-n             - generate definitions (no)\n");
-                printf("-e             - derivation extract (no)\n");
-                printf("-i<input file> - specify problem file (none)\n");
-                printf("-k<directory>  - keep discharge files in the directory (none)\n");
-                printf("-v             - check relevance of logical consequences (no)\n");
-                printf("-r             - derivation should be a refutation (no)\n");
-                printf("-y             - THF theorem prover and unsatisfiability checker System---Version (%s)\n",DEFAULT_THF_THEOREM_PROVER);
-                printf("-o             - THF model finder and countertheorem prover System---Version (%s)\n",DEFAULT_THF_MODEL_FINDER);
-                printf("-z             - TFF theorem prover and unsatisfiability checker System---Version (%s)\n",DEFAULT_TFF_THEOREM_PROVER);
-                printf("-w             - TFF model finder and countertheorem prover System---Version (%s)\n",DEFAULT_TFF_MODEL_FINDER);
-                printf("-p             - FOF theorem prover System---Version (%s)\n",DEFAULT_THEOREM_PROVER);
-                printf("-c             - FOF countertheorem prover System---Version (%s)\n",DEFAULT_COUNTERSATISFIABLE_PROVER);
-                printf("-u             - unsatifiability checker System---Version (%s)\n",DEFAULT_UNSATISFIABILITY_CHECKER);
-                printf("-m             - model finder System---Version (%s)\n",DEFAULT_MODEL_FINDER);
-                printf("-s             - saturator System---Version (%s)\n",DEFAULT_SATURATOR);
-                printf("-t<time limit> - CPU limit for discharge attempts (%ds)\n",DEFAULT_TIME_LIMIT);
-                printf("-h             - print this help\n");
+                printf("<options> for processing are ...\n");
+                printf("-q <quietness>  - control amount of output (1)\n");
+                printf("-a              - automode (no)\n");
+                printf("-f              - force continue on failure (no)\n");
+                printf("-x              - suppress expensive checks (no)\n");
+                printf("-t <time limit> - CPU limit for discharge attempts (%ds)\n",DEFAULT_TIME_LIMIT);
+                printf("-k<directory>   - keep obligation and discharge files in the directory (none)\n");
+                printf("<options> for what to do are ...\n");
+                printf("-h              - print this help\n");
+                printf("-i <input file> - specify problem file (none)\n");
+                printf("-l              - verify leaves (no)\n");
+                printf("-U              - (don't) verify user leaf semantics (yes)\n");
+                printf("-d              - (don't) verify derivation (yes)\n");
+                printf("-g              - only generate obligations, don't call ATP\n");
+                printf("-n              - generate definitions (no)\n");
+                printf("-K <directory>  - 'k', and generate LambdaPi header files (no)\n");
+                printf("-e              - derivation extract (no)\n");
+                printf("-v              - check relevance of parents of inference (no)\n");
+                printf("-r              - derivation should be a refutation (no)\n");
+                printf("<options> for ATP systems to use are ...\n");
+                printf("-p              - FOF theorem prover System---Version (%s)\n",DEFAULT_THEOREM_PROVER);
+                printf("-c              - FOF countersatisfiability prover System---Version (%s)\n",DEFAULT_COUNTERSATISFIABLE_PROVER);
+                printf("-m              - FOF model finder System---Version (%s)\n",DEFAULT_MODEL_FINDER);
+                printf("-u              - FOF unsatifiability checker System---Version (%s)\n",DEFAULT_UNSATISFIABILITY_CHECKER);
+                printf("-s              - FOF saturator System---Version (%s)\n",DEFAULT_SATURATOR);
+                printf("-z              - TFF theorem prover and unsatisfiability checker System---Version (%s)\n",DEFAULT_TFF_THEOREM_PROVER);
+                printf("-w              - TFF model finder and countertheorem prover System---Version (%s)\n",DEFAULT_TFF_MODEL_FINDER);
+                printf("-y              - THF theorem prover and unsatisfiability checker System---Version (%s)\n",DEFAULT_THF_THEOREM_PROVER);
+                printf("-o              - THF model finder and countertheorem prover System---Version (%s)\n",DEFAULT_THF_MODEL_FINDER);
                 printf("<derivation file> is ... (--)\n");
                 printf("  Any normal file name\n");
                 printf("  -- for stdin\n");
@@ -196,6 +209,9 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
                 break;
         }
     }
+    if (OptionValues->GenerateObligations) {
+        OptionValues->TimeLimit = 0;
+    }
 
 //----Check for problem file name
     if (argv[optind] != NULL) {
@@ -205,28 +221,38 @@ DEFAULT_COUNTERSATISFIABLE_PROVER);
 //----Echo if in verbose mode
     if (OptionValues->Quietness == 0) {
         printf("Command line options:\n");
+//----Options for processing
         printf("    Quietness %d\n",OptionValues->Quietness);
+        printf("    AutoMode %d\n",OptionValues->AutoMode);
         printf("    ForceContinue %d\n",OptionValues->ForceContinue);
+        printf("    NoExpensiveChecks %d\n",OptionValues->NoExpensiveChecks);
+        printf("    TimeLimit %d\n",OptionValues->TimeLimit);
+        printf("    KeepFiles %s\n",OptionValues->KeepFiles? OptionValues->KeepFilesDirectory:"0");
+        printf("    GenerateLambdaPiFiles %d\n",OptionValues->GenerateLambdaPiFiles);
+//----What to do
+        printf("    DerivationFileName %s\n",OptionValues->DerivationFileName);
         printf("    VerifyLeaves %s\n",OptionValues->VerifyLeaves?
 (!strcmp(OptionValues->ProblemFileName,"")?"from derivation": OptionValues->ProblemFileName):"0");
         printf("    Verify user leaf semantics %d\n",OptionValues->VerifyUserSemantics);
         printf("    Verify DAG inferences %d\n",OptionValues->VerifyDAGInferences);
-        printf("    NoExpensiveChecks %d\n",OptionValues->NoExpensiveChecks);
         printf("    GenerateDefinitions %d\n",OptionValues->GenerateDefinitions);
         printf("    DerivationExtract %d\n",OptionValues->DerivationExtract);
-        printf("    ForceContinue %d\n",OptionValues->ForceContinue);
         printf("    CheckParentRelevance %d\n",OptionValues->CheckParentRelevance);
         printf("    CheckRefutation %d\n",OptionValues->CheckRefutation);
-        printf("    THFTheoremProver %s\n",OptionValues->THFTheoremProver);
-        printf("    THFModelFinder %s\n",OptionValues->THFModelFinder);
+//----ATP systems
         printf("    TheoremProver %s\n",OptionValues->TheoremProver);
-        printf("    ModelFinder %s\n",OptionValues->ModelFinder);
-        printf("    Saturator %s\n",OptionValues->Saturator);
-        printf("    UnsatisfiabilityChecker %s\n",OptionValues->UnsatisfiabilityChecker);
         printf("    CounterSatisfiableProver %s\n",OptionValues->CounterSatisfiableProver);
-        printf("    TimeLimit %d\n",OptionValues->TimeLimit);
-        printf("    KeepFiles %s\n",OptionValues->KeepFiles? OptionValues->KeepFilesDirectory:"0");
-        printf("    DerivationFileName %s\n",OptionValues->DerivationFileName);
+        printf("    ModelFinder %s\n",OptionValues->ModelFinder);
+        printf("    UnsatisfiabilityChecker %s\n",OptionValues->UnsatisfiabilityChecker);
+        printf("    Saturator %s\n",OptionValues->Saturator);
+        printf("    TFFTheoremProver %s\n",OptionValues->TFFTheoremProver);
+        printf("    TFFCounterSatisfiableProver %s\n",OptionValues->TFFCounterSatisfiableProver);
+        printf("    TFFModelFinder %s\n",OptionValues->TFFModelFinder);
+        printf("    TFFUnsatisfiabilityChecker %s\n",OptionValues->TFFUnsatisfiabilityChecker);
+        printf("    THFTheoremProver %s\n",OptionValues->THFTheoremProver);
+        printf("    THFCounterSatisfiableProver %s\n",OptionValues->THFCounterSatisfiableProver);
+        printf("    THFModelFinder %s\n",OptionValues->THFModelFinder);
+        printf("    THFUnsatisfiabilityChecker %s\n",OptionValues->THFUnsatisfiabilityChecker);
     }
 
     return(1);
@@ -391,7 +417,7 @@ int CreateDirectory(String Directory,String DerivationFileName) {
 
     strcat(Directory,"/");
     strcat(Directory,DerivationFileBasename);
-    strcat(Directory,".gdv");
+    strcat(Directory,"_gdv");
 
 //----Delete any previous version
     EmptyAndDeleteDirectory(Directory);
@@ -404,14 +430,12 @@ int CreateDirectory(String Directory,String DerivationFileName) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-void AddVerifiedTag(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,
-char * TagValue) {
+void AddVerifiedTag(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,char * TagValue) {
 
     String VerifiedTag;
 
     sprintf(VerifiedTag,"verified(%s)",TagValue);
-    AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,
-VerifiedTag);
+    AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,VerifiedTag);
 }
 //-------------------------------------------------------------------------------------------------
 char * OutputPrefixForQuietness(OptionsType OptionValues) {
@@ -641,15 +665,20 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
             if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,
 ParentAnnotatedFormulae,Target,FileBaseName,"thm",1)) == 1) {
                 Correct = 1;
-                QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
-            } else if (CheckResult == 0) {
-                Correct = 0;
-                QPRINTF(OutcomeOptionValues,2)("FAILURE: %s fails to be a %s",FormulaName,
-SZSStatus);
+                if (OptionValues.TimeLimit == 0) {
+                    QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to show that %s is a %s",
+FormulaName,SZSStatus);
+                } else {
+                    QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
+                }
             } else {
                 Correct = 0;
-                QPRINTF(OutcomeOptionValues,2)(
-"FAILURE: %s is not a %s",FormulaName,SZSStatus);
+                if (CheckResult == 0) {
+                    QPRINTF(OutcomeOptionValues,2)("FAILURE: %s fails to be a %s",FormulaName,
+SZSStatus);
+                } else {
+                    QPRINTF(OutcomeOptionValues,2)("FAILURE: %s is not a %s",FormulaName,SZSStatus);
+                }
             }
             if (ParentAnnotatedFormulae != NULL) {
                 QPRINTF(OutcomeOptionValues,2)(" of %s",ParentNames);
@@ -688,19 +717,24 @@ ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,4,"(Theorem esa)");
 GetName(NewTarget,NULL),ParentAnnotatedFormulae,GetName(Target,NULL),"thm",
 ESAFileBaseName,4,"(Inverted esa)");
         ESAParentNode->AnnotatedFormula = NewTarget;
-//----Accept either, but if only one, then it's incomplete
-        if (Correct || ESACorrect) {
-            if (!Correct || !ESACorrect) {
-                QPRINTF(OptionValues,2)(
-"WARNING: Incomplete check of SZS status esa\n");
-            }
+        if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
+"CREATED: Obligations to show %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
             return(1);
         } else {
-            QPRINTF(OptionValues,2)(
+//----Accept either, but if only one, then it's incomplete
+            if (Correct || ESACorrect) {
+                if (!Correct || !ESACorrect) {
+                    QPRINTF(OptionValues,2)("WARNING: Incomplete check of SZS status esa\n");
+                }
+                QPRINTF(OptionValues,2)(
+"SUCCESS: %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
+                return(1);
+            } else {
+                QPRINTF(OptionValues,2)(
 "FAILURE: %s fails to be a %s of %s\n", FormulaName,SZSStatus,ParentNames);
-            return(0);
+                return(0);
+            }
         }
     } else if (!strcmp(SZSStatus,"ecs")) {
 //----First try a CTH check and also try the weak reverse check.
@@ -1873,13 +1907,21 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
     LeafAxioms = GetListOfAnnotatedFormulaeWithRole(Leaves,axiom_like,Signature);
     Types = GetListOfAnnotatedFormulaeWithRole(Leaves,type,Signature);
     LeafAxioms = AppendListsOfAnnotatedTSTPNodes(Types,LeafAxioms);
-    if (LeafAxioms == NULL || (Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"axioms",
-"sat",1)) == 1) {
-        QPRINTF(OptionValues,2)("SUCCESS: Leaf axioms are satisfiable\n");
-    } else if (Satisfiable == 0) {
-        QPRINTF(OptionValues,2)("WARNING: Failed to find model of leaf axioms\n");
-    } else {
-        QPRINTF(OptionValues,2)("WARNING: Leaf axioms are unsatisfiable\n");
+    if (LeafAxioms != NULL) {
+        Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"axioms","sat",1);
+        if (OptionValues.TimeLimit == 0) {
+            QPRINTF(OptionValues,2)(
+"HAVE I CREATED: Obligation to show axiom(_like) leaves are satisfiable\n");
+        } else {
+            if (Satisfiable) {
+                QPRINTF(OptionValues,2)("SUCCESS: Leaf axiom(_like) formulae are satisfiable\n");
+            } else if (Satisfiable == 0) {
+                QPRINTF(OptionValues,2)(
+"WARNING: Failed to find model of leaf axiom(_like) formulae\n");
+            } else {
+                QPRINTF(OptionValues,2)("WARNING: Leaf axiom(_like) formulae are unsatisfiable\n");
+            }
+        }
     }
     FreeListOfAnnotatedFormulae(&LeafAxioms,Signature);
     FreeListOfAnnotatedFormulae(&Leaves,Signature);
@@ -1887,8 +1929,8 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-int ESplitVerification(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature,int * NumberOfSplits) {
+int ESplitVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature,
+int * NumberOfSplits) {
 
     LISTNODE Target;
     int OKSoFar;
@@ -2368,8 +2410,7 @@ AnnotatedFormula,GetName(ComplexConjecture->AnnotatedFormula,ComplexName),Parent
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-int RuleSpecificVerification(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature) {
+int RuleSpecificVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
 
     int OKSoFar;
     int NumberOfInstances;
@@ -2498,8 +2539,7 @@ LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-int LeafVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE
-Signature) {
+int LeafVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
 
     LISTNODE ProblemHead;
     LISTNODE SatisfiableHead;
@@ -2520,7 +2560,6 @@ Signature) {
     char * SymbolDefined;
     String ConjectureName;
     LISTNODE ConjectureFromProblem;
-    LISTNODE ConjectureFromDerivation;
     ANNOTATEDFORMULA ProblemFormula;
 
 //----Mark all type formulae as checked (although no check is made yet)
@@ -2631,7 +2670,7 @@ Signature);
 
 //----Check if the entire input (sans conjecture) is satisfiable
     if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem","sat",0) == 1) {
-        QPRINTF(OptionValues,2)("SUCCESS: Input problem is satisfiable\n");
+        QPRINTF(OptionValues,2)("SUCCESS: Input problem (without conjecture) is satisfiable\n");
         SatisfiableHead = ProblemHead;
         PositiveHead = NULL;
         NegativeHead = NULL;
@@ -2643,10 +2682,11 @@ Signature);
 &NeitherHead);
     }
 
-//----For each derivation node, check if the same as a problem node, or
+//----For each derivation leaf node, check if the same as a problem node, or
 //----can be inferred from one of the satisfiable lists
     Target = Head;
     while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
+//DEBUG printf("Try to verify the node (might not be a leaf) %s\n",GetName(Target->AnnotatedFormula,NULL));
 //----If not derived and not verified
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
 GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
@@ -2659,7 +2699,7 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
 !strcmp(GetSymbol(SourceTerm),"creator") && GetArity(SourceTerm) > 0 && 
 !strcmp(GetSymbol(SourceTerm->Arguments[0]),"gdv")) {
                 QPRINTF(OptionValues,1)(
-"WARNING: %s is a leaf created by GDV, and not verified\n",FormulaName);
+"WARNING: GDV leaf %s was created by GDV, and not verified\n",FormulaName);
                 ThisOneOK = 1;
 
 //----Verify conjecture separately, in reverse
@@ -2667,25 +2707,29 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
                 if (ConjectureFromProblem != NULL) {
                     GetName(ConjectureFromProblem->AnnotatedFormula,ConjectureName);
 //----Copy of conjecture
-                    if (SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,
-ConjectureFromProblem->AnnotatedFormula,1,1)) {
+                    if (!OptionValues.GenerateObligations &&
+SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,ConjectureFromProblem->AnnotatedFormula,
+1,1)) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a copy of %s (from the problem)\n",FormulaName,ConjectureName);
+"SUCCESS: Conjecture leaf %s is a copy of %s (from the problem)\n",FormulaName,ConjectureName);
                         ThisOneOK = 1;
 //----Can infer conjecture
                     } else {
-                        QPRINTF(OptionValues,2)(
-"WARNING: Conjecture %s is not a copy of %s (from the problem)\n",FormulaName,ConjectureName);
+                        if (!OptionValues.GenerateObligations) {
+                            QPRINTF(OptionValues,2)(
+"WARNING: Conjecture leaf %s is not a copy of %s (from the problem)\n",FormulaName,ConjectureName);
+                        }
                         AddListNode(TypesNext,NULL,Target->AnnotatedFormula);
                         CleanTheFileName(FormulaName,FileBaseName);
                         strcat(FileBaseName,"_to_conjecture");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                         if (CorrectlyInferred(OptionValues,Signature,
 ConjectureFromProblem->AnnotatedFormula,ConjectureName,Types,FormulaName,"thm",FileBaseName,-1,
 "")) {
                             ThisOneOK = 1;
                         }
                         FreeAListNode(TypesNext,Signature);
-                        FreeListOfAnnotatedFormulae(&ConjectureFromDerivation,Signature);
                     }
                 } else {
                     QPRINTF(OptionValues,2)("FAILURE: No problem conjecture for %s\n",FormulaName);
@@ -2695,22 +2739,25 @@ ConjectureFromProblem->AnnotatedFormula,ConjectureName,Types,FormulaName,"thm",F
             } else {
 //----Look for an original that has been copied
                 ProblemTarget = ProblemHead;
-                while (!ThisOneOK && ProblemTarget != NULL) {
+                while (!OptionValues.GenerateObligations && !ThisOneOK && ProblemTarget != NULL) {
                     if (SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,
 ProblemTarget->AnnotatedFormula,1,1)) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a copy of %s (from the problem)\n",FormulaName,
+"SUCCESS: Non-conjecture leaf %s is a copy of %s (from the problem)\n",FormulaName,
 GetName(ProblemTarget->AnnotatedFormula,ProblemTargetName));
                         ThisOneOK = 1;
                     } 
                     ProblemTarget = ProblemTarget->Next;
                 }
                 if (!ThisOneOK) {
-                    QPRINTF(OptionValues,2)(
-"WARNING: %s is not a copy of any problem formula\n",FormulaName);
+                    if (!OptionValues.GenerateObligations) {
+                        QPRINTF(OptionValues,2)(
+"WARNING: Non-conjecture leaf %s is not a copy of any problem formula\n",FormulaName);
+                    }
                 }
 
 //----If not a copy, try some inferencing
+//----HEY WHY DID I TURN THIS OFF?
                 OptionValues.CheckParentRelevance = 0;
 //----Try find a formula in the problem with the same name
                 if (!ThisOneOK && (ProblemFormula = 
@@ -2718,25 +2765,28 @@ GetAnnotatedFormulaFromListByName(ProblemHead,FormulaName)) != NULL) {
                     AddListNode(TypesNext,NULL,ProblemFormula);
                     CleanTheFileName(FormulaName,FileBaseName);
                     strcat(FileBaseName,"_from_same_named");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,FormulaName,"thm",FileBaseName,-1,"(from the problem)")) {
                         ThisOneOK = 1;
                     } else {
                         QPRINTF(OptionValues,2)(
-"WARNING: %s is not thm of the same named problem formula\n",FormulaName);
+"WARNING: Non-conjecture leaf %s is not thm of the same named problem formula\n",FormulaName);
                     }
                     FreeAListNode(TypesNext,Signature);
-                    FreeListOfAnnotatedFormulae(&ProblemTarget,Signature);
                 }
 //----Use subsets of problem, prepended by types
                 if (!ThisOneOK && SatisfiableHead != NULL) {
                     *TypesNext = SatisfiableHead;
                     CleanTheFileName(FormulaName,FileBaseName);
                     strcat(FileBaseName,"_from_problem");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,"the problem axioms","thm",FileBaseName,-1,"")) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a thm of all the input formulae\n",FormulaName);
+"SUCCESS: Non-conjecture leaf %s is a thm of all the input formulae\n",FormulaName);
                         ThisOneOK = 1;
                     }
                     *TypesNext = NULL;
@@ -2745,10 +2795,12 @@ FormulaName,Types,"the problem axioms","thm",FileBaseName,-1,"")) {
                     *TypesNext = PositiveHead;
                     CleanTheFileName(FormulaName,FileBaseName);
                     strcat(FileBaseName,"_from_positive");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,"the positive axioms","thm",FileBaseName,-1,"")) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a thm of the positive input formulae\n",FormulaName);
+"SUCCESS: Non-conjecture leaf %s is a thm of the positive input formulae\n",FormulaName);
                         ThisOneOK = 1;
                     }
                     *TypesNext = NULL;
@@ -2757,10 +2809,12 @@ FormulaName,Types,"the positive axioms","thm",FileBaseName,-1,"")) {
                     *TypesNext = NegativeHead;
                     CleanTheFileName(FormulaName,FileBaseName);
                     strcat(FileBaseName,"_from_negative");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,"the negative axioms","thm",FileBaseName,-1,"")) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a thm of the negative input formulae\n",FormulaName);
+"SUCCESS: Non-conjecture leaf %s is a thm of the negative input formulae\n",FormulaName);
                         ThisOneOK = 1;
                     }
                     *TypesNext = NULL;
@@ -2769,23 +2823,27 @@ FormulaName,Types,"the negative axioms","thm",FileBaseName,-1,"")) {
                     *TypesNext = NeitherHead;
                     CleanTheFileName(FormulaName,FileBaseName);
                     strcat(FileBaseName,"_from_neither");
+//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
+//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,"the other axioms","thm",FileBaseName,-1,"")) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: %s is a thm of the neither input formulae\n",FormulaName);
+"SUCCESS: Non-conjecture leaf %s is a thm of the neither input formulae\n",FormulaName);
                         ThisOneOK = 1;
                     }
                     *TypesNext = NULL;
                 }
                 if (!ThisOneOK) {
                     QPRINTF(OptionValues,2)(
-"FAILURE: %s cannot be shown to be a thm of the input formulae\n",FormulaName);
+"FAILURE: Non-conjecture leaf %s cannot be shown to be a thm of the input formulae\n",FormulaName);
                 }
-            }
+            } 
             if (ThisOneOK) {
                 AddVerifiedTag(Target->AnnotatedFormula,Signature,"leaf");
             } 
             OKSoFar *= ThisOneOK;
+        } else {
+//DEBUG printf("%s is not a leaf node\n",GetName(Target->AnnotatedFormula,NULL));
         }
         Target = Target->Next;
     }
@@ -2799,7 +2857,11 @@ FormulaName,Types,"the other axioms","thm",FileBaseName,-1,"")) {
     FreeListOfAnnotatedFormulae(&ConjectureFromProblem,Signature);
 
     if (OKSoFar) {
-        QPRINTF(OptionValues,2)("SUCCESS: Leaves are verified\n");
+        if (OptionValues.TimeLimit == 0) {
+            QPRINTF(OptionValues,2)("CREATED: Obligations to verify leaves\n");
+        } else {
+            QPRINTF(OptionValues,2)("SUCCESS: Leaves are verified\n");
+        }
     }
 
     return(OKSoFar);
@@ -2862,6 +2924,7 @@ char * SZSStatus,int NumberOfSZSResults) {
     StringToLower(SZSStatus);
 }
 //-------------------------------------------------------------------------------------------------
+//----This is the main part for verifying regular inferences in the derivation
 int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
 
     extern int GlobalInterrupted;
@@ -2968,14 +3031,18 @@ ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
     }
 
     if (OKSoFar) {
-        QPRINTF(OptionValues,2)("SUCCESS: Derived formulae are verified\n");
+        if (OptionValues.TimeLimit == 0) {
+            QPRINTF(OptionValues,2)("CREATED: Obligations to verify derived formulae\n");
+        } else {
+            QPRINTF(OptionValues,2)("SUCCESS: Derived formulae are verified\n");
+        }
     }
 
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-void GetProblemFileName(OptionsType * OptionValues,ANNOTATEDFORMULA 
-AnnotatedFormula,char * ProblemFileName) {
+void GetProblemFileName(OptionsType * OptionValues,ANNOTATEDFORMULA AnnotatedFormula,
+char * ProblemFileName) {
 
     String PossibleFileName;
 
@@ -3041,16 +3108,13 @@ signal(SIGQUIT,GlobalInterruptHandler) == SIG_ERR) {
         exit(EXIT_FAILURE);
     }
 
-    if (!SystemOnTPTPAvailable()) {
-        exit(EXIT_FAILURE);
-    }
-
     if (!ProcessCommandLine(argc,argv,&OptionValues)) {
         QPRINTF(OptionValues,4)("ERROR: Invalid command line arguments\n");
         exit(EXIT_FAILURE);
     }
-    if (OptionValues.GenerateObligations) {
-        OptionValues.TimeLimit = 0;
+//----Check SystemOnTPTP is available, unless it's not going to be used (TimeLimit == 0)
+    if (OptionValues.TimeLimit > 0 && !SystemOnTPTPAvailable()) {
+        exit(EXIT_FAILURE);
     }
 
 //----Read the derivation file
@@ -3136,11 +3200,10 @@ OptionValues.KeepFilesDirectory);
     fflush(stdout);
 //DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Head,0,1);
 
-//----User semantic parts
-    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) &&
-OptionValues.VerifyUserSemantics) {
-        QPRINTF(OptionValues,0)("Start user semantics verification\n");
-        OKSoFar *= UserSemanticsVerification(OptionValues,Signature,Head);
+    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && 
+OptionValues.GenerateLambdaPiFiles) {
+        OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
+        OKSoFar *= InitializeLPProofFile(&OptionValues);
     }
 
 //----Leaf verification
@@ -3148,6 +3211,19 @@ OptionValues.VerifyUserSemantics) {
 OptionValues.VerifyLeaves) {
         QPRINTF(OptionValues,0)("Start leaf verification\n");
         OKSoFar *= LeafVerification(OptionValues,Head,Signature);
+    }
+
+//----User semantic parts, e.g., axiom-like formulae are satisfiable
+    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) &&
+OptionValues.VerifyUserSemantics) {
+        QPRINTF(OptionValues,0)("Start user semantics verification\n");
+        OKSoFar *= UserSemanticsVerification(OptionValues,Signature,Head);
+    }
+
+//----Add problem formulae to LambdaPi proof file
+    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) &&
+OptionValues.GenerateLambdaPiFiles) {
+        OKSoFar *= WriteLPProblemFormulae(OptionValues);
     }
 
 //----Have option to not go below the leaves
@@ -3187,6 +3263,11 @@ OptionValues.VerifyLeaves) {
                 fflush(stdout);
             }
         }
+    }
+
+//----Close LambdaPi proof file if open
+    if (OptionValues.LambdaPiProofHandle != NULL) {
+        fclose(OptionValues.LambdaPiProofHandle);
     }
 
 //----Free memory

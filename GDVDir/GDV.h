@@ -2,37 +2,43 @@
 #define MAX_PARENTS 64
 //-----------------------------------------------------------------------------
 typedef struct {
+//----Options for processing
+    int Quietness;
     int AutoMode;
     int ForceContinue;
-    int Quietness;
+    int NoExpensiveChecks;
+    int TimeLimit;
+    int KeepFiles;
+    String KeepFilesDirectory;
+//----What to do
+    String DerivationFileName;
+    String ProblemFileName;
     int VerifyLeaves;        //----Verify leaves can be derived from input
     int VerifyUserSemantics; //----Check if the leaf axioms are satisfiable
     int VerifyDAGInferences; //----System-specific rules, e.g., E's apply_def, splitting, and
                              //----then the standard inference checking
-    int GenerateObligations; //----Only generate obligations, don't call ATP
-    int NoExpensiveChecks;
+    int GenerateObligations; //----Only (and always) generate obligations, don't call ATP
     int GenerateDefinitions; //----Something special for E's psuedo splitting
+    int GenerateLambdaPiFiles; //----To product LambdaPi signature and proof structure
+    String LambdaPiDirectory;  //----The project directory for LambdaPi stuff
+    FILE * LambdaPiProofHandle;  //----To carry around the file handle if generating proof header
     int DerivationExtract;   //----Not a full derivation, so parents can be missing
-    String ProblemFileName;
     int CheckParentRelevance;
     int CheckRefutation;
+//----ATP systems
+    String TheoremProver;
+    String CounterSatisfiableProver;
+    String ModelFinder;
+    String UnsatisfiabilityChecker;
+    String Saturator;
+    String TFFTheoremProver;
+    String TFFCounterSatisfiableProver;
+    String TFFModelFinder;
+    String TFFUnsatisfiabilityChecker;
     String THFTheoremProver;
     String THFModelFinder;
     String THFUnsatisfiabilityChecker;
     String THFCounterSatisfiableProver;
-    String TFFTheoremProver;
-    String TFFModelFinder;
-    String TFFUnsatisfiabilityChecker;
-    String TFFCounterSatisfiableProver;
-    String TheoremProver;
-    String ModelFinder;
-    String Saturator;
-    String UnsatisfiabilityChecker;
-    String CounterSatisfiableProver;
-    int TimeLimit;
-    int KeepFiles;
-    String KeepFilesDirectory;
-    String DerivationFileName;
 } OptionsType;
 
 typedef ANNOTATEDFORMULA ANNOTATEDFORMULAArray[MAX_PARENTS];

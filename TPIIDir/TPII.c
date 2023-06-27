@@ -289,8 +289,7 @@ GetName(LogicalFormula->AnnotatedFormula,NULL));
     }
  }
 //-------------------------------------------------------------------------------------------------
-LISTNODE GetListOfActiveLogicalFormulaeInGroups(LISTNODE LogicalFormulae,
-char * Groups) {
+LISTNODE GetListOfActiveLogicalFormulaeInGroups(LISTNODE LogicalFormulae,char * Groups) {
 
     LISTNODE LogicalFormulaeInGroups;
     LISTNODE * AddLogicalHere;
@@ -309,16 +308,12 @@ char * Groups) {
             if (ActiveLogicalFormula(SelectLogicalFormula) &&
 (!strcmp(GroupName,"tpi") || 
 (!strcmp(GroupName,"tpi_premises") && 
- CheckAnnotatedFormulaRole(SelectLogicalFormula->AnnotatedFormula,
- axiom_like)) ||
+ CheckRole(GetRole(SelectLogicalFormula->AnnotatedFormula,NULL),axiom_like)) ||
 (!strcmp(GroupName,"tpi_conjectures") &&
- (CheckAnnotatedFormulaRole(SelectLogicalFormula->AnnotatedFormula,
- conjecture) || 
- CheckAnnotatedFormulaRole(SelectLogicalFormula->AnnotatedFormula,
- negated_conjecture))) ||
+ (CheckRole(GetRole(SelectLogicalFormula->AnnotatedFormula,NULL),conjecture) || 
+ CheckRole(GetRole(SelectLogicalFormula->AnnotatedFormula,NULL),negated_conjecture))) ||
 LogicalFormulaInGroup(SelectLogicalFormula,GroupName))) {
-                AddListNode(AddLogicalHere,NULL,
-SelectLogicalFormula->AnnotatedFormula);
+                AddListNode(AddLogicalHere,NULL,SelectLogicalFormula->AnnotatedFormula);
                 AddLogicalHere = &((*AddLogicalHere)->Next);
             }
             SelectLogicalFormula = SelectLogicalFormula->Next;
@@ -333,16 +328,13 @@ char * State) {
 
     String StateTag;
 
-    RemoveUsefulInformationFromAnnotatedFormula(AnnotatedFormula,
-Signature,"tpi_state");
+    RemoveUsefulInformationFromAnnotatedFormula(AnnotatedFormula,Signature,"tpi_state");
     sprintf(StateTag,"tpi_state(%s)",State);
-    AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,
-StateTag);
+    AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,StateTag);
 }
 //-------------------------------------------------------------------------------------------------
-void SetTPIStateForCommand(char * CommandName,StatusType Command,
-FORMULA CommandDetails,LISTNODE LogicalFormulae,SIGNATURE Signature,
-char * State) {
+void SetTPIStateForCommand(char * CommandName,StatusType Command,FORMULA CommandDetails,
+LISTNODE LogicalFormulae,SIGNATURE Signature,char * State) {
 
     LISTNODE * NodePointer;
     char * FormulaName;
@@ -353,16 +345,14 @@ char * State) {
 FormulaName)) != NULL) {
         SetTPIState((*NodePointer)->AnnotatedFormula,Signature,State);
     } else {
-        printf("ERROR: Cannot set state for non-existent formula %s\n",
-FormulaName);
+        printf("ERROR: Cannot set state for non-existent formula %s\n",FormulaName);
         exit_SZS_NoSuccess();
     }
     Free((void **)&FormulaName);
 }
 //-------------------------------------------------------------------------------------------------
-void SetTPIStateForGroup(char * CommandName,StatusType Command,
-FORMULA CommandDetails,LISTNODE LogicalFormulae,SIGNATURE Signature,
-char * State) {
+void SetTPIStateForGroup(char * CommandName,StatusType Command,FORMULA CommandDetails,
+LISTNODE LogicalFormulae,SIGNATURE Signature,char * State) {
 
     char * GroupName;
 
@@ -377,8 +367,7 @@ char * State) {
     Free((void **)&GroupName);
 }
 //-------------------------------------------------------------------------------------------------
-int FindGroupNumber(char * GroupName,GroupNamesType GroupNames,
-int NumberOfGroups) {
+int FindGroupNumber(char * GroupName,GroupNamesType GroupNames,int NumberOfGroups) {
 
     int GroupNumber;
 
@@ -390,8 +379,7 @@ int NumberOfGroups) {
     return(-1);
 }
 //-------------------------------------------------------------------------------------------------
-void DoStartGroup(char * StartedGroupName,GroupNamesType GroupNames,
-int * NumberOfGroups) {
+void DoStartGroup(char * StartedGroupName,GroupNamesType GroupNames,int * NumberOfGroups) {
 
     if (FindGroupNumber(StartedGroupName,GroupNames,*NumberOfGroups) >= 0) {
         printf("ERROR: Started an already started group %s\n",StartedGroupName);
@@ -403,8 +391,7 @@ int * NumberOfGroups) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-void DoEndGroup(int GroupNumber,GroupNamesType GroupNames,
-int * NumberOfGroups) {
+void DoEndGroup(int GroupNumber,GroupNamesType GroupNames,int * NumberOfGroups) {
 
     Free((void **)&(GroupNames[GroupNumber]));
     while (GroupNumber < *NumberOfGroups - 1) {
@@ -421,9 +408,9 @@ void EndAllGroups(GroupNamesType GroupNames,int * NumberOfGroups) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-int TPIInput(OptionsType Options,char * CommandName,FORMULA CommandDetails,
-char * FileName,LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,
-SIGNATURE Signature,GroupNamesType GroupNames,int * NumberOfGroups) {
+int TPIInput(OptionsType Options,char * CommandName,FORMULA CommandDetails,char * FileName,
+LISTNODE * LogicalFormulae,LISTNODE ** AddLogicalHere,SIGNATURE Signature,
+GroupNamesType GroupNames,int * NumberOfGroups) {
 
     int Continue;
     int MallocedFileName;
@@ -434,8 +421,8 @@ SIGNATURE Signature,GroupNamesType GroupNames,int * NumberOfGroups) {
         CheckCommandDetailsType(CommandName,tpi_execute,CommandDetails,atom,0);
 //----Look for equality
         if (!strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
-            GetCommandDetailsEqualityAtoms(CommandName,tpi_input,
-CommandDetails,&GroupName,&FileName);
+            GetCommandDetailsEqualityAtoms(CommandName,tpi_input,CommandDetails,&GroupName,
+&FileName);
 //DEBUG printf("Input group and file %s %s\n",GroupName,FileName);
         } else {
             GroupName = NULL;
@@ -463,8 +450,8 @@ Signature,"all",GroupNames,NumberOfGroups);
     return(Continue);
 }
 //-------------------------------------------------------------------------------------------------
-void TPIOutput(char * CommandName,FORMULA CommandDetails,
-LISTNODE LogicalFormulae,SIGNATURE Signature) {
+void TPIOutput(char * CommandName,FORMULA CommandDetails,LISTNODE LogicalFormulae,
+SIGNATURE Signature) {
 
     LISTNODE LogicalFormulaeToPrint;
     char * OutputFileName;
@@ -475,8 +462,8 @@ LISTNODE LogicalFormulae,SIGNATURE Signature) {
     CheckCommandDetailsType(CommandName,tpi_output,CommandDetails,atom,0);
 //----Look for equality for group
     if (!strcmp(GetSymbol(CommandDetails->FormulaUnion.Atom),"=")) {
-        GetCommandDetailsEqualityAtoms(CommandName,tpi_output,
-CommandDetails,&OutputFileName,&GroupToOutput);
+        GetCommandDetailsEqualityAtoms(CommandName,tpi_output,CommandDetails,&OutputFileName,
+&GroupToOutput);
         GroupNameMalloced = 1;
     } else {
         GroupToOutput = "tpi";
@@ -487,18 +474,15 @@ CommandDetails,&OutputFileName,&GroupToOutput);
         CommandDetailsError(CommandName,tpi_output,CommandDetails);
     }
 
-    LogicalFormulaeToPrint = GetListOfActiveLogicalFormulaeInGroups(
-LogicalFormulae,GroupToOutput);
+    LogicalFormulaeToPrint = GetListOfActiveLogicalFormulaeInGroups(LogicalFormulae,GroupToOutput);
     if (!strcmp(OutputFileName,"stdout")) {
-        PrintListOfAnnotatedTSTPNodes(stdout,Signature,LogicalFormulaeToPrint,
-tptp,1);
+        PrintListOfAnnotatedTSTPNodes(stdout,Signature,LogicalFormulaeToPrint,tptp,1);
     } else {
         if ((OutputHandle = fopen(OutputFileName,"w")) == NULL) {
             printf("ERROR: Cannot open output file %s\n",OutputFileName);
             exit_SZS_NoSuccess();
         }
-        PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,
-LogicalFormulaeToPrint,tptp,1);
+        PrintListOfAnnotatedTSTPNodes(OutputHandle,Signature,LogicalFormulaeToPrint,tptp,1);
         fclose(OutputHandle);
     }
     FreeListOfAnnotatedFormulae(&LogicalFormulaeToPrint,Signature);
@@ -508,18 +492,18 @@ LogicalFormulaeToPrint,tptp,1);
     }
 }
 //-------------------------------------------------------------------------------------------------
-void TPIActivate(char * CommandName,FORMULA CommandDetails,
-LISTNODE LogicalFormulae,SIGNATURE Signature) {
+void TPIActivate(char * CommandName,FORMULA CommandDetails,LISTNODE LogicalFormulae,
+SIGNATURE Signature) {
 
-    SetTPIStateForCommand(CommandName,tpi_activate,CommandDetails,
-LogicalFormulae,Signature,"active");
+    SetTPIStateForCommand(CommandName,tpi_activate,CommandDetails,LogicalFormulae,Signature,
+"active");
 }
 //-------------------------------------------------------------------------------------------------
-void TPIDeactivate(char * CommandName,FORMULA CommandDetails,
-LISTNODE LogicalFormulae,SIGNATURE Signature) {
+void TPIDeactivate(char * CommandName,FORMULA CommandDetails,LISTNODE LogicalFormulae,
+SIGNATURE Signature) {
 
-    SetTPIStateForCommand(CommandName,tpi_deactivate,CommandDetails,
-LogicalFormulae,Signature,"inactive");
+    SetTPIStateForCommand(CommandName,tpi_deactivate,CommandDetails,LogicalFormulae,Signature,
+"inactive");
 }
 //-------------------------------------------------------------------------------------------------
 void TPIDelete(char * CommandName,FORMULA CommandDetails,LISTNODE * LogicalFormulae,
@@ -530,8 +514,8 @@ SIGNATURE Signature,LISTNODE ** AddLogicalHere) {
 
     CheckCommandDetailsType(CommandName,tpi_delete,CommandDetails,atom,1);
     FormulaName = GetCommandDetailsAtom(CommandDetails);
-    if ((NodePointer = GetNodeFromListByAnnotatedFormulaName(LogicalFormulae,
-FormulaName)) != NULL) {
+    if ((NodePointer = GetNodeFromListByAnnotatedFormulaName(LogicalFormulae, FormulaName)) != 
+NULL) {
         if (*AddLogicalHere == &((*NodePointer)->Next)) {
             *AddLogicalHere = NodePointer;
         }
@@ -584,8 +568,7 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
 
     CheckCommandDetailsType(CommandName,tpi_end_group,CommandDetails,atom,1);
     EndedGroupName = GetCommandDetailsAtom(CommandDetails);
-    if ((GroupNumber = FindGroupNumber(EndedGroupName,GroupNames,
-*NumberOfGroups)) >= 0) {
+    if ((GroupNumber = FindGroupNumber(EndedGroupName,GroupNames,*NumberOfGroups)) >= 0) {
         DoEndGroup(GroupNumber,GroupNames,NumberOfGroups);
         Free((void **)&EndedGroupName);
     } else {
@@ -595,18 +578,18 @@ GroupNamesType GroupNames,int * NumberOfGroups) {
     }
 }
 //-------------------------------------------------------------------------------------------------
-void TPIActivateGroup(char * CommandName,FORMULA CommandDetails,
-LISTNODE * LogicalFormulae,SIGNATURE Signature) {
+void TPIActivateGroup(char * CommandName,FORMULA CommandDetails,LISTNODE * LogicalFormulae,
+SIGNATURE Signature) {
 
-    SetTPIStateForGroup(CommandName,tpi_activate_group,CommandDetails,
-*LogicalFormulae,Signature,"active");
+    SetTPIStateForGroup(CommandName,tpi_activate_group,CommandDetails,*LogicalFormulae,Signature,
+"active");
 }
 //-------------------------------------------------------------------------------------------------
-void TPIDeactivateGroup(char * CommandName,FORMULA CommandDetails,
-LISTNODE * LogicalFormulae,SIGNATURE Signature) {
+void TPIDeactivateGroup(char * CommandName,FORMULA CommandDetails,LISTNODE * LogicalFormulae,
+SIGNATURE Signature) {
 
-    SetTPIStateForGroup(CommandName,tpi_deactivate_group,CommandDetails,
-*LogicalFormulae,Signature,"inactive");
+    SetTPIStateForGroup(CommandName,tpi_deactivate_group,CommandDetails,*LogicalFormulae,Signature,
+"inactive");
 }
 //-------------------------------------------------------------------------------------------------
 void TPIDeleteGroup(char * CommandName,FORMULA CommandDetails,char * GroupName,
