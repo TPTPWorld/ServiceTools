@@ -23,6 +23,7 @@ typedef struct {
     String LambdaPiDirectory;  //----The project directory for LambdaPi stuff
     FILE * LambdaPiProofHandle;  //----To carry around the file handle if generating proof header
     int DerivationExtract;   //----Not a full derivation, so parents can be missing
+    int CheckOppositeResult; //----If cannot show something, try opposite (THM-CTH,SAT-UNS)
     int CheckParentRelevance;
     int CheckRefutation;
 //----ATP systems
@@ -49,9 +50,8 @@ typedef ANNOTATEDFORMULA ANNOTATEDFORMULAArray[MAX_PARENTS];
 #define OTTER "Otter---"
 #define PARADOX "Paradox---"
 #define SPASS "SPASS---"
-#define SNARK "SNARK---"
-#define E "E---2.6"
-#define CVC5_MODELFINDER "cvc5---SAT-1.0"
+#define E "E---"
+#define CVC5_MODELFINDER "cvc5-SAT---"
 #define ISABELLE "Isabelle---2016"
 #define NITPICK "Nitpick---2016"
 #define SATALLAX "Satallax---"

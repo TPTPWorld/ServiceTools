@@ -60,6 +60,7 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
     strcpy(OptionValues->LambdaPiDirectory,"");
     OptionValues->LambdaPiProofHandle = NULL;
     OptionValues->DerivationExtract = 0;
+    OptionValues->CheckOppositeResult = 0;
     OptionValues->CheckParentRelevance = 0;
     OptionValues->CheckRefutation = 0;
 //----ATP systems
@@ -77,7 +78,7 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
     strcpy(OptionValues->THFModelFinder,DEFAULT_THF_MODEL_FINDER);
     strcpy(OptionValues->THFUnsatisfiabilityChecker,DEFAULT_THF_UNSATISFIABILITY_CHECKER);
     
-    while ((OptionChar = getopt(argc,argv,"q:afxt:K:k:i:lUdgnevrp:c:m:u:s:z:w:y:o:h")) 
+    while ((OptionChar = getopt(argc,argv,"q:afxt:K:k:i:lUdgneOvrp:c:m:u:s:z:w:y:o:h")) 
 != -1) {
         switch (OptionChar) {
 //----Options for processing
@@ -126,6 +127,9 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
 //----GenerateLambdaPiFiles is done above with KeepFiles
             case 'e':
                 OptionValues->DerivationExtract = 1;
+                break;
+            case 'O':
+                OptionValues->CheckOppositeResult = 1;
                 break;
             case 'v':
                 OptionValues->CheckParentRelevance = 1;
@@ -448,15 +452,18 @@ char * OutputPrefixForQuietness(OptionsType OptionValues) {
 }
 //-------------------------------------------------------------------------------------------------
 int GDVCheckTheorem(OptionsType OptionValues,SIGNATURE Signature,LISTNODE Axioms,
-ANNOTATEDFORMULA Conjecture,char * FileBaseName,char * Extension,int TestCounterTheorem) {
+ANNOTATEDFORMULA Conjecture,char * FileBaseName,char * Extension) {
 
+    String UserFileName;
     String OutputFileName;
     SyntaxType Syntax;
     char * TheoremProver;
+    int SystemOnTPTPResult;
+    String Command;
 
-    strcpy(OutputFileName,FileBaseName);
-    strcat(OutputFileName,"_");
-    strcat(OutputFileName,Extension);
+    strcpy(UserFileName,FileBaseName);
+    strcat(UserFileName,"_");
+    strcat(UserFileName,Extension);
 
     Syntax = GetListSyntax(Axioms);
     switch (Syntax) {
@@ -472,10 +479,10 @@ ANNOTATEDFORMULA Conjecture,char * FileBaseName,char * Extension,int TestCounter
             } else {
                 CodingError("Mixed FOF/CNF with some weird conjecture");
             }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
-OptionValues.CounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
-OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
-OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
+            SystemOnTPTPResult = SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
+OptionValues.CheckOppositeResult,OptionValues.CounterSatisfiableProver,"CounterSatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,UserFileName,OutputFileName);
             break;
         case tptp_tcf:
         case tptp_tff:
@@ -485,10 +492,10 @@ GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
             } else {
                 CodingError("Mixed TFF with something");
             }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
-OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
-OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
-OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
+            SystemOnTPTPResult = SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
+OptionValues.CheckOppositeResult,OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,UserFileName,OutputFileName);
             break;
         case tptp_mixed:
             QPRINTF(OptionValues,1)(
@@ -501,20 +508,34 @@ GetSyntax(Conjecture) == tptp_fof || GetSyntax(Conjecture) == tptp_cnf) {
             } else {
                 CodingError("Mixed THF with something");
             }
-            return(SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",TestCounterTheorem,
-OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",OptionValues.TimeLimit,
-OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
-OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
+            SystemOnTPTPResult = SystemOnTPTP(Axioms,Conjecture,TheoremProver,"Theorem",
+OptionValues.CheckOppositeResult,OptionValues.THFCounterSatisfiableProver,"CounterSatisfiable",
+OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
+OptionValues.KeepFilesDirectory,UserFileName,OutputFileName);
             break;
         default:
             CodingError("Unknown syntax for GDVCheckTheorem");
             return(0);
             break;
     }
+    if (SystemOnTPTPResult == 1) {
+        if (OptionValues.GenerateLambdaPiFiles) {
+            sprintf(Command,"sed -e '1,/SZS start Proof/d' -e '/SZS end Proof/,$d' %s > %s/%s.lp",
+OutputFileName,OptionValues.KeepFilesDirectory,UserFileName);
+//DEBUG printf("Try to do %s\n",Command);
+            system(Command);
+        }
+    } else {
+        sprintf(Command,"mv %s %s/%s.f",OutputFileName,OptionValues.KeepFilesDirectory,
+UserFileName);
+printf("Rename to %s\n",Command);
+        system(Command);
+    }
+    return(SystemOnTPTPResult);
 }
 //-------------------------------------------------------------------------------------------------
 int GDVCheckSatisfiable(OptionsType OptionValues,LISTNODE Formulae,char * FileBaseName,
-char * Extension,int TestUnsatisfiability) {
+char * Extension) {
 
     String OutputFileName;
     int CheckResult;
@@ -565,9 +586,9 @@ OutputFileName,NULL,OutputFileName);
                 strcat(OutputFileName,"_");
                 strcat(OutputFileName,Extension);
                 if ((CheckResult = SystemOnTPTP(Formulae,NULL,OptionValues.ModelFinder,
-"Satisfiable",TestUnsatisfiability,OptionValues.UnsatisfiabilityChecker,"Unsatisfiable",
-OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
-OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName)) != 0) {
+"Satisfiable",OptionValues.CheckOppositeResult,OptionValues.UnsatisfiabilityChecker,
+"Unsatisfiable",OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",
+OptionValues.KeepFiles,OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName)) != 0) {
                     return(CheckResult);
                 } else {
 //----The saturator
@@ -591,7 +612,7 @@ FileBaseName,Extension);
             strcat(OutputFileName,Extension);
             strcat(OutputFileName,"_model");
             return(SystemOnTPTP(Formulae,NULL,OptionValues.THFModelFinder,"Satisfiable",
-TestUnsatisfiability,OptionValues.THFUnsatisfiabilityChecker,"Unsatisfiable",
+OptionValues.CheckOppositeResult,OptionValues.THFUnsatisfiabilityChecker,"Unsatisfiable",
 OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
@@ -601,7 +622,7 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             strcat(OutputFileName,Extension);
             strcat(OutputFileName,"_model");
             return(SystemOnTPTP(Formulae,NULL,OptionValues.TFFModelFinder,"Satisfiable",
-TestUnsatisfiability,OptionValues.TFFUnsatisfiabilityChecker,"Unsatisfiable",
+OptionValues.CheckOppositeResult,OptionValues.TFFUnsatisfiabilityChecker,"Unsatisfiable",
 OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
@@ -635,7 +656,7 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
     if (!strcmp(SZSStatus,"thm")) {
         if (OptionValues.CheckParentRelevance) {
             if ((CheckResult = GDVCheckSatisfiable(OptionValues,ParentAnnotatedFormulae,
-FileBaseName,"parents_sat",1)) == 1) {
+FileBaseName,"parents_sat")) == 1) {
                 Correct = 1;
                 QPRINTF(OutcomeOptionValues,2)(
 "SUCCESS: %s has sat parents %s %s\n",FormulaName,ParentNames,Comment != NULL?Comment:"");
@@ -669,7 +690,7 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
 
         if (!GlobalInterrupted && (Correct || OptionValues.ForceContinue)) {
             if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,ParentAnnotatedFormulae,
-Target,FileBaseName,"thm",1)) == 1) {
+Target,FileBaseName,"thm")) == 1) {
                 Correct = 1;
                 if (OptionValues.GenerateLambdaPiFiles) {
                     fprintf(OptionValues.LambdaPiProofHandle,"require %s.%s as %s ;\n",
@@ -695,6 +716,7 @@ GetName(ParentNode->AnnotatedFormula,NULL));
                         ParentNode = ParentNode->Next;
                     }
                     fprintf(OptionValues.LambdaPiProofHandle," ;\n");
+                    fflush(OptionValues.LambdaPiProofHandle);
                 }
                 if (OptionValues.TimeLimit == 0) {
                     QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to show that %s is a %s",
@@ -1942,7 +1964,7 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
     Types = GetListOfAnnotatedFormulaeWithRole(Leaves,type,Signature);
     LeafAxioms = AppendListsOfAnnotatedTSTPNodes(Types,LeafAxioms);
     if (LeafAxioms != NULL) {
-        Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"leaf_axioms","sat",1);
+        Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"leaf_axioms","sat");
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
 "CREATED: Obligation to show axiom(_like) leaves are satisfiable\n");
@@ -2564,7 +2586,7 @@ LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
 //----Check if any left over
     if (*NeitherHead == NULL) {
         QPRINTF(OptionValues,2)("WOOHOOO: All problem formulae are positive or negative\n");
-    } else if (GDVCheckSatisfiable(OptionValues,*NeitherHead,"neither","sat",0) == 1) {
+    } else if (GDVCheckSatisfiable(OptionValues,*NeitherHead,"neither","sat") == 1) {
         QPRINTF(OptionValues,2)("WOOHOOO: All problem formulae are in a satisfiable set\n");
     } else {
         QPRINTF(OptionValues,2)("WARNING: Some problem formulae are not in a satisfiable set\n");
@@ -2679,6 +2701,10 @@ NULL)) == NULL) {
 "ERROR: Could not parse problem file %s\n",OptionValues.ProblemFileName);
         QPRINTF(OptionValues,2)("FAILURE: Leaf nodes unverified\n");
         return(0);
+//----Now we have all symbols from the derivation (including, e.g., Skolems) and the problem
+//----(including, e.g., from unused axioms).
+    } else if (OptionValues.GenerateLambdaPiFiles) {
+        OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
     }
 
     if (OptionValues.Quietness == 0) {
@@ -2702,7 +2728,7 @@ NULL)) == NULL) {
 Signature);
 
 //----Check if the entire input (sans conjecture) is satisfiable
-    if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem_axioms","sat",0) == 1) {
+    if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem_axioms","sat") == 1) {
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
 "CREATED: Obligation to show problem axiom(_like) formulae are satisfiable\n");
@@ -2746,9 +2772,8 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
                 if (ConjectureFromProblem != NULL) {
                     GetName(ConjectureFromProblem->AnnotatedFormula,ConjectureName);
 //----Copy of conjecture
-                    if (!OptionValues.GenerateObligations &&
-SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,ConjectureFromProblem->AnnotatedFormula,
-1,1)) {
+                    if (!OptionValues.GenerateObligations && SameFormulaInAnnotatedFormulae(
+Target->AnnotatedFormula,ConjectureFromProblem->AnnotatedFormula,1,1)) {
                         QPRINTF(OptionValues,2)(
 "SUCCESS: Conjecture leaf %s is a copy of %s (from the problem)\n",FormulaName,ConjectureName);
                         ThisOneOK = 1;
@@ -3013,8 +3038,8 @@ Signature);
 //----Copied formula. Look at only the first (which ignores the type formulae
 //----added for THF)
             if (!strcmp(InferenceRule,"")) {
-                if (SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,
-ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
+                if (!OptionValues.GenerateObligations && SameFormulaInAnnotatedFormulae(
+Target->AnnotatedFormula,ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
                     QPRINTF(OptionValues,2)(
 "SUCCESS: %s is a copy of %s\n",FormulaName,ParentNames[0]);
                     AddVerifiedTag(Target->AnnotatedFormula,Signature,"thm");
@@ -3240,12 +3265,13 @@ OptionValues.KeepFilesDirectory);
 
     if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && 
 OptionValues.GenerateLambdaPiFiles) {
-        OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
         OKSoFar *= InitializeLPProofFile(&OptionValues);
 //----Add problem formulae to LambdaPi proof file
         fprintf(OptionValues.LambdaPiProofHandle,"\n");
         OKSoFar *= WriteLPProblemFormulae(OptionValues);
         fprintf(OptionValues.LambdaPiProofHandle,"\n");
+//----Write package file, which needs the directory name created in InitializeLPProofFile
+        OKSoFar *= WriteLPPackageFile(OptionValues);
     }
 
 //----Leaf verification
