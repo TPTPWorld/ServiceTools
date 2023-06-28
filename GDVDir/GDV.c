@@ -455,9 +455,8 @@ ANNOTATEDFORMULA Conjecture,char * FileBaseName,char * Extension,int TestCounter
     char * TheoremProver;
 
     strcpy(OutputFileName,FileBaseName);
-    strcat(OutputFileName,".");
+    strcat(OutputFileName,"_");
     strcat(OutputFileName,Extension);
-    strcat(OutputFileName,".dis");
 
     Syntax = GetListSyntax(Axioms);
     switch (Syntax) {
@@ -527,28 +526,34 @@ char * Extension,int TestUnsatisfiability) {
         case tptp_cnf:
             Syntax = tptp_fof;
         case tptp_fof:
-            if (ListOfAnnotatedFormulaTrueInInterpretation(Formulae,positive)) {
+            if (!OptionValues.GenerateObligations &&
+ListOfAnnotatedFormulaTrueInInterpretation(Formulae,positive)) {
                 if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
-                    strcat(OutputFileName,".");
+                    strcat(OutputFileName,"_");
                     strcat(OutputFileName,Extension);
-                    strcat(OutputFileName,"_positive.dis");
+                    strcat(OutputFileName,"_positive.s");
                     SystemOnTPTPFileName(OptionValues.KeepFilesDirectory,
 OutputFileName,NULL,OutputFileName);
                     if ((Handle = OpenFileInMode(OutputFileName,"w")) != NULL) {
+                        fprintf(Handle,
+"%%----The %s formulae are satisfiable in the positive interpretation\n",FileBaseName);
                         fclose(Handle);
                     }
                 }
                 return(1);
-            } else if (ListOfAnnotatedFormulaTrueInInterpretation(Formulae,negative)) {
+            } else if (!OptionValues.GenerateObligations &&
+ListOfAnnotatedFormulaTrueInInterpretation(Formulae,negative)) {
                 if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
-                    strcat(OutputFileName,".");
+                    strcat(OutputFileName,"_");
                     strcat(OutputFileName,Extension);
-                    strcat(OutputFileName,"_negative.dis");
+                    strcat(OutputFileName,"_negative.s");
                     SystemOnTPTPFileName(OptionValues.KeepFilesDirectory,
 OutputFileName,NULL,OutputFileName);
                     if ((Handle = OpenFileInMode(OutputFileName,"w")) != NULL) {
+                        fprintf(Handle,
+"%%----The %s formulae are satisfiable in the negative interpretation\n",FileBaseName);
                         fclose(Handle);
                     }
                 }
@@ -557,9 +562,8 @@ OutputFileName,NULL,OutputFileName);
             } else {
 //----First the finite model finder
                 strcpy(OutputFileName,FileBaseName);
-                strcat(OutputFileName,".");
+                strcat(OutputFileName,"_");
                 strcat(OutputFileName,Extension);
-                strcat(OutputFileName,"_model.dis");
                 if ((CheckResult = SystemOnTPTP(Formulae,NULL,OptionValues.ModelFinder,
 "Satisfiable",TestUnsatisfiability,OptionValues.UnsatisfiabilityChecker,"Unsatisfiable",
 OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
@@ -568,9 +572,9 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName)) != 0) {
                 } else {
 //----The saturator
                     strcpy(OutputFileName,FileBaseName);
-                    strcat(OutputFileName,".");
-                    strcat(OutputFileName,Extension);
-                    strcat(OutputFileName,"_saturate.dis");
+//                    strcat(OutputFileName,"_");
+//                    strcat(OutputFileName,Extension);
+                    strcat(OutputFileName,"_saturate");
                     return(SystemOnTPTP(Formulae,NULL,OptionValues.Saturator,"Satisfiable",0,NULL,
 NULL,OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
 OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
@@ -583,9 +587,9 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
 FileBaseName,Extension);
         case tptp_thf:
             strcpy(OutputFileName,FileBaseName);
-            strcat(OutputFileName,".");
+            strcat(OutputFileName,"_");
             strcat(OutputFileName,Extension);
-            strcat(OutputFileName,"_model.dis");
+            strcat(OutputFileName,"_model");
             return(SystemOnTPTP(Formulae,NULL,OptionValues.THFModelFinder,"Satisfiable",
 TestUnsatisfiability,OptionValues.THFUnsatisfiabilityChecker,"Unsatisfiable",
 OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
@@ -593,9 +597,9 @@ OptionValues.KeepFilesDirectory,OutputFileName,OutputFileName));
             break;
         case tptp_tff:
             strcpy(OutputFileName,FileBaseName);
-            strcat(OutputFileName,".");
+            strcat(OutputFileName,"_");
             strcat(OutputFileName,Extension);
-            strcat(OutputFileName,"_model.dis");
+            strcat(OutputFileName,"_model");
             return(SystemOnTPTP(Formulae,NULL,OptionValues.TFFModelFinder,"Satisfiable",
 TestUnsatisfiability,OptionValues.TFFUnsatisfiabilityChecker,"Unsatisfiable",
 OptionValues.TimeLimit,OutputPrefixForQuietness(OptionValues),"-force",OptionValues.KeepFiles,
@@ -617,8 +621,10 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
     int ESACorrect;
     ANNOTATEDFORMULA NewTarget;
     LISTNODE ESAParentNode;
+    LISTNODE ParentNode;
     int CheckResult;
     String ESAFileBaseName;
+    String CleanedName;
 
 //----Suppress output as required
     OutcomeOptionValues = OptionValues;
@@ -629,7 +635,7 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
     if (!strcmp(SZSStatus,"thm")) {
         if (OptionValues.CheckParentRelevance) {
             if ((CheckResult = GDVCheckSatisfiable(OptionValues,ParentAnnotatedFormulae,
-FileBaseName,"parents.sat",1)) == 1) {
+FileBaseName,"parents_sat",1)) == 1) {
                 Correct = 1;
                 QPRINTF(OutcomeOptionValues,2)(
 "SUCCESS: %s has sat parents %s %s\n",FormulaName,ParentNames,Comment != NULL?Comment:"");
@@ -662,15 +668,45 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
         }
 
         if (!GlobalInterrupted && (Correct || OptionValues.ForceContinue)) {
-            if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,
-ParentAnnotatedFormulae,Target,FileBaseName,"thm",1)) == 1) {
+            if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,ParentAnnotatedFormulae,
+Target,FileBaseName,"thm",1)) == 1) {
                 Correct = 1;
+                if (OptionValues.GenerateLambdaPiFiles) {
+                    fprintf(OptionValues.LambdaPiProofHandle,"require %s.%s as %s ;\n",
+OptionValues.LambdaPiDirectory,FileBaseName,FileBaseName);
+                    fprintf(OptionValues.LambdaPiProofHandle,"opaque symbol lemmas_%s ≔ %s.delta",
+FileBaseName,FileBaseName);
+                    ParentNode = ParentAnnotatedFormulae;
+                    while (ParentNode != NULL) {
+                        if (DerivedAnnotatedFormula(ParentNode->AnnotatedFormula) ||
+//----Have to also catch leaves that are copies of problems, not inferred in the derivation but
+//----might be verified thanks to the -l flag.
+GetUsefulInfoTERM(ParentNode->AnnotatedFormula,"verified",1) != NULL) {
+//----Need to take off and _leaf added to the name to create the file name
+                            strcpy(CleanedName,GetName(ParentNode->AnnotatedFormula,NULL));
+                            if (!DerivedAnnotatedFormula(ParentNode->AnnotatedFormula)) {
+                                strcat(CleanedName,"_leaf");
+                            }
+                            fprintf(OptionValues.LambdaPiProofHandle," lemmas_%s",CleanedName);
+                        } else {
+                            fprintf(OptionValues.LambdaPiProofHandle," %s",
+GetName(ParentNode->AnnotatedFormula,NULL));
+                        }
+                        ParentNode = ParentNode->Next;
+                    }
+                    fprintf(OptionValues.LambdaPiProofHandle," ;\n");
+                }
                 if (OptionValues.TimeLimit == 0) {
                     QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to show that %s is a %s",
 FormulaName,SZSStatus);
+                    if (OptionValues.GenerateLambdaPiFiles && FalseAnnotatedFormula(Target)) {
+                        fprintf(OptionValues.LambdaPiProofHandle,
+"\nsymbol Proof : ⊥ ≔ lemmas_%s ;\n",FileBaseName);
+                    }
                 } else {
                     QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
                 }
+
             } else {
                 Correct = 0;
                 if (CheckResult == 0) {
@@ -701,10 +737,9 @@ ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,-1,"(Negated cth)");
 //----First try a THM check and also try the weak reverse check.
         Correct = CorrectlyInferred(OptionValues,Signature,Target,FormulaName,
 ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,4,"(Theorem esa)");
-//----This is the weak reverse check. Assume ESA nodes have a single real
-//----parent - the rest are THF types and definitions. That parent becomes 
-//----the new target, and the old target becomes the parent. Scan down to 
-//----the last parent node to find that real parent.
+//----This is the weak reverse check. Assume ESA nodes have a single real parent - the rest are 
+//----THF types and definitions. That parent becomes the new target, and the old target becomes 
+//----the parent. Scan down to the last parent node to find that real parent.
         ESAParentNode = ParentAnnotatedFormulae;
         while (ESAParentNode->Next != NULL) {
             ESAParentNode = ESAParentNode->Next;
@@ -712,7 +747,7 @@ ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,4,"(Theorem esa)");
         NewTarget = ESAParentNode->AnnotatedFormula;
         ESAParentNode->AnnotatedFormula = Target;
         strcpy(ESAFileBaseName,FileBaseName);
-        strcat(ESAFileBaseName,".esa");
+        strcat(ESAFileBaseName,"_esa");
         ESACorrect = CorrectlyInferred(OptionValues,Signature,NewTarget,
 GetName(NewTarget,NULL),ParentAnnotatedFormulae,GetName(Target,NULL),"thm",
 ESAFileBaseName,4,"(Inverted esa)");
@@ -1488,8 +1523,8 @@ int UsesFormulae(OptionsType OptionValues,LISTNODE Head,ROOTLIST RootListHead) {
     Target = Head;
     while (Target != NULL) {
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula)) {
-            if ((Status = GetRole(Target->AnnotatedFormula,NULL)) == 
-conjecture || Status == negated_conjecture) {
+            if ((Status = GetRole(Target->AnnotatedFormula,NULL)) == conjecture || 
+Status == negated_conjecture) {
                 FoundAConjecture = 1;
             }
             if (AnnotatedFormulaInTreesTHM(RootListHead,Target->
@@ -1503,8 +1538,7 @@ GetName(Target->AnnotatedFormula,NULL));
     } 
 
     if (!FoundAConjecture) {
-        QPRINTF(OptionValues,2)(
-"WARNING: (Negated) leaf conjecture not found\n");
+        QPRINTF(OptionValues,2)("WARNING: (Negated) leaf conjecture not found\n");
         OKSoFar = 0;
     }
 
@@ -1908,10 +1942,10 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
     Types = GetListOfAnnotatedFormulaeWithRole(Leaves,type,Signature);
     LeafAxioms = AppendListsOfAnnotatedTSTPNodes(Types,LeafAxioms);
     if (LeafAxioms != NULL) {
-        Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"axioms","sat",1);
+        Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"leaf_axioms","sat",1);
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
-"HAVE I CREATED: Obligation to show axiom(_like) leaves are satisfiable\n");
+"CREATED: Obligation to show axiom(_like) leaves are satisfiable\n");
         } else {
             if (Satisfiable) {
                 QPRINTF(OptionValues,2)("SUCCESS: Leaf axiom(_like) formulae are satisfiable\n");
@@ -2575,7 +2609,6 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
         Target = Target->Next;
     }
 
-//----Check introduced leaves next
     Target = Head;
     OKSoFar = 1;
     while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
@@ -2669,8 +2702,14 @@ NULL)) == NULL) {
 Signature);
 
 //----Check if the entire input (sans conjecture) is satisfiable
-    if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem","sat",0) == 1) {
-        QPRINTF(OptionValues,2)("SUCCESS: Input problem (without conjecture) is satisfiable\n");
+    if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem_axioms","sat",0) == 1) {
+        if (OptionValues.TimeLimit == 0) {
+            QPRINTF(OptionValues,2)(
+"CREATED: Obligation to show problem axiom(_like) formulae are satisfiable\n");
+        } else {
+            QPRINTF(OptionValues,2)(
+"SUCCESS: Input problem (without conjecture) is satisfiable\n");
+        }
         SatisfiableHead = ProblemHead;
         PositiveHead = NULL;
         NegativeHead = NULL;
@@ -2721,7 +2760,8 @@ SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,ConjectureFromProblem->A
                         }
                         AddListNode(TypesNext,NULL,Target->AnnotatedFormula);
                         CleanTheFileName(FormulaName,FileBaseName);
-                        strcat(FileBaseName,"_to_conjecture");
+                        strcat(FileBaseName,"_leaf");
+//                        strcat(FileBaseName,ConjectureName);
 //----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
 //----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                         if (CorrectlyInferred(OptionValues,Signature,
@@ -2764,9 +2804,12 @@ GetName(ProblemTarget->AnnotatedFormula,ProblemTargetName));
 GetAnnotatedFormulaFromListByName(ProblemHead,FormulaName)) != NULL) {
                     AddListNode(TypesNext,NULL,ProblemFormula);
                     CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_from_same_named");
+                    strcat(FileBaseName,"_leaf");
+//                    strcat(FileBaseName,FormulaName);
 //----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
 //----Target->AnnotatedFormula tagged on the end - sneaky hey?)
+//----If just generating obligations CorrectlyInferred will succeed and report obligations has
+//----been generated.
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,Types,FormulaName,"thm",FileBaseName,-1,"(from the problem)")) {
                         ThisOneOK = 1;
@@ -2946,15 +2989,13 @@ int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signatu
     Target = Head;
     OKSoFar = 1;
 //----Work through list looking for derived nodes
-    while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) &&
-Target != NULL) {
+    while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
 //DEBUG printf("checking ...\n");
 //DEBUG PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
         if (DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
 GetUsefulInfoTerm(Target->AnnotatedFormula,"verified",1,VerifiedTag) == NULL &&
 //----Explicit splits are dealt with elsewhere, but it may have failed.
-GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_from",1,
-VerifiedTag) == NULL) {
+GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_from",1,VerifiedTag) == NULL) {
 //DEBUG printf("needs to be verified ...\n");
             GetName(Target->AnnotatedFormula,FormulaName);
             CleanTheFileName(FormulaName,FileName);
@@ -2996,16 +3037,13 @@ FormulaName,ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
 //----Get SZS status
                 if ((SZSArray = GetInferenceSZSStatuses(Target->AnnotatedFormula,NULL,
 &NumberOfSZSResults)) == NULL) {
-                    QPRINTF(OptionValues,1)(
-"WARNING: Cannot get SZS status for %s",FormulaName);
-//----If none, then try special cases (one right now) - negated_conjecture
-//----with conjecture and sole parent
-                    if (ParentAnnotatedFormulae != NULL &&
-ParentAnnotatedFormulae->Next == NULL &&
-ParentAnnotatedFormulae->AnnotatedFormula->AnnotatedFormulaUnion. AnnotatedTSTPFormula.Status == 
-conjecture &&
-Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == 
-negated_conjecture) {
+                    QPRINTF(OptionValues,1)("WARNING: Cannot get SZS status for %s",FormulaName);
+//----If none, then try special cases (one right now) - negated_conjecture with conjecture and 
+//----sole parent
+                    if (ParentAnnotatedFormulae != NULL && ParentAnnotatedFormulae->Next == NULL &&
+ParentAnnotatedFormulae->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == 
+conjecture && 
+Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == negated_conjecture) {
                         strcpy(SZSStatus,"cth");
                     } else {
                         strcpy(SZSStatus,"thm");
@@ -3204,6 +3242,10 @@ OptionValues.KeepFilesDirectory);
 OptionValues.GenerateLambdaPiFiles) {
         OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
         OKSoFar *= InitializeLPProofFile(&OptionValues);
+//----Add problem formulae to LambdaPi proof file
+        fprintf(OptionValues.LambdaPiProofHandle,"\n");
+        OKSoFar *= WriteLPProblemFormulae(OptionValues);
+        fprintf(OptionValues.LambdaPiProofHandle,"\n");
     }
 
 //----Leaf verification
@@ -3218,12 +3260,6 @@ OptionValues.VerifyLeaves) {
 OptionValues.VerifyUserSemantics) {
         QPRINTF(OptionValues,0)("Start user semantics verification\n");
         OKSoFar *= UserSemanticsVerification(OptionValues,Signature,Head);
-    }
-
-//----Add problem formulae to LambdaPi proof file
-    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) &&
-OptionValues.GenerateLambdaPiFiles) {
-        OKSoFar *= WriteLPProblemFormulae(OptionValues);
     }
 
 //----Have option to not go below the leaves
