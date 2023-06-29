@@ -6,7 +6,6 @@ constant symbol esk2_0 : κ → κ ;
 constant symbol esk3_0 : κ → κ ;
 constant symbol external_ties : κ → κ → κ ;
 constant symbol position : κ → κ → κ ;
-constant symbol = : κ → κ → Prop ;
 constant symbol greater : κ → κ → Prop ;
 constant symbol greater_or_equal : κ → κ → Prop ;
 constant symbol organization : κ → Prop ;
