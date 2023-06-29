@@ -90,5 +90,5 @@ formulas created: 383
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_25_thm - ZenonModuloLP---0.4.2 says GaveUp - CPU = 0.08 WC = 0.13 
-OUTPUT: c_0_25_thm - ZenonModuloLP---0.4.2 says None - CPU = 0.08 WC = 0.13 
+RESULT: c_0_25_thm - ZenonModuloLP---0.4.2 says GaveUp - CPU = 0.06 WC = 0.12 
+OUTPUT: c_0_25_thm - ZenonModuloLP---0.4.2 says None - CPU = 0.06 WC = 0.12 

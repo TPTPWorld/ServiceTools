@@ -144,5 +144,5 @@ formulas created: 168
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_20_thm - ZenonModuloLP---0.4.2 says Theorem - CPU = 0.07 WC = 0.13 
-OUTPUT: c_0_20_thm - ZenonModuloLP---0.4.2 says Assurance - CPU = 0.07 WC = 0.13 
+RESULT: c_0_20_thm - ZenonModuloLP---0.4.2 says Theorem - CPU = 0.01 WC = 0.11 
+OUTPUT: c_0_20_thm - ZenonModuloLP---0.4.2 says Assurance - CPU = 0.01 WC = 0.11 

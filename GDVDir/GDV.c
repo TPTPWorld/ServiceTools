@@ -740,6 +740,10 @@ SZSStatus);
                 } else {
                     QPRINTF(OutcomeOptionValues,2)("FAILURE: %s is not a %s",FormulaName,SZSStatus);
                 }
+                if (OptionValues.GenerateLambdaPiFiles) {
+                    fprintf(OptionValues.LambdaPiProofHandle,
+"opaque symbol lemmas_%s ≔ begin admitted ;\n",FileBaseName);
+                }
             }
             if (ParentAnnotatedFormulae != NULL) {
                 QPRINTF(OutcomeOptionValues,2)(" of %s",ParentNames);
