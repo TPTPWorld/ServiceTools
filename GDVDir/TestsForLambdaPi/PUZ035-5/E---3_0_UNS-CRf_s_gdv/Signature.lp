@@ -1,0 +1,10 @@
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
+require open Logic.Zenon.zen;
+constant symbol asked : κ → κ ;
+constant symbol isa : κ → κ → κ ;
+constant symbol knave : κ → κ ;
+constant symbol knight : κ → κ ;
+constant symbol or : κ → κ → κ ;
+constant symbol other : κ → κ ;
+constant symbol says : κ → κ → Prop ;
+constant symbol truth : κ → Prop ;
