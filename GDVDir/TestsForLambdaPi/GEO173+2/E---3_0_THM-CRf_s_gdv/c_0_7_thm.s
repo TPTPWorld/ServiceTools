@@ -2,9 +2,9 @@ ZenonModuloLP---0.4.2   system information being retrieved
 ZenonModuloLP---0.4.2's non-default parameters being retrieved
 ZenonModuloLP---0.4.2   being checked for execution
 ZenonModuloLP---0.4.2   checking time limit 60
-ZenonModuloLP---0.4.2   checking problem name TestFiles/LampdaPiTests/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p
+ZenonModuloLP---0.4.2   checking problem name TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p
 
-ZenonModuloLP---0.4.2's TPTP format TestFiles/LampdaPiTests/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p is ...
+ZenonModuloLP---0.4.2's TPTP format TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p is ...
 fof(apart4,axiom,
     ! [X1,X2,X3] :
       ( distinct_points(X1,X2)
@@ -20,7 +20,7 @@ fof(c_0_7,conjecture,
     inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[apart4])]) ).
 
 ZenonModuloLP---0.4.2's c_0_7_thm does not need preparation
-ZenonModuloLP---0.4.2   will use TestFiles/LampdaPiTests/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p
+ZenonModuloLP---0.4.2   will use TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p
 ZenonModuloLP---0.4.2's own format source file is ...
 fof(apart4,axiom,
     ! [X1,X2,X3] :
@@ -37,7 +37,7 @@ fof(c_0_7,conjecture,
     inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[apart4])]) ).
 
 ZenonModuloLP---0.4.2   is forced to process that problem/solution
-ZenonModuloLP---0.4.2   being executed on c_0_7_thm using /exp/home/tptp/Systems/ZenonModuloLP---0.4.2/run_zenon_modulo 60 'TestFiles/LampdaPiTests/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p'
+ZenonModuloLP---0.4.2   being executed on c_0_7_thm using /exp/home/tptp/Systems/ZenonModuloLP---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p'
 % START OF SYSTEM OUTPUT
 (* PROOF-FOUND *)
 % SZS status Theorem
@@ -297,5 +297,5 @@ formulas created: 330
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_7_thm - ZenonModuloLP---0.4.2 says Theorem - CPU = 0.06 WC = 0.11 
-OUTPUT: c_0_7_thm - ZenonModuloLP---0.4.2 says Assurance - CPU = 0.06 WC = 0.11 
+RESULT: c_0_7_thm - ZenonModuloLP---0.4.2 says Theorem - CPU = 0.06 WC = 0.13 
+OUTPUT: c_0_7_thm - ZenonModuloLP---0.4.2 says Assurance - CPU = 0.06 WC = 0.13 

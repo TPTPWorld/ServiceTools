@@ -518,18 +518,21 @@ OptionValues.KeepFilesDirectory,UserFileName,OutputFileName);
             return(0);
             break;
     }
-    if (SystemOnTPTPResult == 1) {
-        if (OptionValues.GenerateLambdaPiFiles) {
-            sprintf(Command,"sed -e '1,/SZS start Proof/d' -e '/SZS end Proof/,$d' %s > %s/%s.lp",
+    if (OptionValues.TimeLimit != 0) {
+        if (SystemOnTPTPResult == 1) {
+            if (OptionValues.GenerateLambdaPiFiles) {
+                sprintf(Command,
+"sed -e '1,/SZS start Proof/d' -e '/SZS end Proof/,$d' %s > %s/%s.lp",
 OutputFileName,OptionValues.KeepFilesDirectory,UserFileName);
 //DEBUG printf("Try to do %s\n",Command);
+                system(Command);
+            }
+        } else {
+            sprintf(Command,"mv %s %s/%s.f",OutputFileName,OptionValues.KeepFilesDirectory,
+UserFileName);
+//DEBUG printf("Rename to %s\n",Command);
             system(Command);
         }
-    } else {
-        sprintf(Command,"mv %s %s/%s.f",OutputFileName,OptionValues.KeepFilesDirectory,
-UserFileName);
-printf("Rename to %s\n",Command);
-        system(Command);
     }
     return(SystemOnTPTPResult);
 }
@@ -718,8 +721,8 @@ GetName(ParentNode->AnnotatedFormula,NULL));
                     fprintf(OptionValues.LambdaPiProofHandle," ;\n");
                     fflush(OptionValues.LambdaPiProofHandle);
                 }
-                if (OptionValues.TimeLimit == 0) {
-                    QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to show that %s is a %s",
+                if (OptionValues.GenerateObligations) {
+                    QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to verify that %s is a %s",
 FormulaName,SZSStatus);
                     if (OptionValues.GenerateLambdaPiFiles && FalseAnnotatedFormula(Target)) {
                         fprintf(OptionValues.LambdaPiProofHandle,
@@ -776,7 +779,7 @@ ESAFileBaseName,4,"(Inverted esa)");
         ESAParentNode->AnnotatedFormula = NewTarget;
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
-"CREATED: Obligations to show %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
+"CREATED: Obligations to verify that %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
             return(1);
         } else {
 //----Accept either, but if only one, then it's incomplete
@@ -829,8 +832,7 @@ ESAFileBaseName,4,"(Inverted ecs)");
             return(0);
         }
     } else {
-        QPRINTF(OptionValues,1)(
-"WARNING: Cannot cope with SZS status %s\n",SZSStatus);
+        QPRINTF(OptionValues,1)("WARNING: Cannot cope with SZS status %s\n",SZSStatus);
         return(0);
     }
 }
@@ -1967,7 +1969,7 @@ int UserSemanticsVerification(OptionsType OptionValues,SIGNATURE Signature,LISTN
         Satisfiable = GDVCheckSatisfiable(OptionValues,LeafAxioms,"leaf_axioms","sat");
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
-"CREATED: Obligation to show axiom(_like) leaves are satisfiable\n");
+"CREATED: Obligation to verify that the axiom(_like) leaves are satisfiable\n");
         } else {
             if (Satisfiable) {
                 QPRINTF(OptionValues,2)("SUCCESS: Leaf axiom(_like) formulae are satisfiable\n");
@@ -2598,10 +2600,6 @@ LISTNODE * PositiveHead,LISTNODE * NegativeHead,LISTNODE * NeitherHead) {
 int LeafVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
 
     LISTNODE ProblemHead;
-    LISTNODE SatisfiableHead;
-    LISTNODE PositiveHead;
-    LISTNODE NegativeHead;
-    LISTNODE NeitherHead;
     LISTNODE Target;
     LISTNODE Types;
     LISTNODE * TypesNext;
@@ -2609,14 +2607,12 @@ int LeafVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature)
     String FileBaseName;
     TERM SourceTerm;
     char * IntroducedType;
-    LISTNODE ProblemTarget;
-    String ProblemTargetName;
+    LISTNODE ProblemParents;
     int OKSoFar;
     int ThisOneOK;
     char * SymbolDefined;
-    String ConjectureName;
     LISTNODE ConjectureFromProblem;
-    ANNOTATEDFORMULA ProblemFormula;
+    SyntaxType Syntax;
 
 //----Mark all type formulae as checked (although no check is made yet)
     Target = Head;
@@ -2631,6 +2627,7 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
         Target = Target->Next;
     }
 
+//----Check leaves that did not come from the problem
     Target = Head;
     OKSoFar = 1;
     while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
@@ -2638,7 +2635,7 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
 GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
             GetName(Target->AnnotatedFormula,FormulaName);
-//DEBUG printf("Starting leaf named %s\n",FormulaName);
+//DEBUG printf("Starting leaf not from problem named %s\n",FormulaName);
 
 //----Verify introduced leaves by their type.
             if ((SourceTerm = GetSourceTERM(Target->AnnotatedFormula,NULL)) != NULL && 
@@ -2701,50 +2698,51 @@ NULL)) == NULL) {
 "ERROR: Could not parse problem file %s\n",OptionValues.ProblemFileName);
         QPRINTF(OptionValues,2)("FAILURE: Leaf nodes unverified\n");
         return(0);
-//----Now we have all symbols from the derivation (including, e.g., Skolems) and the problem
-//----(including, e.g., from unused axioms).
-    } else if (OptionValues.GenerateLambdaPiFiles) {
-        OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
     }
 
     if (OptionValues.Quietness == 0) {
         printf("Problem file contents:\n");
         PrintListOfAnnotatedTSTPNodes(stdout,Signature,ProblemHead,tptp,1);
     }
+//----Get the syntax before FOFify, which kills tptp_cnf (and I need to know whether to select
+//----conjectures or negated_conjectures below)
+    Syntax = GetListSyntax(ProblemHead);
 //----Convert CNF problem into FOF for semantic checking
     FOFifyList(ProblemHead,universal);
     if (OptionValues.Quietness == 0) {
         printf("Problem file contents as FOF:\n");
         PrintListOfAnnotatedTSTPNodes(stdout,Signature,ProblemHead,tptp,1);
     }
+//----Extract the conjecture if there is one
+    if (Syntax == tptp_cnf) {
+        ConjectureFromProblem = SelectListOfAnnotatedFormulaeWithRole(&ProblemHead,
+negated_conjecture,1,Signature);
+    } else {
+        ConjectureFromProblem = SelectListOfAnnotatedFormulaeWithRole(&ProblemHead,
+conjecture,1,Signature);
+    }
+
 //----Get a list of all the type formulae
     Types = GetListOfAnnotatedFormulaeWithRole(ProblemHead,type,Signature);
     TypesNext = &Types;
     while (*TypesNext != NULL) {
         TypesNext = &((*TypesNext)->Next);
     }
-//----Extract the conjecture if there is one
-    ConjectureFromProblem = SelectListOfAnnotatedFormulaeWithRole(&ProblemHead,conjecture,1,
-Signature);
 
-//----Check if the entire input (sans conjecture) is satisfiable
+//----Check if the entire input (sans conjecture) is satisfiable. Has to be done here because
+//----this is the only place that the problem gets read in, and must be done after selecting
+//----out the (negated_)conjecture formulae.
     if (GDVCheckSatisfiable(OptionValues,ProblemHead,"problem_axioms","sat") == 1) {
         if (OptionValues.TimeLimit == 0) {
             QPRINTF(OptionValues,2)(
-"CREATED: Obligation to show problem axiom(_like) formulae are satisfiable\n");
+"CREATED: Obligation to show that the problem's axiom(_like) formulae are satisfiable\n");
         } else {
             QPRINTF(OptionValues,2)(
-"SUCCESS: Input problem (without conjecture) is satisfiable\n");
+"SUCCESS: Input problem (without [negated_]conjecture) is satisfiable\n");
         }
-        SatisfiableHead = ProblemHead;
-        PositiveHead = NULL;
-        NegativeHead = NULL;
-        NeitherHead = NULL;
     } else {
-        SatisfiableHead = NULL;
-//----Split problem into satisfiable lists
-        SplitIntoSatisfiableLists(OptionValues,ProblemHead,Signature,&PositiveHead,&NegativeHead,
-&NeitherHead);
+        QPRINTF(OptionValues,2)(
+"WARNING: Input problem (without [negated_]conjecture) not shown to be satisfiable\n");
     }
 
 //----For each derivation leaf node, check if the same as a problem node, or
@@ -2766,161 +2764,68 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
                 QPRINTF(OptionValues,1)(
 "WARNING: GDV leaf %s was created by GDV, and not verified\n",FormulaName);
                 ThisOneOK = 1;
-
-//----Verify conjecture separately, in reverse
-            } else if (GetRole(Target->AnnotatedFormula,NULL) == conjecture) {
-                if (ConjectureFromProblem != NULL) {
-                    GetName(ConjectureFromProblem->AnnotatedFormula,ConjectureName);
-//----Copy of conjecture
-                    if (!OptionValues.GenerateObligations && SameFormulaInAnnotatedFormulae(
-Target->AnnotatedFormula,ConjectureFromProblem->AnnotatedFormula,1,1)) {
-                        QPRINTF(OptionValues,2)(
-"SUCCESS: Conjecture leaf %s is a copy of %s (from the problem)\n",FormulaName,ConjectureName);
-                        ThisOneOK = 1;
-//----Can infer conjecture
-                    } else {
-                        if (!OptionValues.GenerateObligations) {
-                            QPRINTF(OptionValues,2)(
-"WARNING: Conjecture leaf %s is not a copy of %s (from the problem)\n",FormulaName,ConjectureName);
-                        }
-                        AddListNode(TypesNext,NULL,Target->AnnotatedFormula);
-                        CleanTheFileName(FormulaName,FileBaseName);
-                        strcat(FileBaseName,"_leaf");
-//                        strcat(FileBaseName,ConjectureName);
-//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
-//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-                        if (CorrectlyInferred(OptionValues,Signature,
-ConjectureFromProblem->AnnotatedFormula,ConjectureName,Types,FormulaName,"thm",FileBaseName,-1,
-"")) {
-                            ThisOneOK = 1;
-                        }
-                        FreeAListNode(TypesNext,Signature);
-                    }
-                } else {
-                    QPRINTF(OptionValues,2)("FAILURE: No problem conjecture for %s\n",FormulaName);
-                }
-
-//----Regular axiom leaves
             } else {
-//----Look for an original that has been copied
-                ProblemTarget = ProblemHead;
-                while (!OptionValues.GenerateObligations && !ThisOneOK && ProblemTarget != NULL) {
+//----Look for an original that has been copied, either conjecture or other
+                if (GetRole(Target->AnnotatedFormula,NULL) == conjecture ||
+GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
+                    ProblemParents = ConjectureFromProblem;
+                } else {
+                    ProblemParents = ProblemHead;
+                }
+                while (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles &&
+!ThisOneOK && ProblemParents != NULL) {
                     if (SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,
-ProblemTarget->AnnotatedFormula,1,1)) {
+ProblemParents->AnnotatedFormula,1,1)) {
                         QPRINTF(OptionValues,2)(
-"SUCCESS: Non-conjecture leaf %s is a copy of %s (from the problem)\n",FormulaName,
-GetName(ProblemTarget->AnnotatedFormula,ProblemTargetName));
+"SUCCESS: Leaf %s is a copy of %s (from the problem)\n",FormulaName,
+GetName(ProblemParents->AnnotatedFormula,NULL));
                         ThisOneOK = 1;
                     } 
-                    ProblemTarget = ProblemTarget->Next;
+                    ProblemParents = ProblemParents->Next;
                 }
                 if (!ThisOneOK) {
-                    if (!OptionValues.GenerateObligations) {
+                    if (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles) {
                         QPRINTF(OptionValues,2)(
-"WARNING: Non-conjecture leaf %s is not a copy of any problem formula\n",FormulaName);
+"WARNING: Leaf %s is not a copy of any problem formula\n",FormulaName);
                     }
-                }
 
 //----If not a copy, try some inferencing
 //----HEY WHY DID I TURN THIS OFF?
-                OptionValues.CheckParentRelevance = 0;
-//----Try find a formula in the problem with the same name
-                if (!ThisOneOK && (ProblemFormula = 
-GetAnnotatedFormulaFromListByName(ProblemHead,FormulaName)) != NULL) {
-                    AddListNode(TypesNext,NULL,ProblemFormula);
-                    CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_leaf");
-//                    strcat(FileBaseName,FormulaName);
+                    OptionValues.CheckParentRelevance = 0;
+                    if (GetRole(Target->AnnotatedFormula,NULL) == conjecture ||
+GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
+                        ProblemParents = ConjectureFromProblem;
+                    } else {
+                        ProblemParents = ProblemHead;
+                    }
 //----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
 //----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-//----If just generating obligations CorrectlyInferred will succeed and report obligations has
-//----been generated.
+                    *TypesNext = ProblemParents;
+                    CleanTheFileName(FormulaName,FileBaseName);
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
-FormulaName,Types,FormulaName,"thm",FileBaseName,-1,"(from the problem)")) {
+FormulaName,Types,"the problem","thm",FileBaseName,-1,"")) {
+                        if (OptionValues.GenerateObligations) {
+                            QPRINTF(OptionValues,2)(
+"CREATED: Obligation to verify that leaf %s is a thm of the problem formulae\n",FormulaName);
+                        }
                         ThisOneOK = 1;
                     } else {
                         QPRINTF(OptionValues,2)(
-"WARNING: Non-conjecture leaf %s is not thm of the same named problem formula\n",FormulaName);
-                    }
-                    FreeAListNode(TypesNext,Signature);
-                }
-//----Use subsets of problem, prepended by types
-                if (!ThisOneOK && SatisfiableHead != NULL) {
-                    *TypesNext = SatisfiableHead;
-                    CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_from_problem");
-//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
-//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-                    if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
-FormulaName,Types,"the problem axioms","thm",FileBaseName,-1,"")) {
-                        QPRINTF(OptionValues,2)(
-"SUCCESS: Non-conjecture leaf %s is a thm of all the input formulae\n",FormulaName);
-                        ThisOneOK = 1;
+"FAILURE: Leaf %s cannot be shown to be a thm of the problem formulae\n",FormulaName);
                     }
                     *TypesNext = NULL;
-                }
-                if (!ThisOneOK && PositiveHead != NULL) {
-                    *TypesNext = PositiveHead;
-                    CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_from_positive");
-//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
-//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-                    if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
-FormulaName,Types,"the positive axioms","thm",FileBaseName,-1,"")) {
-                        QPRINTF(OptionValues,2)(
-"SUCCESS: Non-conjecture leaf %s is a thm of the positive input formulae\n",FormulaName);
-                        ThisOneOK = 1;
-                    }
-                    *TypesNext = NULL;
-                }
-                if (!ThisOneOK && NegativeHead != NULL) {
-                    *TypesNext = NegativeHead;
-                    CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_from_negative");
-//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
-//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-                    if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
-FormulaName,Types,"the negative axioms","thm",FileBaseName,-1,"")) {
-                        QPRINTF(OptionValues,2)(
-"SUCCESS: Non-conjecture leaf %s is a thm of the negative input formulae\n",FormulaName);
-                        ThisOneOK = 1;
-                    }
-                    *TypesNext = NULL;
-                }
-                if (!ThisOneOK && NeitherHead != NULL) {
-                    *TypesNext = NeitherHead;
-                    CleanTheFileName(FormulaName,FileBaseName);
-                    strcat(FileBaseName,"_from_neither");
-//----Check if ConjectureFromProblem->AnnotatedFormula is a theorem of Types (which has the
-//----Target->AnnotatedFormula tagged on the end - sneaky hey?)
-                    if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
-FormulaName,Types,"the other axioms","thm",FileBaseName,-1,"")) {
-                        QPRINTF(OptionValues,2)(
-"SUCCESS: Non-conjecture leaf %s is a thm of the neither input formulae\n",FormulaName);
-                        ThisOneOK = 1;
-                    }
-                    *TypesNext = NULL;
-                }
-                if (!ThisOneOK) {
-                    QPRINTF(OptionValues,2)(
-"FAILURE: Non-conjecture leaf %s cannot be shown to be a thm of the input formulae\n",FormulaName);
-                }
-            } 
-            if (ThisOneOK) {
-                AddVerifiedTag(Target->AnnotatedFormula,Signature,"leaf");
-            } 
-            OKSoFar *= ThisOneOK;
-        } else {
-//DEBUG printf("%s is not a leaf node\n",GetName(Target->AnnotatedFormula,NULL));
+                } 
+                if (ThisOneOK) {
+                    AddVerifiedTag(Target->AnnotatedFormula,Signature,"leaf");
+                } 
+                OKSoFar *= ThisOneOK;
+            }
         }
         Target = Target->Next;
     }
 
 //----Free the satisfiable lists and the problem list
     FreeListOfAnnotatedFormulae(&Types,Signature);
-    FreeListOfAnnotatedFormulae(&PositiveHead,Signature);
-    FreeListOfAnnotatedFormulae(&NegativeHead,Signature);
-    FreeListOfAnnotatedFormulae(&NeitherHead,Signature);
     FreeListOfAnnotatedFormulae(&ProblemHead,Signature);
     FreeListOfAnnotatedFormulae(&ConjectureFromProblem,Signature);
 
@@ -3038,14 +2943,17 @@ Signature);
 //----Copied formula. Look at only the first (which ignores the type formulae
 //----added for THF)
             if (!strcmp(InferenceRule,"")) {
-                if (!OptionValues.GenerateObligations && SameFormulaInAnnotatedFormulae(
-Target->AnnotatedFormula,ParentAnnotatedFormulae->AnnotatedFormula,1,1)) {
+                if (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles &&
+SameFormulaInAnnotatedFormulae(Target->AnnotatedFormula,ParentAnnotatedFormulae->AnnotatedFormula,
+1,1)) {
                     QPRINTF(OptionValues,2)(
 "SUCCESS: %s is a copy of %s\n",FormulaName,ParentNames[0]);
                     AddVerifiedTag(Target->AnnotatedFormula,Signature,"thm");
                 } else {
-                    QPRINTF(OptionValues,2)(
+                    if (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles) {
+                        QPRINTF(OptionValues,2)(
 "WARNING: %s is not a copy of %s, try as thm\n",FormulaName,ParentNames[0]);
+                    }
                     strcpy(SZSStatus,"thm");
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
@@ -3279,6 +3187,11 @@ OptionValues.GenerateLambdaPiFiles) {
 OptionValues.VerifyLeaves) {
         QPRINTF(OptionValues,0)("Start leaf verification\n");
         OKSoFar *= LeafVerification(OptionValues,Head,Signature);
+    }
+//----Now we have all symbols from the derivation (including, e.g., Skolems) and the problem
+//----(including, e.g., from unused axioms).
+    if (OptionValues.GenerateLambdaPiFiles) {
+        OKSoFar *= WriteLPSignatureFile(OptionValues,Signature);
     }
 
 //----User semantic parts, e.g., axiom-like formulae are satisfiable
