@@ -550,7 +550,7 @@ char * Extension) {
         case tptp_cnf:
             Syntax = tptp_fof;
         case tptp_fof:
-            if (!OptionValues.GenerateObligations &&
+            if (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles &&
 ListOfAnnotatedFormulaTrueInInterpretation(Formulae,positive)) {
                 if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
@@ -566,7 +566,7 @@ OutputFileName,NULL,OutputFileName);
                     }
                 }
                 return(1);
-            } else if (!OptionValues.GenerateObligations &&
+            } else if (!OptionValues.GenerateObligations && !OptionValues.GenerateLambdaPiFiles &&
 ListOfAnnotatedFormulaTrueInInterpretation(Formulae,negative)) {
                 if (OptionValues.KeepFiles && OptionValues.TimeLimit != 0) {
                     strcpy(OutputFileName,FileBaseName);
