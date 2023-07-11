@@ -8,6 +8,5 @@ GDV -f -t 60 -p ZenonModuloLP---0.4.2 -K TestsForLambdaPi/GEO173+2 -l -i TestsFo
 Command to understand the flags
 GDV -h
 
-Note that the -K flag requires a path starting above the example directory, 
-e.g., here the example directory is GEO173+2, and you to start from your 
-LampdaPi project directory, e.g., here I use TestsForLambdaPi.
+Note that the -K flag requires a path starting from your LambdaPi directory somwhere above the 
+example directory, e.g., here the example directory is GEO173+2, and I start from TestsForLambdaPi.

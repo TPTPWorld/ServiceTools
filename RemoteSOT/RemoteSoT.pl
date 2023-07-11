@@ -7,8 +7,8 @@ use LWP;
 use File::Temp qw/ mkstemp /;
 $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
 #------------------------------------------------------------------------------
-my $SystemOnTPTPFormReplyURL = "https://www.tptp.org/cgi-bin/SystemOnTPTPFormReply";
-# $SystemOnTPTPFormReplyURL = "https://tptp.cs.miami.edu/cgi-bin/SystemOnTPTPFormReply";
+# my $SystemOnTPTPFormReplyURL = "https://www.tptp.org/cgi-bin/SystemOnTPTPFormReply";
+my $SystemOnTPTPFormReplyURL = "https://tptp.cs.miami.edu/cgi-bin/SystemOnTPTPFormReply";
 
 # my $ProxyAndPort = "http://proxy.math.uni-bonn.de:3128";
 my $ProxyAndPort = "";
