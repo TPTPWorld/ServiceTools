@@ -1,3 +1,4 @@
 **/**.o
+IDVDir/node_modules
 TPTP4XDir/Test4X/TestOutput
 .DS_Store
