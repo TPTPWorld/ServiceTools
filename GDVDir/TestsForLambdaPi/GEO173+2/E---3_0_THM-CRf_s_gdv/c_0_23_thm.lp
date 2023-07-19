@@ -1,57 +1,53 @@
-require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
-require open Logic.Zenon.zen;
-symbol delta : ϵ ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
-∨
-(apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
-) 
- ≔ 
- nnpp ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
-∨
-(apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
-)
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
+require LAMBDAPI_CONTEXT.Signature as S;
 
-(λ (v_Vm : ϵ (¬
- ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+rule S.c_0_23 ↪ 
+  nnpp ((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-(apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
+(S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+)
+    (λ (v_Vm : ϵ (¬
+ ((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+∨
+(S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ))),
  Rnotor
- (apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
- (apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
  (λ (v_Vn : ϵ (¬
- (apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0))))),
+ (S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0))))),
  λ (v_Vo : ϵ (¬
- (apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0))))),
+ (S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0))))),
  Rall
  (ι)
  (λ (v_Vp : τ (ι)),
  ∀α (λ (v_Vq : τ (ι)),
- (apart_point_and_line (v_Vq) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (v_Vq) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (v_Vp) (line_connecting (esk1_0) (esk2_0)))
+((S.apart_point_and_line (v_Vp) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (v_Vq) (esk3_0))
+((S.apart_point_and_line (v_Vq) (S.esk3_0))
 ∨
-((apart_point_and_line (v_Vp) (esk3_0))
+((S.apart_point_and_line (v_Vp) (S.esk3_0))
 ∨
 (¬
- (distinct_points (v_Vq) (v_Vp)))
+ (S.distinct_points (v_Vq) (v_Vp)))
 )
 )
 )
 ))
- (esk1_0)
+ (S.esk1_0)
  (λ (v_Vr : ϵ (∀α (λ (v_Vq : τ (ι)),
- (apart_point_and_line (v_Vq) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (v_Vq) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (v_Vq) (esk3_0))
+((S.apart_point_and_line (v_Vq) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (v_Vq) (esk1_0)))
+ (S.distinct_points (v_Vq) (S.esk1_0)))
 )
 )
 )
@@ -59,122 +55,122 @@ symbol delta : ϵ ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk
  Rall
  (ι)
  (λ (v_Vq : τ (ι)),
- (apart_point_and_line (v_Vq) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (v_Vq) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (v_Vq) (esk3_0))
+((S.apart_point_and_line (v_Vq) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
-∨
-(¬
- (distinct_points (v_Vq) (esk1_0)))
-)
-)
-)
-)
- (esk2_0)
- (λ (v_Vs : ϵ ((apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
-∨
-((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
-∨
-((apart_point_and_line (esk2_0) (esk3_0))
-∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (v_Vq) (S.esk1_0)))
+)
+)
+)
+)
+ (S.esk2_0)
+ (λ (v_Vs : ϵ ((S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+∨
+((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+∨
+((S.apart_point_and_line (S.esk2_0) (S.esk3_0))
+∨
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
+∨
+(¬
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
 )
 )
 )),
  Ror
- (apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
- ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+ ((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (esk2_0) (esk3_0))
+((S.apart_point_and_line (S.esk2_0) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
 )
 )
- (λ (v_Vt : ϵ (apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))),
+ (λ (v_Vt : ϵ (S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))),
  Raxiom
- (apart_point_and_line (esk2_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
  (v_Vt)
  (v_Vo)
 )
- (λ (v_Vu : ϵ ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+ (λ (v_Vu : ϵ ((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∨
-((apart_point_and_line (esk2_0) (esk3_0))
+((S.apart_point_and_line (S.esk2_0) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
 )
 )),
  Ror
- (apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
- ((apart_point_and_line (esk2_0) (esk3_0))
+ (S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+ ((S.apart_point_and_line (S.esk2_0) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
 )
- (λ (v_Vv : ϵ (apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))),
+ (λ (v_Vv : ϵ (S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))),
  Raxiom
- (apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
  (v_Vv)
  (v_Vn)
 )
- (λ (v_Vw : ϵ ((apart_point_and_line (esk2_0) (esk3_0))
+ (λ (v_Vw : ϵ ((S.apart_point_and_line (S.esk2_0) (S.esk3_0))
 ∨
-((apart_point_and_line (esk1_0) (esk3_0))
+((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
 )),
  Ror
- (apart_point_and_line (esk2_0) (esk3_0))
- ((apart_point_and_line (esk1_0) (esk3_0))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0))
+ ((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )
- (λ (v_Vx : ϵ (apart_point_and_line (esk2_0) (esk3_0))),
+ (λ (v_Vx : ϵ (S.apart_point_and_line (S.esk2_0) (S.esk3_0))),
  Raxiom
- (apart_point_and_line (esk2_0) (esk3_0))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0))
  (v_Vx)
- (ax_c_0_20)
+ (S.c_0_20)
 )
- (λ (v_Vy : ϵ ((apart_point_and_line (esk1_0) (esk3_0))
+ (λ (v_Vy : ϵ ((S.apart_point_and_line (S.esk1_0) (S.esk3_0))
 ∨
 (¬
- (distinct_points (esk2_0) (esk1_0)))
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
 )),
  Ror
- (apart_point_and_line (esk1_0) (esk3_0))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0))
  (¬
- (distinct_points (esk2_0) (esk1_0)))
- (λ (v_Vz : ϵ (apart_point_and_line (esk1_0) (esk3_0))),
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))
+ (λ (v_Vz : ϵ (S.apart_point_and_line (S.esk1_0) (S.esk3_0))),
  Raxiom
- (apart_point_and_line (esk1_0) (esk3_0))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0))
  (v_Vz)
- (ax_c_0_21)
+ (S.c_0_21)
 )
  (λ (v_Vaa : ϵ (¬
- (distinct_points (esk2_0) (esk1_0)))),
+ (S.distinct_points (S.esk2_0) (S.esk1_0)))),
  Raxiom
- (distinct_points (esk2_0) (esk1_0))
- (ax_c_0_19)
+ (S.distinct_points (S.esk2_0) (S.esk1_0))
+ (S.c_0_19)
  (v_Vaa)
 )
  (v_Vy)
@@ -187,7 +183,7 @@ symbol delta : ϵ ((apart_point_and_line (esk1_0) (line_connecting (esk1_0) (esk
 )
  (v_Vr)
 )
- (ax_c_0_18)
+ (S.c_0_18)
 )
  (v_Vm)
 );

@@ -118,8 +118,7 @@ char * NumberNamesFormat,int * NumberNamesIndex) {
     if ((Name = GetName(AnnotatedFormula,NULL)) != NULL) {
         if (NameInList(Name,*NamesBuffer)) {
             if (FixDuplicateNames) {
-                AddNameIndex(AnnotatedFormula,*NumberNamesIndex,
-NumberNamesFormat);
+                AddNameIndex(AnnotatedFormula,*NumberNamesIndex,NumberNamesFormat);
                 (*NumberNamesIndex)++;
             } else {
                 printf("ERROR: Duplicate annotated formula name \"%s\"\n",

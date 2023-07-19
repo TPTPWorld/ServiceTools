@@ -1,6 +1,6 @@
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 #define MAX_PARENTS 64
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 typedef struct {
 //----Options for processing
     int Quietness;
@@ -21,7 +21,6 @@ typedef struct {
     int GenerateDefinitions; //----Something special for E's psuedo splitting
     int GenerateLambdaPiFiles; //----To product LambdaPi signature and proof structure
     String LambdaPiDirectory;  //----The project directory for LambdaPi stuff
-    FILE * LambdaPiProofHandle;  //----To carry around the file handle if generating proof header
     int DerivationExtract;   //----Not a full derivation, so parents can be missing
     int CheckOppositeResult; //----If cannot show something, try opposite (THM-CTH,SAT-UNS)
     int CheckParentRelevance;
@@ -43,10 +42,12 @@ typedef struct {
 } OptionsType;
 
 typedef ANNOTATEDFORMULA ANNOTATEDFORMULAArray[MAX_PARENTS];
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+LISTNODE GetListOfLeaves(OptionsType OptionValues,LISTNODE Head);
+//-------------------------------------------------------------------------------------------------
 #define QPRINTF(Q,P) if ((P) >= (Q.Quietness)) printf
 #define QDO(Q,P,D) if ((P) >= (Q.Quietness)) D
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 #define OTTER "Otter---"
 #define PARADOX "Paradox---"
 #define SPASS "SPASS---"
@@ -72,6 +73,6 @@ typedef ANNOTATEDFORMULA ANNOTATEDFORMULAArray[MAX_PARENTS];
 #define DEFAULT_TIME_LIMIT 30
 
 #define DEFAULT_KEEP_FILES_DIRECTORY "/tmp"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int GlobalInterrupted;
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------

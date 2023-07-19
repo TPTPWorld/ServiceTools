@@ -1,10 +1,10 @@
-ZenonModuloLP---0.4.2   system information being retrieved
-ZenonModuloLP---0.4.2's non-default parameters being retrieved
-ZenonModuloLP---0.4.2   being checked for execution
-ZenonModuloLP---0.4.2   checking time limit 60
-ZenonModuloLP---0.4.2   checking problem name TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p
+ZenonModulo---0.4.2   system information being retrieved
+ZenonModulo---0.4.2's non-default parameters being retrieved
+ZenonModulo---0.4.2   being checked for execution
+ZenonModulo---0.4.2   checking time limit 60
+ZenonModulo---0.4.2   checking problem name TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p
 
-ZenonModuloLP---0.4.2's TPTP format TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p is ...
+ZenonModulo---0.4.2's TPTP format TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p is ...
 fof(apart1,axiom,
     ! [X1] : ~ distinct_points(X1,X1),
     file('/export/starexec/sandbox/benchmark/Axioms/GEO008+0.ax',apart1),
@@ -13,9 +13,9 @@ fof(c_0_6,conjecture,
     ! [X1] : ~ distinct_points(X1,X1),
     inference(fof_simplification,[status(thm)],[apart1]) ).
 
-ZenonModuloLP---0.4.2's c_0_6_thm does not need preparation
-ZenonModuloLP---0.4.2   will use TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p
-ZenonModuloLP---0.4.2's own format source file is ...
+ZenonModulo---0.4.2's c_0_6_thm does not need preparation
+ZenonModulo---0.4.2   will use TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p
+ZenonModulo---0.4.2's own format source file is ...
 fof(apart1,axiom,
     ! [X1] : ~ distinct_points(X1,X1),
     file('/export/starexec/sandbox/benchmark/Axioms/GEO008+0.ax',apart1),
@@ -24,37 +24,38 @@ fof(c_0_6,conjecture,
     ! [X1] : ~ distinct_points(X1,X1),
     inference(fof_simplification,[status(thm)],[apart1]) ).
 
-ZenonModuloLP---0.4.2   is forced to process that problem/solution
-ZenonModuloLP---0.4.2   being executed on c_0_6_thm using /exp/home/tptp/Systems/ZenonModuloLP---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p'
+ZenonModulo---0.4.2   is forced to process that problem/solution
+ZenonModulo---0.4.2   being executed on c_0_6_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_6_thm.p'
 % START OF SYSTEM OUTPUT
-(* PROOF-FOUND *)
-% SZS status Theorem
-% SZS start Proof
-require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
-require open Logic.Zenon.zen;
-symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
- ¬
- (distinct_points (v_Vm) (v_Vm)))) 
- ≔ 
- nnpp (∀α (λ (v_Vm : τ (ι)),
- ¬
- (distinct_points (v_Vm) (v_Vm))))
+nodes searched: 3
+max branch formulas: 3
+proof nodes created: 3
+formulas created: 129
 
-(λ (v_Vn : ϵ (¬
+% SZS status Theorem
+% SZS output start Proof
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
+require LAMBDAPI_CONTEXT.Signature as S;
+
+rule S.c_0_6 ↪ 
+  nnpp (∀α (λ (v_Vm : τ (ι)),
+ ¬
+ (S.distinct_points (v_Vm) (v_Vm))))
+    (λ (v_Vn : ϵ (¬
  (∀α (λ (v_Vm : τ (ι)),
  ¬
- (distinct_points (v_Vm) (v_Vm)))))),
+ (S.distinct_points (v_Vm) (v_Vm)))))),
  Rnotall
  (ι)
  (λ (v_Vm : τ (ι)),
  ¬
- (distinct_points (v_Vm) (v_Vm)))
+ (S.distinct_points (v_Vm) (v_Vm)))
  (λ (v_Vo : τ (ι)),
  λ (v_Vp : ϵ (¬
  (¬
- (distinct_points (v_Vo) (v_Vo))))),
+ (S.distinct_points (v_Vo) (v_Vo))))),
  Rnotnot
- (distinct_points (v_Vo) (v_Vo))
+ (S.distinct_points (v_Vo) (v_Vo))
  (λ (v_Vq : ϵ (⊥)),
  Rfalse
  (v_Vq))
@@ -62,14 +63,10 @@ symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
 )
  (v_Vn)
 );
-% SZS end Proof
-nodes searched: 3
-max branch formulas: 3
-proof nodes created: 3
-formulas created: 129
+% SZS output end Proof
 
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_6_thm - ZenonModuloLP---0.4.2 says Theorem - CPU = 0.04 WC = 0.09 
-OUTPUT: c_0_6_thm - ZenonModuloLP---0.4.2 says Assurance - CPU = 0.04 WC = 0.09 
+RESULT: c_0_6_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.11  NodesSearch = 3 MaxBranchF = 3 ProofNodes = 3 Formulas = 129
+OUTPUT: c_0_6_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.11 

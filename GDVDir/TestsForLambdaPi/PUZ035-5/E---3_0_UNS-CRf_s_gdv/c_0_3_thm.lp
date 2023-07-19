@@ -1,29 +1,24 @@
-require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
-require open Logic.Zenon.zen;
-symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
- (truth (isa (v_Vm) (knight)))
-∨
-(truth (isa (v_Vm) (knave)))
-)) 
- ≔ 
- nnpp (∀α (λ (v_Vm : τ (ι)),
- (truth (isa (v_Vm) (knight)))
-∨
-(truth (isa (v_Vm) (knave)))
-))
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
+require PUZ035-5.E---3_0_UNS-CRf_s_gdv.Signature as S;
 
-(λ (v_Vn : ϵ (¬
- (∀α (λ (v_Vm : τ (ι)),
- (truth (isa (v_Vm) (knight)))
+rule S.c_0_3 ↪ 
+  nnpp (∀α (λ (v_Vm : τ (ι)),
+ (S.truth (S.isa (v_Vm) (S.knight)))
 ∨
-(truth (isa (v_Vm) (knave)))
+(S.truth (S.isa (v_Vm) (S.knave)))
+))
+    (λ (v_Vn : ϵ (¬
+ (∀α (λ (v_Vm : τ (ι)),
+ (S.truth (S.isa (v_Vm) (S.knight)))
+∨
+(S.truth (S.isa (v_Vm) (S.knave)))
 )))),
  Raxiom
  (∀α (λ (v_Vm : τ (ι)),
- (truth (isa (v_Vm) (knight)))
+ (S.truth (S.isa (v_Vm) (S.knight)))
 ∨
-(truth (isa (v_Vm) (knave)))
+(S.truth (S.isa (v_Vm) (S.knave)))
 ))
- (ax_everyone_a_knight_or_knave)
+ (S.everyone_a_knight_or_knave)
  (v_Vn)
 );

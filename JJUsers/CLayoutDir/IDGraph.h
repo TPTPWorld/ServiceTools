@@ -31,15 +31,15 @@ using namespace std;
 
 class IDGraph {
 private:
-  static const double DIST_THRESHOLD = 1e-6;
-  static const int maxIterations  = 10;
-  static const double kRepulsiveForce = 11;  // Strength of node repulsions
-  static const double kSpringConstant = 1;       // Main Spring Constant
-  static const double lSpringLength   = 1;   // (Desired) Length of Spring
-  static const double dFactor         = .005;   // Displacement factor (adjustable);
-  static const double kAngleConstantB = 1;   // angle ^ B for gravity force
-  static const double kAngleConstantA = 1.3;   // distance ^ A for gravity force
-  static const double maxMovement     = 100; // max movement at each iteration
+  static constexpr double DIST_THRESHOLD = 1e-6;
+  static constexpr int maxIterations  = 10;
+  static constexpr double kRepulsiveForce = 11;  // Strength of node repulsions
+  static constexpr double kSpringConstant = 1;       // Main Spring Constant
+  static constexpr double lSpringLength   = 1;   // (Desired) Length of Spring
+  static constexpr double dFactor         = .005;   // Displacement factor (adjustable);
+  static constexpr double kAngleConstantB = 1;   // angle ^ B for gravity force
+  static constexpr double kAngleConstantA = 1.3;   // distance ^ A for gravity force
+  static constexpr double maxMovement     = 100; // max movement at each iteration
   
   LISTNODE head;
   vector<IDNODE> node;

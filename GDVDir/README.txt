@@ -10,3 +10,9 @@ GDV -h
 
 Note that the -K flag requires a path starting from your LambdaPi directory somwhere above the 
 example directory, e.g., here the example directory is GEO173+2, and I start from TestsForLambdaPi.
+
+To get open going ...
+    eval `opam env`
+
+To test a proof
+    lambdapi check Proof.lp

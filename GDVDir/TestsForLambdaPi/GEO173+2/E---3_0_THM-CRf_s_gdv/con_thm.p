@@ -1,4 +1,4 @@
-fof(con,axiom,
+fof(con_0013,axiom,
     ! [X,Y,U,V] :
       ( ( distinct_points(X,Y)
         & convergent_lines(U,V)

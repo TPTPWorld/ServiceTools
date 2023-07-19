@@ -1,118 +1,115 @@
-require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
-require open Logic.Zenon.zen;
-symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
- ¬
- (truth (isa (other) (v_Vm))))) 
- ≔ 
- nnpp (∀α (λ (v_Vm : τ (ι)),
- ¬
- (truth (isa (other) (v_Vm)))))
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
+require PUZ035-5.E---3_0_UNS-CRf_s_gdv.Signature as S;
 
-(λ (v_Vn : ϵ (¬
+rule S.c_0_4 ↪ 
+  nnpp (∀α (λ (v_Vm : τ (ι)),
+ ¬
+ (S.truth (S.isa (S.other) (v_Vm)))))
+    (λ (v_Vn : ϵ (¬
  (∀α (λ (v_Vm : τ (ι)),
  ¬
- (truth (isa (other) (v_Vm))))))),
+ (S.truth (S.isa (S.other) (v_Vm))))))),
  Rnotall
  (ι)
  (λ (v_Vm : τ (ι)),
  ¬
- (truth (isa (other) (v_Vm))))
+ (S.truth (S.isa (S.other) (v_Vm))))
  (λ (v_Vo : τ (ι)),
  λ (v_Vp : ϵ (¬
  (¬
- (truth (isa (other) (v_Vo)))))),
+ (S.truth (S.isa (S.other) (v_Vo)))))),
  Rnotnot
- (truth (isa (other) (v_Vo)))
- (λ (v_Vq : ϵ (truth (isa (other) (v_Vo)))),
+ (S.truth (S.isa (S.other) (v_Vo)))
+ (λ (v_Vq : ϵ (S.truth (S.isa (S.other) (v_Vo)))),
  Rall
  (ι)
  (λ (v_Vr : τ (ι)),
  ∀α (λ (v_Vm : τ (ι)),
  (¬
- (truth (isa (asked) (v_Vm))))
+ (S.truth (S.isa (S.asked) (v_Vm))))
 ∨
 (¬
- (truth (isa (other) (v_Vr))))
+ (S.truth (S.isa (S.other) (v_Vr))))
 ))
  (v_Vo)
  (λ (v_Vs : ϵ (∀α (λ (v_Vm : τ (ι)),
  (¬
- (truth (isa (asked) (v_Vm))))
+ (S.truth (S.isa (S.asked) (v_Vm))))
 ∨
 (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
 ))),
  Rall
  (ι)
  (λ (v_Vm : τ (ι)),
  (¬
- (truth (isa (asked) (v_Vm))))
+ (S.truth (S.isa (S.asked) (v_Vm))))
 ∨
 (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
 )
- (knave)
+ (S.knave)
  (λ (v_Vt : ϵ ((¬
- (truth (isa (asked) (knave))))
+ (S.truth (S.isa (S.asked) (S.knave))))
 ∨
 (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
 )),
  Ror
  (¬
- (truth (isa (asked) (knave))))
+ (S.truth (S.isa (S.asked) (S.knave))))
  (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
  (λ (v_Vu : ϵ (¬
- (truth (isa (asked) (knave))))),
+ (S.truth (S.isa (S.asked) (S.knave))))),
  Rall
  (ι)
  (λ (v_Vm : τ (ι)),
- (truth (isa (v_Vm) (knight)))
+ (S.truth (S.isa (v_Vm) (S.knight)))
 ∨
-(truth (isa (v_Vm) (knave)))
+(S.truth (S.isa (v_Vm) (S.knave)))
 )
- (asked)
- (λ (v_Vv : ϵ ((truth (isa (asked) (knight)))
+ (S.asked)
+ (λ (v_Vv : ϵ ((S.truth (S.isa (S.asked) (S.knight)))
 ∨
-(truth (isa (asked) (knave)))
+(S.truth (S.isa (S.asked) (S.knave)))
 )),
  Ror
- (truth (isa (asked) (knight)))
- (truth (isa (asked) (knave)))
- (λ (v_Vw : ϵ (truth (isa (asked) (knight)))),
+ (S.truth (S.isa (S.asked) (S.knight)))
+ (S.truth (S.isa (S.asked) (S.knave)))
+ (λ (v_Vw : ϵ (S.truth (S.isa (S.asked) (S.knight)))),
  Rall
  (ι)
  (λ (v_Vm : τ (ι)),
  (¬
- (truth (isa (asked) (v_Vm))))
+ (S.truth (S.isa (S.asked) (v_Vm))))
 ∨
 (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
 )
- (knight)
+ (S.knight)
  (λ (v_Vx : ϵ ((¬
- (truth (isa (asked) (knight))))
+ (S.truth (S.isa (S.asked) (S.knight))))
 ∨
 (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
 )),
  Ror
  (¬
- (truth (isa (asked) (knight))))
+ (S.truth (S.isa (S.asked) (S.knight))))
  (¬
- (truth (isa (other) (v_Vo))))
+ (S.truth (S.isa (S.other) (v_Vo))))
  (λ (v_Vy : ϵ (¬
- (truth (isa (asked) (knight))))),
+ (S.truth (S.isa (S.asked) (S.knight))))),
  Raxiom
- (truth (isa (asked) (knight)))
+ (S.truth (S.isa (S.asked) (S.knight)))
  (v_Vw)
  (v_Vy)
 )
  (λ (v_Vz : ϵ (¬
- (truth (isa (other) (v_Vo))))),
+ (S.truth (S.isa (S.other) (v_Vo))))),
  Raxiom
- (truth (isa (other) (v_Vo)))
+ (S.truth (S.isa (S.other) (v_Vo)))
  (v_Vq)
  (v_Vz)
 )
@@ -120,20 +117,20 @@ symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
 )
  (v_Vs)
 )
- (λ (v_Vaa : ϵ (truth (isa (asked) (knave)))),
+ (λ (v_Vaa : ϵ (S.truth (S.isa (S.asked) (S.knave)))),
  Raxiom
- (truth (isa (asked) (knave)))
+ (S.truth (S.isa (S.asked) (S.knave)))
  (v_Vaa)
  (v_Vu)
 )
  (v_Vv)
 )
- (ax_c_0_3)
+ (S.c_0_3)
 )
  (λ (v_Vz : ϵ (¬
- (truth (isa (other) (v_Vo))))),
+ (S.truth (S.isa (S.other) (v_Vo))))),
  Raxiom
- (truth (isa (other) (v_Vo)))
+ (S.truth (S.isa (S.other) (v_Vo)))
  (v_Vq)
  (v_Vz)
 )
@@ -141,7 +138,7 @@ symbol delta : ϵ (∀α (λ (v_Vm : τ (ι)),
 )
  (v_Vs)
 )
- (ax_c_0_2)
+ (S.c_0_2)
 )
  (v_Vp)
 )

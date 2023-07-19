@@ -1,89 +1,87 @@
-require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND;
-require open Logic.Zenon.zen;
-symbol delta : ϵ (¬
- (apart_point_and_line (esk1_0) (esk3_0))) 
- ≔ 
- nnpp (¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
+require LAMBDAPI_CONTEXT.Signature as S;
 
-(λ (v_Vm : ϵ (¬
+rule S.c_0_21 ↪ 
+  nnpp (¬
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
+    (λ (v_Vm : ϵ (¬
  (¬
- (apart_point_and_line (esk1_0) (esk3_0))))),
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0))))),
  Rand
- (distinct_points (esk1_0) (esk2_0))
- ((convergent_lines (esk3_0) (esk4_0))
+ (S.distinct_points (S.esk1_0) (S.esk2_0))
+ ((S.convergent_lines (S.esk3_0) (S.esk4_0))
 ∧
-((distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))
-∧
-((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
-∧
-(¬
- (apart_point_and_line (esk2_0) (esk3_0)))
-)
-)
-)
- (λ (v_Vn : ϵ (distinct_points (esk1_0) (esk2_0))),
- λ (v_Vo : ϵ ((convergent_lines (esk3_0) (esk4_0))
-∧
-((distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))
+((S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∧
 ((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
 ∧
 (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
+)
+)
+)
+ (λ (v_Vn : ϵ (S.distinct_points (S.esk1_0) (S.esk2_0))),
+ λ (v_Vo : ϵ ((S.convergent_lines (S.esk3_0) (S.esk4_0))
+∧
+((S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
+∧
+((¬
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
+∧
+(¬
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
 )
 )
 )),
  Rand
- (convergent_lines (esk3_0) (esk4_0))
- ((distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.convergent_lines (S.esk3_0) (S.esk4_0))
+ ((S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∧
 ((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
 ∧
 (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
 )
 )
- (λ (v_Vp : ϵ (convergent_lines (esk3_0) (esk4_0))),
- λ (v_Vq : ϵ ((distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))
+ (λ (v_Vp : ϵ (S.convergent_lines (S.esk3_0) (S.esk4_0))),
+ λ (v_Vq : ϵ ((S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
 ∧
 ((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
 ∧
 (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
 )
 )),
  Rand
- (distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))
+ (S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))
  ((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
 ∧
 (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
 )
- (λ (v_Vr : ϵ (distinct_lines (esk3_0) (line_connecting (esk1_0) (esk2_0)))),
+ (λ (v_Vr : ϵ (S.distinct_lines (S.esk3_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))),
  λ (v_Vs : ϵ ((¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
 ∧
 (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
 )),
  Rand
  (¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
  (¬
- (apart_point_and_line (esk2_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))
  (λ (v_Vt : ϵ (¬
- (apart_point_and_line (esk1_0) (esk3_0)))),
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))),
  λ (v_Vu : ϵ (¬
- (apart_point_and_line (esk2_0) (esk3_0)))),
+ (S.apart_point_and_line (S.esk2_0) (S.esk3_0)))),
  Raxiom
  (¬
- (apart_point_and_line (esk1_0) (esk3_0)))
+ (S.apart_point_and_line (S.esk1_0) (S.esk3_0)))
  (v_Vt)
  (v_Vm)
 )
@@ -93,5 +91,5 @@ symbol delta : ϵ (¬
 )
  (v_Vo)
 )
- (ax_c_0_8)
+ (S.c_0_8)
 );

@@ -1,4 +1,4 @@
-fof(query,axiom,
+fof(query_0009_0009,axiom,
     ! [Y,X] :
       ( ~ truth(isa(asked,X))
       | ~ truth(isa(other,Y)) ) ).
