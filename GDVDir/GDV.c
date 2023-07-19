@@ -657,39 +657,9 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
             if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,ParentAnnotatedFormulae,
 Target,FileBaseName,"thm")) == 1) {
                 Correct = 1;
-//                 if (OptionValues.GenerateLambdaPiFiles) {
-//                     fprintf(OptionValues.LambdaPiProofHandle,"require %s.%s_thm as %s_thm ;\n",
-// OptionValues.LambdaPiDirectory,FileBaseName,FileBaseName);
-//                     fprintf(OptionValues.LambdaPiProofHandle,
-// "opaque symbol lemmas_%s ≔ %s_thm.delta",FileBaseName,FileBaseName);
-//                     ParentNode = ParentAnnotatedFormulae;
-//                     while (ParentNode != NULL) {
-//                         if (DerivedAnnotatedFormula(ParentNode->AnnotatedFormula) ||
-// //----Have to also catch leaves that are copies of problem formulae, not inferred in the derivation
-// //----but might be verified thanks to the -l flag.
-// GetUsefulInfoTERM(ParentNode->AnnotatedFormula,"verified",1) != NULL) {
-// //----Need to take off and _leaf added to the name to create the file name
-//                             strcpy(CleanedName,GetName(ParentNode->AnnotatedFormula,NULL));
-// //                            if (!DerivedAnnotatedFormula(ParentNode->AnnotatedFormula)) {
-// //                                strcat(CleanedName,"_leaf");
-// //                            }
-//                             fprintf(OptionValues.LambdaPiProofHandle," lemmas_%s",CleanedName);
-//                         } else {
-//                             fprintf(OptionValues.LambdaPiProofHandle," %s",
-// GetName(ParentNode->AnnotatedFormula,NULL));
-//                         }
-//                         ParentNode = ParentNode->Next;
-//                     }
-//                     fprintf(OptionValues.LambdaPiProofHandle," ;\n");
-//                     fflush(OptionValues.LambdaPiProofHandle);
-//                 }
                 if (OptionValues.GenerateObligations) {
                     QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to verify that %s is a %s",
 FormulaName,SZSStatus);
-//                     if (OptionValues.GenerateLambdaPiFiles && FalseAnnotatedFormula(Target)) {
-//                         fprintf(OptionValues.LambdaPiProofHandle,
-// "\nsymbol Proof : ⊥ ≔ lemmas_%s ;\n",FileBaseName);
-//                     }
                 } else {
                     QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
                 }
@@ -1254,15 +1224,13 @@ LISTNODE Head,SIGNATURE Signature) {
 //DEBUG PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
         if (GetRole(Target->AnnotatedFormula,NULL) == assumption) {
 //DEBUG printf("This parent is an assumption\n");
-            ExtendString(&Assumptions,GetName(Target->AnnotatedFormula,
-NULL),&AssumptionsLength);
+            ExtendString(&Assumptions,GetName(Target->AnnotatedFormula,NULL),&AssumptionsLength);
             ExtendString(&Assumptions,",",&AssumptionsLength);
         } else {
 //DEBUG printf("This parent is not an assumption\n");
-            if ((TargetAssumptionsTerm = GetInferenceInfoTERM(Target->
-AnnotatedFormula,"assumptions")) != NULL) {
-                if ((TargetAssumptions = ExtractAssumptionsList(
-TargetAssumptionsTerm)) != NULL) {
+            if ((TargetAssumptionsTerm = GetInferenceInfoTERM(Target->AnnotatedFormula,
+"assumptions")) != NULL) {
+                if ((TargetAssumptions = ExtractAssumptionsList(TargetAssumptionsTerm)) != NULL) {
 //DEBUG printf("The TargetAssumptions are %s\n",TargetAssumptions);
                     ExtendString(&Assumptions,TargetAssumptions,
 &AssumptionsLength);
@@ -1307,8 +1275,7 @@ LISTNODE Head,SIGNATURE Signature) {
     ParentsAssumptions = GetParentsAssumptions(OptionValues,AnnotatedFormula,Head,Signature);
 //DEBUG printf("All parents' assumptions are ==%s==\n",ParentsAssumptions);
 
-    if ((FormulaAssumptionsTerm = GetInferenceInfoTERM(AnnotatedFormula,
-"assumptions")) != NULL) {
+    if ((FormulaAssumptionsTerm = GetInferenceInfoTERM(AnnotatedFormula,"assumptions")) != NULL) {
         FormulaAssumptions = ExtractAssumptionsList(FormulaAssumptionsTerm);
 //DEBUG printf("FormulaAssumptions are %s\n",FormulaAssumptions);
     } else {
@@ -1325,8 +1292,7 @@ LISTNODE Head,SIGNATURE Signature) {
         DischargedNames = NULL;
         if (FormulaAssumptions != NULL) {
             QPRINTF(OptionValues,1)(
-"WARNING: %s may have extra introduced assumptions\n",
-GetName(AnnotatedFormula,NULL));
+"WARNING: %s may have extra introduced assumptions\n",GetName(AnnotatedFormula,NULL));
         }
         OKSoFar = 1;
     } else {
@@ -1340,8 +1306,7 @@ GetName(AnnotatedFormula,NULL));
             strcat(FindThis,RemoveNames[Index]);
             strcat(FindThis,",");
 //----Remove all instances
-            while ((RemovePosition = strstr(ParentsAssumptions,FindThis)) !=
-NULL) {
+            while ((RemovePosition = strstr(ParentsAssumptions,FindThis)) != NULL) {
                 NextComma = strchr(RemovePosition+1,',');
                 strcpy(RemovePosition,NextComma);
             }
@@ -1355,8 +1320,7 @@ NULL) {
             strcat(FindThis,RemoveNames[Index]);
             strcat(FindThis,",");
 //----Remove all instances
-            while ((RemovePosition = strstr(ParentsAssumptions,FindThis)) !=
-NULL) {
+            while ((RemovePosition = strstr(ParentsAssumptions,FindThis)) != NULL) {
                 NextComma = strchr(RemovePosition+1,',');
                 strcpy(RemovePosition,NextComma);
             }
@@ -1434,8 +1398,8 @@ IsAncestor(Head,Ancestor,Parent,THMNodesOnly)) {
     return(0);
 }
 //-------------------------------------------------------------------------------------------------
-TREENODE DoAnnotatedFormulaInTreeTHM(TREENODE ATree,ANNOTATEDFORMULA
-LookingForThis,int THMNodesOnly) {
+TREENODE DoAnnotatedFormulaInTreeTHM(TREENODE ATree,ANNOTATEDFORMULA LookingForThis,
+int THMNodesOnly) {
 
     int ParentIndex;
     TREENODE AncestorNode;
@@ -1451,11 +1415,9 @@ LookingForThis,int THMNodesOnly) {
                 return(ATree);
             } else {
 //----Look in subtrees subject to THM veto
-                if (!THMNodesOnly || (GetInferenceInfoTerm(ATree->
-AnnotatedFormula,"status",ParentStatus) != NULL && !strcmp(ParentStatus,
-"status(thm)"))) {
-                    for (ParentIndex = 0; ParentIndex < ATree->NumberOfParents;
-ParentIndex++) {
+                if (!THMNodesOnly || (GetInferenceInfoTerm(ATree->AnnotatedFormula,"status",
+ParentStatus) != NULL && !strcmp(ParentStatus,"status(thm)"))) {
+                    for (ParentIndex = 0; ParentIndex < ATree->NumberOfParents; ParentIndex++) {
                         if ((AncestorNode = DoAnnotatedFormulaInTreeTHM(ATree->
 Parents[ParentIndex],LookingForThis,THMNodesOnly)) != NULL) {
                             return(AncestorNode);
@@ -1477,8 +1439,7 @@ LookingForThis,int THMNodesOnly) {
     TREENODE TreeNodeFound;
 
     ResetTreeVisited(ATree);
-    TreeNodeFound = DoAnnotatedFormulaInTreeTHM(ATree,LookingForThis,
-THMNodesOnly);
+    TreeNodeFound = DoAnnotatedFormulaInTreeTHM(ATree,LookingForThis,THMNodesOnly);
     ResetTreeVisited(ATree);
     return(TreeNodeFound);
 }
@@ -1489,8 +1450,8 @@ LookingForThis,int THMNodesOnly) {
     TREENODE TreeNode;
 
     while (RootListHead != NULL) {
-        if ((TreeNode = AnnotatedFormulaInTreeTHM(RootListHead->TheTree,
-LookingForThis,THMNodesOnly)) != NULL) {
+        if ((TreeNode = AnnotatedFormulaInTreeTHM(RootListHead->TheTree,LookingForThis,
+THMNodesOnly)) != NULL) {
             return(TreeNode);
         } else {
             RootListHead = RootListHead->Next;
@@ -1515,8 +1476,7 @@ int UsesFormulae(OptionsType OptionValues,LISTNODE Head,ROOTLIST RootListHead) {
 Status == negated_conjecture) {
                 FoundAConjecture = 1;
             }
-            if (AnnotatedFormulaInTreesTHM(RootListHead,Target->
-AnnotatedFormula,0) == NULL) {
+            if (AnnotatedFormulaInTreesTHM(RootListHead,Target->AnnotatedFormula,0) == NULL) {
                 QPRINTF(OptionValues,2)("WARNING: Leaf %s is not used\n",
 GetName(Target->AnnotatedFormula,NULL));
                 OKSoFar = 0;
@@ -1556,10 +1516,8 @@ SIGNATURE Signature,int * NumberOfProofsByContradiction) {
         AllParentNames = GetNodeParentNames(Target->AnnotatedFormula,NULL);
         NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
         if (NumberOfParents == 2) {
-            FalseParent = GetAnnotatedFormulaFromListByName(Head,
-ParentNames[0]);
-            AncestorParent = GetAnnotatedFormulaFromListByName(Head,
-ParentNames[1]);
+            FalseParent = GetAnnotatedFormulaFromListByName(Head,ParentNames[0]);
+            AncestorParent = GetAnnotatedFormulaFromListByName(Head,ParentNames[1]);
             if (FalseAnnotatedFormula(FalseParent)) {
                 AncestorName = ParentNames[1];
             } else if (FalseAnnotatedFormula(AncestorParent)) {
@@ -1579,10 +1537,9 @@ ParentNames[1]);
                     OKSoFar = 0;
                 } else {
                     (*NumberOfProofsByContradiction)++;
-                    sprintf(ProcessedTag,"proved_by_contradiction(%s)",
-AncestorName);
-                    AddUsefulInformationToAnnotatedFormula(
-Target->AnnotatedFormula,Signature,ProcessedTag);
+                    sprintf(ProcessedTag,"proved_by_contradiction(%s)",AncestorName);
+                    AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
+ProcessedTag);
                 }
             }
         }
@@ -1621,23 +1578,20 @@ ROOTLIST RootListHead,int * NumberOfExplicitSplits) {
     while (OKSoFar && Target != NULL) {
         OccurenceNumber = 1;
 //----Look for explicitly split formulae. A formula may be split multiple times.
-        while (GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_to",
-OccurenceNumber,UsefulInfo) != NULL) {
+        while (GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_to",OccurenceNumber,
+UsefulInfo) != NULL) {
             OccurenceNumber++;
             GetName(Target->AnnotatedFormula,FormulaName);
             (*NumberOfExplicitSplits)++;
             ExtractTermArguments(UsefulInfo);
-            if ((NumberOfSplitChildren = Tokenize(UsefulInfo,
-SplitChildrenNames,",")) < 2) {
+            if ((NumberOfSplitChildren = Tokenize(UsefulInfo,SplitChildrenNames,",")) < 2) {
                 CodingError("Wrong number of split children");
             }
             
-            for (SplitIndex1=0;SplitIndex1<NumberOfSplitChildren-1;
-SplitIndex1++) {
+            for (SplitIndex1=0;SplitIndex1<NumberOfSplitChildren-1;SplitIndex1++) {
                 SplitChild1 = GetAnnotatedFormulaFromListByName(Head,
 SplitChildrenNames[SplitIndex1]);
-                for (SplitIndex2=SplitIndex1+1;
-SplitIndex2<NumberOfSplitChildren;SplitIndex2++) {
+                for (SplitIndex2=SplitIndex1+1; SplitIndex2<NumberOfSplitChildren;SplitIndex2++) {
                     SplitChild2 = GetAnnotatedFormulaFromListByName(Head,
 SplitChildrenNames[SplitIndex2]);
 //----No formula may have both split children as an ancestor. Check all roots.
@@ -1701,8 +1655,8 @@ SIGNATURE Signature) {
 
     FORMULA PossibleDefn;
 
-    PossibleDefn = PossibleAnnotatedDefn->AnnotatedFormulaUnion.
-AnnotatedTSTPFormula.FormulaWithVariables->Formula;
+    PossibleDefn = PossibleAnnotatedDefn->
+AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula;
 
     if (PossibleDefn->Type == binary && 
 PossibleDefn->FormulaUnion.BinaryFormula.Connective == equivalence &&
@@ -1859,16 +1813,15 @@ ANNOTATEDFORMULA AnnotatedFormula,String SplitDefinitionNames) {
 
     strcpy(SplitDefinitionNames,"");
 //----Get the list of split offspring
-    if (GetUsefulInfoTerm(AnnotatedFormula,"psuedo_split_to",1,UsefulInfo) == 
-NULL) {
+    if (GetUsefulInfoTerm(AnnotatedFormula,"psuedo_split_to",1,UsefulInfo) == NULL) {
         CodingError("Missing psuedo_split_to term");
     }
     ExtractTermArguments(UsefulInfo);
     NumberOfSiblings = Tokenize(UsefulInfo,SiblingNames,",");
 //----For each offspring, if it has an esplit defn, get the name
     for (SiblingNumber = 0;SiblingNumber < NumberOfSiblings;SiblingNumber++) {
-        if (GetUsefulInfoTerm(GetAnnotatedFormulaFromListByName(Head,
-SiblingNames[SiblingNumber]),"esplit_defn",1,SiblingInfo) != NULL) {
+        if (GetUsefulInfoTerm(GetAnnotatedFormulaFromListByName(Head,SiblingNames[SiblingNumber]),
+"esplit_defn",1,SiblingInfo) != NULL) {
             ExtractTermArguments(SiblingInfo);
             strcat(SplitDefinitionNames,SiblingInfo);
             strcat(SplitDefinitionNames,"\n");
@@ -2013,8 +1966,7 @@ ParentAnnotatedFormulae,ListParentNames,"thm",FileName,-1,"")) {
             NumberOfParents = Tokenize(UsefulInfo,ParentNames,"\n");
             ListParentNames = MakePrintableList(ParentNames,NumberOfParents,NULL);
 //----Make list of split children
-            GetNodesForNames(Head,ParentNames,NumberOfParents,&ParentAnnotatedFormulae,
-Signature);
+            GetNodesForNames(Head,ParentNames,NumberOfParents,&ParentAnnotatedFormulae,Signature);
             if (!CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,FormulaName,
 ParentAnnotatedFormulae,ListParentNames,"thm",FileName,-1,"")) {
                 OKSoFar = 0;
@@ -2060,8 +2012,8 @@ SIGNATURE Signature,int * NumberOfSplits) {
 //----split parent negation to be inferred from its negated children, 
 //----with relevance check
         OccurenceNumber = 1;
-        while (GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_to",
-OccurenceNumber,UsefulInfo) != NULL) {
+        while (GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_to",OccurenceNumber,
+UsefulInfo) != NULL) {
             OccurenceNumber++;
             UserCheckParentRelevance = OptionValues.CheckParentRelevance;
             OptionValues.CheckParentRelevance = 1;
@@ -2103,8 +2055,8 @@ ParentAnnotatedFormulae,ListParentNames,"thm",FileName,-1,"(Negated formulae for
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-int JoinVerification(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature,int * NumberOfJoins) {
+int JoinVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature,
+int * NumberOfJoins) {
 
     LISTNODE Target;
     int OKSoFar;
@@ -2387,8 +2339,7 @@ int * NumberOfApplys) {
 //DEBUG PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
             if (!GetNodeParentList(Target->AnnotatedFormula,Head,&Parents,Signature) || 
 Parents == NULL) {
-                QPRINTF(OptionValues,2)(
-"FAILURE: Ill-formed apply_def in %s\n",FormulaName);
+                QPRINTF(OptionValues,2)("FAILURE: Ill-formed apply_def in %s\n",FormulaName);
                 return(0);
             }
 //----Assume the complex one is first, and is the conjecture
