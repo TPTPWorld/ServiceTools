@@ -76,5 +76,5 @@ rule S.query ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: query_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.07 WC = 0.12  NodesSearch = 1 MaxBranchF = 2 ProofNodes = 1 Formulas = 176
-OUTPUT: query_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.07 WC = 0.12 
+RESULT: query_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.04 WC = 0.09  NodesSearch = 1 MaxBranchF = 2 ProofNodes = 1 Formulas = 176
+OUTPUT: query_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.04 WC = 0.09 

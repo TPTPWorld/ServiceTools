@@ -80,6 +80,7 @@ ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature) {
 
     String FileName;
     FILE * Handle;
+    LISTNODE TypeFormulae,MoreTypeFormulae;
 
     strcpy(FileName,OptionValues.KeepFilesDirectory);
     strcat(FileName,"/");
@@ -90,8 +91,17 @@ ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature) {
     }
     fprintf(Handle,"require open Logic.Zenon.FOL ;\n");
     fprintf(Handle,"\n//----Symbol signatures\n");
-    LPPrintSignatureList(Handle,Signature->Functions,"κ");
-    LPPrintSignatureList(Handle,Signature->Predicates,"Prop");
+    if (Signature->Types == NULL) {
+        TypeFormulae = NULL;
+    } else {
+        TypeFormulae = GetListOfAnnotatedFormulaeWithRole(ProblemHead,type,Signature);
+        MoreTypeFormulae = GetListOfAnnotatedFormulaeWithRole(Head,type,Signature);
+        TypeFormulae = AppendListsOfAnnotatedTSTPNodes(TypeFormulae,MoreTypeFormulae);
+    }
+    LPPrintSignatureList(Handle,Signature->Types,TypeFormulae,"SET??");
+    LPPrintSignatureList(Handle,Signature->Functions,TypeFormulae,"κ");
+    LPPrintSignatureList(Handle,Signature->Predicates,TypeFormulae,"Prop");
+    FreeListOfAnnotatedFormulae(&TypeFormulae,Signature);
     fprintf(Handle,"\n//----The problem formulae\n");
     if (ProblemHead != NULL) {
         WriteLPFormulaeWithRole(Handle,ProblemHead,axiom_like,Signature);

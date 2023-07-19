@@ -133,5 +133,5 @@ rule S.everyone_a_knight_or_knave ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: everyone_a_knight_or_knave_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.04 WC = 0.12  NodesSearch = 1 MaxBranchF = 10 ProofNodes = 1 Formulas = 330
-OUTPUT: everyone_a_knight_or_knave_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.04 WC = 0.12 
+RESULT: everyone_a_knight_or_knave_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.02 WC = 0.10  NodesSearch = 1 MaxBranchF = 10 ProofNodes = 1 Formulas = 330
+OUTPUT: everyone_a_knight_or_knave_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.02 WC = 0.10 
