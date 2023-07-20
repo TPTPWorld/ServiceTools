@@ -1,5 +1,6 @@
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
-require LAMBDAPI_CONTEXT.Signature as S;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.Signature as S;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.c_0_7_thm ;
 
 rule S.c_0_11 ↪ 
   nnpp (∀α (λ (v_Vm : τ (ι)),

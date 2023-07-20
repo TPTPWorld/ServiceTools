@@ -19,6 +19,6 @@ rule S.everyone_a_knight_or_knave ↪
 ∨
 (S.truth (S.isa (v_Vm) (S.knave)))
 ))
- (S.everyone_a_knight_or_knave_0001_0001)
+ (S.everyone_a_knight_or_knave_0001)
  (v_Vn)
 );

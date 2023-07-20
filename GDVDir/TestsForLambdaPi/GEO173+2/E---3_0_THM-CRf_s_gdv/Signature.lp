@@ -26,7 +26,6 @@ symbol ceq1_0010 : ϵ (∀ (λ X, (∀ (λ Y, (∀ (λ Z, (((apart_point_and_lin
 symbol ceq2_0011 : ϵ (∀ (λ X, (∀ (λ Y, (∀ (λ Z, (((apart_point_and_line X Y)) ⇒ (((distinct_lines Y Z)) ∨ ((apart_point_and_line X Z)))))))))) ;
 symbol ceq3_0012 : ϵ (∀ (λ X, (∀ (λ Y, (((convergent_lines X Y)) ⇒ ((distinct_lines X Y))))))) ;
 symbol con_0013 : ϵ (∀ (λ X, (∀ (λ Y, (∀ (λ U, (∀ (λ V, ((((distinct_points X Y)) ∧ (((convergent_lines U V)) ∧ ((distinct_lines U (line_connecting X Y))))) ⇒ (((apart_point_and_line X U)) ∨ ((apart_point_and_line Y U)))))))))))) ;
-symbol conjecture_0000 : ϵ (⊥) ;
 
 //----Derivation formulae
 symbol con : ϵ (∀ (λ X1, (∀ (λ X2, (∀ (λ X4, (∀ (λ X5, ((((distinct_points X1 X2)) ∧ (((convergent_lines X4 X5)) ∧ ((distinct_lines X4 (line_connecting X1 X2))))) ⇒ (((apart_point_and_line X1 X4)) ∨ ((apart_point_and_line X2 X4)))))))))))) ;

@@ -39,10 +39,10 @@ fof(c_0_19,conjecture,
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_19_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_19_thm.p'
 % START OF SYSTEM OUTPUT
-nodes searched: 7
-max branch formulas: 7
-proof nodes created: 4
-formulas created: 160
+nodes searched: 11
+max branch formulas: 12
+proof nodes created: 5
+formulas created: 188
 
 % SZS status Theorem
 % SZS output start Proof
@@ -68,13 +68,26 @@ rule S.c_0_19 ↪
  Ror
  (S.distinct_points (S.esk1_0) (S.esk1_0))
  (S.distinct_points (S.esk2_0) (S.esk1_0))
- (λ (v_Vp : ϵ (⊥)),
- Rfalse
- (v_Vp))
- (λ (v_Vq : ϵ (S.distinct_points (S.esk2_0) (S.esk1_0))),
+ (λ (v_Vp : ϵ (S.distinct_points (S.esk1_0) (S.esk1_0))),
+ Rall
+ (ι)
+ (λ (v_Vn : τ (ι)),
+ ¬
+ (S.distinct_points (v_Vn) (v_Vn)))
+ (S.esk1_0)
+ (λ (v_Vq : ϵ (¬
+ (S.distinct_points (S.esk1_0) (S.esk1_0)))),
+ Raxiom
+ (S.distinct_points (S.esk1_0) (S.esk1_0))
+ (v_Vp)
+ (v_Vq)
+)
+ (S.c_0_15)
+)
+ (λ (v_Vr : ϵ (S.distinct_points (S.esk2_0) (S.esk1_0))),
  Raxiom
  (S.distinct_points (S.esk2_0) (S.esk1_0))
- (v_Vq)
+ (v_Vr)
  (v_Vm)
 )
  (v_Vo)
@@ -86,5 +99,5 @@ rule S.c_0_19 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_19_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.04 WC = 0.11  NodesSearch = 7 MaxBranchF = 7 ProofNodes = 4 Formulas = 160
-OUTPUT: c_0_19_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.04 WC = 0.11 
+RESULT: c_0_19_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.01 WC = 0.10  NodesSearch = 11 MaxBranchF = 12 ProofNodes = 5 Formulas = 188
+OUTPUT: c_0_19_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.01 WC = 0.10 

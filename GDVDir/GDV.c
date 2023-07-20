@@ -369,6 +369,16 @@ void AddVerifiedTag(ANNOTATEDFORMULA AnnotatedFormula,SIGNATURE Signature,char *
     AddUsefulInformationToAnnotatedFormula(AnnotatedFormula,Signature,VerifiedTag);
 }
 //-------------------------------------------------------------------------------------------------
+int VerifiedAnnotatedFormula(ANNOTATEDFORMULA AnnotatedFormula,char * VerifiedTag) {
+
+    String Local;
+
+    if (VerifiedTag == NULL) {
+        VerifiedTag = Local;
+    }
+    return(GetUsefulInfoTerm(AnnotatedFormula,"verified",1,VerifiedTag) != NULL);
+}
+//-------------------------------------------------------------------------------------------------
 //----Copied from TPTP4X
 void NumberNamesFormulae(LISTNODE Head) {
 
@@ -485,8 +495,24 @@ OptionValues.KeepFilesDirectory,UserFileName,OutputFileName);
 //----Success, for LambdaPi extract the .lp part
             if (OptionValues.GenerateLambdaPiFiles) {
                 sprintf(Command,
-"sed -e 's/LAMBDAPI_CONTEXT/%s/' -e '1,/SZS output start/d' -e '/SZS output end/,$d' %s > %s/%s.lp",
-OptionValues.LambdaPiDirectory,OutputFileName,OptionValues.KeepFilesDirectory,UserFileName);
+"sed -e '1,/SZS output start/d' -e '/SZS output end/,$d' %s > %s/%s.lp",
+OutputFileName,OptionValues.KeepFilesDirectory,UserFileName);
+//DEBUG printf("Try to do %s\n",Command);
+                system(Command);
+//----Require all parents that are derived, to make a full proof
+                while (Axioms != NULL) {
+                    if (VerifiedAnnotatedFormula(Axioms->AnnotatedFormula,NULL)) {
+                        sprintf(Command,
+"sed -i -e '/LAMBDAPI_CONTEXT/arequire %s.%s_thm ;' %s/%s.lp",
+OptionValues.LambdaPiDirectory,GetName(Axioms->AnnotatedFormula,NULL),
+OptionValues.KeepFilesDirectory,UserFileName);
+//DEBUG printf("Try to add parent requirement %s\n",Command);
+                        system(Command);
+                    }
+                    Axioms = Axioms->Next;
+                }
+                sprintf(Command,"sed -i -e 's/LAMBDAPI_CONTEXT/%s/' %s/%s.lp",
+OptionValues.LambdaPiDirectory,OptionValues.KeepFilesDirectory,UserFileName);
 //DEBUG printf("Try to do %s\n",Command);
                 system(Command);
             }
@@ -610,7 +636,7 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
     ANNOTATEDFORMULA NewTarget;
     LISTNODE ESAParentNode;
     int CheckResult;
-    String ESAFileBaseName;
+    String SZSFileBaseName;
 
 //----Suppress output as required
     OutcomeOptionValues = OptionValues;
@@ -658,8 +684,8 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
 Target,FileBaseName,"thm")) == 1) {
                 Correct = 1;
                 if (OptionValues.GenerateObligations) {
-                    QPRINTF(OutcomeOptionValues,2)("CREATED: Obligation to verify that %s is a %s",
-FormulaName,SZSStatus);
+                    QPRINTF(OutcomeOptionValues,2)(
+"CREATED: Obligation to verify that %s is a %s",FormulaName,SZSStatus);
                 } else {
                     QPRINTF(OutcomeOptionValues,2)("SUCCESS: %s is a %s", FormulaName,SZSStatus);
                 }
@@ -670,13 +696,9 @@ FormulaName,SZSStatus);
                     QPRINTF(OutcomeOptionValues,2)("FAILURE: %s fails to be a %s",FormulaName,
 SZSStatus);
                 } else {
-                    QPRINTF(OutcomeOptionValues,2)("FAILURE: %s is not a %s",FormulaName,SZSStatus);
+                    QPRINTF(OutcomeOptionValues,2)(
+"FAILURE: %s is not a %s",FormulaName,SZSStatus);
                 }
-//----If the LambdaPi term production failed, say "sorry"
-//                 if (OptionValues.GenerateLambdaPiFiles) {
-//                     fprintf(OptionValues.LambdaPiProofHandle,
-// "opaque symbol lemmas_%s ≔ begin admitted ;\n",FileBaseName);
-//                 }
             }
             if (ParentAnnotatedFormulae != NULL) {
                 QPRINTF(OutcomeOptionValues,2)(" of %s",ParentNames);
@@ -708,10 +730,10 @@ ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,4,"(Theorem esa)");
         }
         NewTarget = ESAParentNode->AnnotatedFormula;
         ESAParentNode->AnnotatedFormula = Target;
-        strcpy(ESAFileBaseName,FileBaseName);
-        strcat(ESAFileBaseName,"_esa");
+        strcpy(SZSFileBaseName,FileBaseName);
+        strcat(SZSFileBaseName,"_esa");
         ESACorrect = CorrectlyInferred(OptionValues,Signature,NewTarget,GetName(NewTarget,NULL),
-ParentAnnotatedFormulae,GetName(Target,NULL),"thm",ESAFileBaseName,4,"(Inverted esa)");
+ParentAnnotatedFormulae,GetName(Target,NULL),"thm",SZSFileBaseName,4,"(Inverted esa)");
 //----Put it back the right way around
         ESAParentNode->AnnotatedFormula = NewTarget;
         if (OptionValues.TimeLimit == 0) {
@@ -748,17 +770,15 @@ ParentAnnotatedFormulae,ParentNames,"cth",FileBaseName,4,
         }
         NewTarget = ESAParentNode->AnnotatedFormula;
         ESAParentNode->AnnotatedFormula = Target;
-        strcpy(ESAFileBaseName,FileBaseName);
-        strcat(ESAFileBaseName,".esa");
-        ESACorrect = CorrectlyInferred(OptionValues,Signature,NewTarget,
-GetName(NewTarget,NULL),ParentAnnotatedFormulae,GetName(Target,NULL),"cth",
-ESAFileBaseName,4,"(Inverted ecs)");
+        strcpy(SZSFileBaseName,FileBaseName);
+        strcat(SZSFileBaseName,".esa");
+        ESACorrect = CorrectlyInferred(OptionValues,Signature,NewTarget,GetName(NewTarget,NULL),
+ParentAnnotatedFormulae,GetName(Target,NULL),"cth",SZSFileBaseName,4,"(Inverted ecs)");
         ESAParentNode->AnnotatedFormula = NewTarget;
 //----Accept either, but if only one, then it's incomplete
         if (Correct || ESACorrect) {
             if (!Correct || !ESACorrect) {
-                QPRINTF(OptionValues,2)(
-"WARNING: Incomplete check of SZS status ecs\n");
+                QPRINTF(OptionValues,2)("WARNING: Incomplete check of SZS status ecs\n");
             }
             QPRINTF(OptionValues,2)(
 "SUCCESS: %s is a %s of %s\n", FormulaName,SZSStatus,ParentNames);
@@ -1671,11 +1691,13 @@ FormulaUnion.Atom);
     }
 }
 //-------------------------------------------------------------------------------------------------
-int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Signature) {
+int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,LISTNODE ProblemHead,
+SIGNATURE Signature) {
 
     int OKSoFar;
     int NumberOfInstances;
     ROOTLIST RootListHead;
+    LISTNODE ProblemConjectures;
 
     OKSoFar = 1;
 
@@ -1717,6 +1739,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
             OKSoFar = 0;
         }
     }
+    fflush(stdout);
 
 //----Check a refutation has a false root (at least one)
     if (!GlobalInterrupted && OKSoFar) {
@@ -1732,6 +1755,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
             QPRINTF((*OptionValues),2)("SUCCESS: Derivation could be a refutation\n");
         }
     }
+    fflush(stdout);
 
 //----Check all formulae are used, and a conjecture exists
     if (!GlobalInterrupted && OKSoFar && OptionValues->CheckRefutation) {
@@ -1740,6 +1764,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
 "SUCCESS: Derivation uses all formulae and has a (negated) conjecture\n");
         } 
     }
+    fflush(stdout);
 
 //----Check that assumptions are propagated properly to discharge
     if (!GlobalInterrupted && OKSoFar) {
@@ -1752,6 +1777,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
             OKSoFar = 0;
         }
     }
+    fflush(stdout);
 
 //----Check that roots have no assumptions
     if (!GlobalInterrupted && OKSoFar && !OptionValues->DerivationExtract) {
@@ -1761,6 +1787,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
             OKSoFar = 0;
         }
     }
+    fflush(stdout);
 
 //----Check that all nodes that have a false parent have two parents, and
 //----the second is an ancestor of the false
@@ -1779,6 +1806,7 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
             OKSoFar = 0;
         }
     }
+    fflush(stdout);
 
 //----Check that explicit splits are independent
     if (!GlobalInterrupted && OKSoFar) {
@@ -1795,6 +1823,16 @@ int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,SIGNATURE Si
         } else {
             OKSoFar = 0;
         }
+    }
+    fflush(stdout);
+
+//----Check the problem conjecture, or derivation conjecture, if they exist, can be derived
+//----from the root formulae
+    if ((ProblemConjectures = GetListOfAnnotatedFormulaeWithRole(ProblemHead,conjecture,
+Signature)) != NULL || (ProblemConjectures = GetListOfAnnotatedFormulaeWithRole(Head,conjecture,
+Signature)) != NULL) {
+printf("CHECK CONJECTURE CAN BE DERIVED AS THM FROM ROOT\n");
+            FreeListOfAnnotatedFormulae(&ProblemConjectures,Signature);
     }
 
     FreeRootList(&RootListHead,1,Signature);
@@ -1984,8 +2022,8 @@ ParentAnnotatedFormulae,ListParentNames,"thm",FileName,-1,"")) {
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-int SRSplitVerification(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature,int * NumberOfSplits) {
+int SRSplitVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature,
+int * NumberOfSplits) {
 
     LISTNODE Target;
     int OKSoFar;
@@ -2313,8 +2351,7 @@ DischargedNames,NumberOfDischargedNames)) {
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-//----Incomplete check. Complex parent to be inferred from definition and
-//----inferred
+//----Incomplete check. Complex parent to be inferred from definition and inferred
 int EApplyDefVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature,
 int * NumberOfApplys) {
 
@@ -2360,9 +2397,9 @@ Parents == NULL) {
             CleanTheFileName(FormulaName,ApplyDefFileName);
             strcat(ApplyDefFileName,"_apply_def");
             ParentsNames = MakePrintableListFromList(Parents,NULL);
-            if (CorrectlyInferred(OptionValues,Signature,ComplexConjecture->
-AnnotatedFormula,GetName(ComplexConjecture->AnnotatedFormula,ComplexName),Parents,ParentsNames,
-"thm",ApplyDefFileName,-1,"(defn & inferred |= original)")) {
+            if (CorrectlyInferred(OptionValues,Signature,ComplexConjecture->AnnotatedFormula,
+GetName(ComplexConjecture->AnnotatedFormula,ComplexName),Parents,ParentsNames,"thm",
+ApplyDefFileName,-1,"(defn & inferred |= original)")) {
                 QPRINTF(OptionValues,2)("WARNING: Incomplete check of apply_def\n");
                 AddVerifiedTag(Target->AnnotatedFormula,Signature,"apply_def");
                 (*NumberOfApplys)++;
@@ -2533,7 +2570,8 @@ SIGNATURE Signature) {
 //----If not derived and a type and not verified
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
 CheckRole(GetRole(Target->AnnotatedFormula,NULL),type) &&
-GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
+//----Not already verified
+!VerifiedAnnotatedFormula(Target->AnnotatedFormula,NULL)) {
             AddVerifiedTag(Target->AnnotatedFormula,Signature,"type");
         }
         Target = Target->Next;
@@ -2545,7 +2583,7 @@ GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
     while (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && Target != NULL) {
 //----If not derived and not verified
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
-GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
+!VerifiedAnnotatedFormula(Target->AnnotatedFormula,NULL)) {
             GetName(Target->AnnotatedFormula,FormulaName);
 //DEBUG printf("Starting derivation leaf named %s\n",FormulaName);
 
@@ -2637,7 +2675,7 @@ Signature);
 //DEBUG printf("Try to verify the node (might not be a leaf) %s\n",GetName(Target->AnnotatedFormula,NULL));
 //----If not derived and not verified
         if (!DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
-GetUsefulInfoTERM(Target->AnnotatedFormula,"verified",1) == NULL) {
+!VerifiedAnnotatedFormula(Target->AnnotatedFormula,NULL)) {
             ThisOneOK = 0;
             GetName(Target->AnnotatedFormula,FormulaName);
 //DEBUG printf("Starting leaf named %s\n",FormulaName);
@@ -2809,7 +2847,7 @@ int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signatu
 //DEBUG printf("checking ...\n");
 //DEBUG PrintAnnotatedTSTPNode(stdout,Target->AnnotatedFormula,tptp,1);
         if (DerivedAnnotatedFormula(Target->AnnotatedFormula) &&
-GetUsefulInfoTerm(Target->AnnotatedFormula,"verified",1,VerifiedTag) == NULL &&
+!VerifiedAnnotatedFormula(Target->AnnotatedFormula,VerifiedTag) &&
 //----Explicit splits are dealt with elsewhere, but it may have failed.
 GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_from",1,VerifiedTag) == NULL) {
 //DEBUG printf("needs to be verified ...\n");
@@ -2938,7 +2976,7 @@ SIGNATURE Signature) {
     while (CopyOfHead != NULL) {
         if ((VerifiedFormula = GetAnnotatedFormulaFromListByName(Head,
 GetName(CopyOfHead->AnnotatedFormula,Name))) != NULL &&
-GetUsefulInfoTerm(VerifiedFormula,"verified",1,VerifiedInfo) != NULL) {
+VerifiedAnnotatedFormula(VerifiedFormula,VerifiedInfo)) {
             AddUsefulInformationToAnnotatedFormula(CopyOfHead->AnnotatedFormula,Signature,
 VerifiedInfo);
         }
@@ -3034,21 +3072,6 @@ OptionValues.KeepFilesDirectory);
     fflush(stdout);
 //DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Head,0,1);
 
-//----Structural verification - failure cannot be forced past
-    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue)) {
-        QPRINTF(OptionValues,0)("Start structural verification\n");
-        if (!StructuralVerification(&OptionValues,Head,Signature)) {
-            OKSoFar = 0;
-            if (OptionValues.ForceContinue) {
-                OptionValues.ForceContinue = 0;
-                QPRINTF(OptionValues,2)(
-"FAILURE: Structural failure, cannot be forced to continue\n");
-            }
-        }
-    }
-    fflush(stdout);
-//DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
-
 //----Convert to FOF for semantic parts
     if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue)) {
         QPRINTF(OptionValues,0)("Quantify clauses\n");
@@ -3085,6 +3108,21 @@ OptionValues.KeepFilesDirectory);
         }
     }
 
+//----Structural verification - failure cannot be forced past
+    if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue)) {
+        QPRINTF(OptionValues,0)("Start structural verification\n");
+        if (!StructuralVerification(&OptionValues,Head,ProblemHead,Signature)) {
+            OKSoFar = 0;
+            if (OptionValues.ForceContinue) {
+                OptionValues.ForceContinue = 0;
+                QPRINTF(OptionValues,2)(
+"FAILURE: Structural failure, cannot be forced to continue\n");
+            }
+        }
+    }
+    fflush(stdout);
+//DEBUG PrintListOfAnnotatedTSTPNodes(stdout,Signature,Head,tptp,1);
+
 //----Print out all the symbols for LambdaPi 
     if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue) && 
 OptionValues.GenerateLambdaPiFiles) {
@@ -3093,7 +3131,7 @@ OptionValues.GenerateLambdaPiFiles) {
         strcpy(OptionValues.LambdaPiDirectory,OptionValues.KeepFilesDirectory);
         *strrchr(OptionValues.LambdaPiDirectory,'/') = '.';
         strcpy(OptionValues.LambdaPiDirectory,strrchr(OptionValues.LambdaPiDirectory,'/')+1);
-        OKSoFar *= WriteLPProofFile(OptionValues,Head,Signature,&RootAnnotatedFormula);
+        OKSoFar *= WriteLPProofFile(OptionValues,Head,ProblemHead,Signature,&RootAnnotatedFormula);
         OKSoFar *= WriteLPSignatureFile(OptionValues,Head,ProblemHead,RootAnnotatedFormula,
 Signature);
 //----Write package file, which needs the directory name created in WriteLPProofFile

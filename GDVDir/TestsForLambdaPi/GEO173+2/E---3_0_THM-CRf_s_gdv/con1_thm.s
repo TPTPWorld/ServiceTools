@@ -152,9 +152,9 @@ ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on con1_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/con1_thm.p'
 % START OF SYSTEM OUTPUT
 nodes searched: 1
-max branch formulas: 11
+max branch formulas: 14
 proof nodes created: 1
-formulas created: 451
+formulas created: 463
 
 % SZS status Theorem
 % SZS output start Proof
@@ -211,5 +211,5 @@ rule S.con1 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: con1_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.13  NodesSearch = 1 MaxBranchF = 11 ProofNodes = 1 Formulas = 451
-OUTPUT: con1_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.13 
+RESULT: con1_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.00 WC = 0.09  NodesSearch = 1 MaxBranchF = 14 ProofNodes = 1 Formulas = 463
+OUTPUT: con1_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.00 WC = 0.09 

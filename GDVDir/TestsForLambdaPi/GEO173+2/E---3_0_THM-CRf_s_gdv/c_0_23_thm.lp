@@ -1,5 +1,9 @@
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
-require LAMBDAPI_CONTEXT.Signature as S;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.Signature as S;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.c_0_21_thm ;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.c_0_20_thm ;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.c_0_19_thm ;
+require GEO173+2.E---3_0_THM-CRf_s_gdv.c_0_18_thm ;
 
 rule S.c_0_23 ↪ 
   nnpp ((S.apart_point_and_line (S.esk1_0) (S.line_connecting (S.esk1_0) (S.esk2_0)))

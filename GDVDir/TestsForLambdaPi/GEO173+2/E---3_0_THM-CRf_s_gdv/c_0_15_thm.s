@@ -27,10 +27,10 @@ fof(c_0_15,conjecture,
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_15_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/c_0_15_thm.p'
 % START OF SYSTEM OUTPUT
-nodes searched: 3
-max branch formulas: 3
-proof nodes created: 3
-formulas created: 136
+nodes searched: 1
+max branch formulas: 2
+proof nodes created: 1
+formulas created: 134
 
 % SZS status Theorem
 % SZS output start Proof
@@ -45,22 +45,11 @@ rule S.c_0_15 ↪
  (∀α (λ (v_Vm : τ (ι)),
  ¬
  (S.distinct_points (v_Vm) (v_Vm)))))),
- Rnotall
- (ι)
- (λ (v_Vm : τ (ι)),
+ Raxiom
+ (∀α (λ (v_Vm : τ (ι)),
  ¬
- (S.distinct_points (v_Vm) (v_Vm)))
- (λ (v_Vo : τ (ι)),
- λ (v_Vp : ϵ (¬
- (¬
- (S.distinct_points (v_Vo) (v_Vo))))),
- Rnotnot
- (S.distinct_points (v_Vo) (v_Vo))
- (λ (v_Vq : ϵ (⊥)),
- Rfalse
- (v_Vq))
- (v_Vp)
-)
+ (S.distinct_points (v_Vm) (v_Vm))))
+ (S.c_0_10)
  (v_Vn)
 );
 % SZS output end Proof
@@ -68,5 +57,5 @@ rule S.c_0_15 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_15_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.13  NodesSearch = 3 MaxBranchF = 3 ProofNodes = 3 Formulas = 136
-OUTPUT: c_0_15_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.13 
+RESULT: c_0_15_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.04 WC = 0.10  NodesSearch = 1 MaxBranchF = 2 ProofNodes = 1 Formulas = 134
+OUTPUT: c_0_15_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.04 WC = 0.10 

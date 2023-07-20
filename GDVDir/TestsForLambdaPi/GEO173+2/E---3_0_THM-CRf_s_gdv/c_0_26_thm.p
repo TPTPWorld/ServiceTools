@@ -7,7 +7,8 @@ fof(c_0_24,axiom,
     [verified(thm)] ).
 fof(c_0_25,axiom,
     apart_point_and_line(esk2_0,line_connecting(esk1_0,esk2_0)),
-    inference(sr,[status(thm)],[inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_22,c_0_23]),c_0_12])]),c_0_15]) ).
+    inference(sr,[status(thm)],[inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_22,c_0_23]),c_0_12])]),c_0_15]),
+    [verified(thm)] ).
 fof(c_0_12,axiom,
     distinct_points(esk1_0,esk2_0),
     inference(split_conjunct,[status(thm)],[c_0_8]),

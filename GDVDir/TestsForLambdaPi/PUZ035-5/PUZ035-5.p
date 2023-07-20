@@ -33,39 +33,39 @@
 %            knight/knave ; knight/knight
 %--------------------------------------------------------------------------
 %----Everyone's either a knight or a knave
-cnf(everyone_a_knight_or_knave_0001,axiom,
+cnf(everyone_a_knight_or_knave,axiom,
     ( truth(isa(P,knight))
     | truth(isa(P,knave)) ) ).
 
-cnf(not_both_a_knight_and_knave_0002,axiom,
+cnf(not_both_a_knight_and_knave,axiom,
     ( ~ truth(isa(P,knight))
     | ~ truth(isa(P,knave)) ) ).
 
-cnf(knights_make_true_statements1_0003,axiom,
+cnf(knights_make_true_statements1,axiom,
     ( truth(S)
     | ~ truth(isa(P,knight))
     | ~ says(P,S) ) ).
 
-cnf(knights_make_true_statements2_0004,axiom,
+cnf(knights_make_true_statements2,axiom,
     ( truth(isa(P,knight))
     | ~ truth(S)
     | ~ says(P,S) ) ).
 
 %----Definitions for or
-cnf(or1_0005,axiom,
+cnf(or1,axiom,
     ( truth(A)
     | truth(B)
     | ~ truth(or(A,B)) ) ).
 
-cnf(or2_0006,axiom,
+cnf(or2,axiom,
     ( truth(or(A,B))
     | ~ truth(A) ) ).
 
-cnf(or3_0007,axiom,
+cnf(or3,axiom,
     ( truth(or(A,B))
     | ~ truth(B) ) ).
 
-cnf(says_yes_0008,axiom,
+cnf(says_yes,axiom,
     says(asked,or(isa(asked,knight),isa(other,knight))) ).
 
 cnf(query_0009,negated_conjecture,

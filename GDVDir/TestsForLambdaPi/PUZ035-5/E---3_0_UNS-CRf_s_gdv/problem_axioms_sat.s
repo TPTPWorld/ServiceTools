@@ -5,67 +5,67 @@ Paradox---4.0   checking time limit 60
 Paradox---4.0   checking problem name TestsForLambdaPi/PUZ035-5/E---3_0_UNS-CRf_s_gdv/problem_axioms_sat.p
 
 Paradox---4.0's TPTP format TestsForLambdaPi/PUZ035-5/E---3_0_UNS-CRf_s_gdv/problem_axioms_sat.p is ...
-fof(everyone_a_knight_or_knave_0001_0001,axiom,
+fof(everyone_a_knight_or_knave_0001,axiom,
     ! [P] :
       ( truth(isa(P,knight))
       | truth(isa(P,knave)) ) ).
-fof(not_both_a_knight_and_knave_0002_0002,axiom,
+fof(not_both_a_knight_and_knave_0002,axiom,
     ! [P] :
       ( ~ truth(isa(P,knight))
       | ~ truth(isa(P,knave)) ) ).
-fof(knights_make_true_statements1_0003_0003,axiom,
+fof(knights_make_true_statements1_0003,axiom,
     ! [P,S] :
       ( truth(S)
       | ~ truth(isa(P,knight))
       | ~ says(P,S) ) ).
-fof(knights_make_true_statements2_0004_0004,axiom,
+fof(knights_make_true_statements2_0004,axiom,
     ! [S,P] :
       ( truth(isa(P,knight))
       | ~ truth(S)
       | ~ says(P,S) ) ).
-fof(or1_0005_0005,axiom,
+fof(or1_0005,axiom,
     ! [B,A] :
       ( truth(A)
       | truth(B)
       | ~ truth(or(A,B)) ) ).
-fof(or2_0006_0006,axiom,
+fof(or2_0006,axiom,
     ! [B,A] :
       ( truth(or(A,B))
       | ~ truth(A) ) ).
-fof(or3_0007_0007,axiom,
+fof(or3_0007,axiom,
     ! [B,A] :
       ( truth(or(A,B))
       | ~ truth(B) ) ).
-fof(says_yes_0008_0008,axiom,
+fof(says_yes_0008,axiom,
     says(asked,or(isa(asked,knight),isa(other,knight))) ).
 
 Paradox---4.0's problem_axioms_sat being prepared by /exp/home/tptp/ServiceTools/tptp4X
-    -d /tmp/SystemOnTPTP22894 
+    -d /tmp/SystemOnTPTP53898 
     -t none 
     -f tptp:short
     -x 
     -u machine
     TestsForLambdaPi/PUZ035-5/E---3_0_UNS-CRf_s_gdv/problem_axioms_sat.p
-Paradox---4.0   will use /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
+Paradox---4.0   will use /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
 Paradox---4.0's own format source file is ...
-fof(everyone_a_knight_or_knave_0001_0001,axiom,! [P] : ( truth(isa(P,knight)) | truth(isa(P,knave)) ) ).
-fof(not_both_a_knight_and_knave_0002_0002,axiom,! [P] : ( ~ truth(isa(P,knight)) | ~ truth(isa(P,knave)) ) ).
-fof(knights_make_true_statements1_0003_0003,axiom,! [P] : ! [S] : ( truth(S) | ~ truth(isa(P,knight)) | ~ says(P,S) ) ).
-fof(knights_make_true_statements2_0004_0004,axiom,! [S] : ! [P] : ( truth(isa(P,knight)) | ~ truth(S) | ~ says(P,S) ) ).
-fof(or1_0005_0005,axiom,! [B] : ! [A] : ( truth(A) | truth(B) | ~ truth(or(A,B)) ) ).
-fof(or2_0006_0006,axiom,! [B] : ! [A] : ( truth(or(A,B)) | ~ truth(A) ) ).
-fof(or3_0007_0007,axiom,! [B] : ! [A] : ( truth(or(A,B)) | ~ truth(B) ) ).
-fof(says_yes_0008_0008,axiom,says(asked,or(isa(asked,knight),isa(other,knight))) ).
+fof(everyone_a_knight_or_knave_0001,axiom,! [P] : ( truth(isa(P,knight)) | truth(isa(P,knave)) ) ).
+fof(not_both_a_knight_and_knave_0002,axiom,! [P] : ( ~ truth(isa(P,knight)) | ~ truth(isa(P,knave)) ) ).
+fof(knights_make_true_statements1_0003,axiom,! [P] : ! [S] : ( truth(S) | ~ truth(isa(P,knight)) | ~ says(P,S) ) ).
+fof(knights_make_true_statements2_0004,axiom,! [S] : ! [P] : ( truth(isa(P,knight)) | ~ truth(S) | ~ says(P,S) ) ).
+fof(or1_0005,axiom,! [B] : ! [A] : ( truth(A) | truth(B) | ~ truth(or(A,B)) ) ).
+fof(or2_0006,axiom,! [B] : ! [A] : ( truth(or(A,B)) | ~ truth(A) ) ).
+fof(or3_0007,axiom,! [B] : ! [A] : ( truth(or(A,B)) | ~ truth(B) ) ).
+fof(says_yes_0008,axiom,says(asked,or(isa(asked,knight),isa(other,knight))) ).
 
 Paradox---4.0   is forced to process that problem/solution
-Paradox---4.0   being executed on problem_axioms_sat using /exp/home/tptp/Systems/Paradox---4.0/paradox --no-progress --time 60 --tstp --model '/tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short'
+Paradox---4.0   being executed on problem_axioms_sat using /exp/home/tptp/Systems/Paradox---4.0/paradox --no-progress --time 60 --tstp --model '/tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short'
 % START OF SYSTEM OUTPUT
 Paradox, version 4.0, 2010-06-29.
-+++ PROBLEM: /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
-Reading '/tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short' ... OK
-+++ SOLVING: /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
++++ PROBLEM: /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
+Reading '/tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short' ... OK
++++ SOLVING: /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
 +++ BEGIN MODEL
-SZS output start FiniteModel for /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
+SZS output start FiniteModel for /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
 % domain size is 2
 fof(domain, fi_domain,
   (![X] : (X = "1" | X = "2"))
@@ -120,11 +120,11 @@ fof(truth, fi_predicates,
   & (truth("2") <=> $true)
   )
 ).
-SZS output end FiniteModel for /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
+SZS output end FiniteModel for /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
 +++ END MODEL
 +++ RESULT: Satisfiable
-SZS status Satisfiable for /tmp/SystemOnTPTP22894/problem_axioms_sat.tptp:short
+SZS status Satisfiable for /tmp/SystemOnTPTP53898/problem_axioms_sat.tptp:short
 
 % END OF SYSTEM OUTPUT
-RESULT: problem_axioms_sat - Paradox---4.0 says Satisfiable - CPU = 0.00 WC = 0.00  Size = 2
-OUTPUT: problem_axioms_sat - Paradox---4.0 says FiniteModel - CPU = 0.00 WC = 0.00 
+RESULT: problem_axioms_sat - Paradox---4.0 says Satisfiable - CPU = 0.00 WC = 0.01  Size = 2
+OUTPUT: problem_axioms_sat - Paradox---4.0 says FiniteModel - CPU = 0.00 WC = 0.01 
