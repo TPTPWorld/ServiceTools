@@ -1,6 +1,5 @@
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
 require PUZ035-5.E---3_0_UNS-CRf_s_gdv.Signature as S;
-require PUZ035-5.E---3_0_UNS-CRf_s_gdv.everyone_a_knight_or_knave_thm ;
 
 rule S.c_0_3 ↪ 
   nnpp (∀α (λ (v_Vm : τ (ι)),

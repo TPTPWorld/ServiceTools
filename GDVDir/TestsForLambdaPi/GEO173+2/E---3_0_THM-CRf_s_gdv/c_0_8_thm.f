@@ -54,5 +54,5 @@ formulas created: 277
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_8_thm - ZenonModulo---0.4.2 says Unknown - CPU = 0.04 WC = 0.12  NodesSearch = 9 MaxBranchF = 13 ProofNodes = 0 Formulas = 277
+RESULT: c_0_8_thm - ZenonModulo---0.4.2 says Unknown - CPU = 0.03 WC = 0.12  NodesSearch = 9 MaxBranchF = 13 ProofNodes = 0 Formulas = 277
 OUTPUT: c_0_8_thm - ZenonModulo---0.4.2 says None - CPU = 0 WC = 0 

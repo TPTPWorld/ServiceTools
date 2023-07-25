@@ -10,6 +10,7 @@
 #include "FileUtilities.h"
 #include "List.h"
 #include "Tree.h"
+#include "Interpret.h"
 #include "Signature.h"
 #include "Tokenizer.h"
 #include "Parsing.h"
@@ -39,11 +40,10 @@ int WriteLPPackageFile(OptionsType OptionValues) {
 }
 //-------------------------------------------------------------------------------------------------
 int WriteLPProofFile(OptionsType OptionValues,LISTNODE Head,LISTNODE ProblemHead,
-SIGNATURE Signature,ANNOTATEDFORMULA * RootAnnotatedFormula) {
+ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATURE Signature) {
 
     String FileName;
     FILE * Handle;
-    ROOTLIST RootListHead;
     LISTNODE ProblemConjectures;
 
     strcpy(FileName,OptionValues.KeepFilesDirectory);
@@ -58,31 +58,27 @@ SIGNATURE Signature,ANNOTATEDFORMULA * RootAnnotatedFormula) {
     fprintf(Handle,
 "require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen ;\n");
     fprintf(Handle,"require %s.%s as %s;\n",OptionValues.LambdaPiDirectory,FileName,FileName);
-//----Find the root of the derivation (just one for now)
-    RootListHead = BuildRootList(Head,Signature);
 //----See if a real conjecture to use instead of derivation root
-    if ((ProblemConjectures = GetListOfAnnotatedFormulaeWithRole(ProblemHead,conjecture,
-Signature)) != NULL) {
-//OLD WAY fprintf(Handle,"require %s.conjecture_0000_thm ;\n",OptionValues.LambdaPiDirectory);
-        *RootAnnotatedFormula = ProblemConjectures->AnnotatedFormula;
+    if (ProvedAnnotatedFormula != NULL) {
         fprintf(Handle,"require %s.%s_thm ;\n",OptionValues.LambdaPiDirectory,
-GetName(RootListHead->TheTree->AnnotatedFormula,NULL));
-//OLD WAY fprintf(Handle,"\nrule %s.%s ↪ %s.conjecture_0000 ;\n",FileName,
-//OLD WAY GetName(*RootAnnotatedFormula,NULL),FileName);
-        fprintf(Handle,"\nrule %s.%s ↪ %s.%s ;\n",FileName,
-GetName(*RootAnnotatedFormula,NULL),FileName,
-GetName(RootListHead->TheTree->AnnotatedFormula,NULL));
-//----Pass back for printing signature
+GetName(DerivationRoot,NULL));
+//----Print the final rule
+        fprintf(Handle,"\n//----Conjecture rule\n");
+        if (FalseAnnotatedFormula(DerivationRoot)) {
+            fprintf(Handle,"rule %s ↪ nnpp %s \n",GetName(ProvedAnnotatedFormula,NULL),
+GetName(DerivationRoot,NULL));
+        } else {
+            fprintf(Handle,"\nrule %s.%s ↪ %s.%s ;\n",FileName,
+GetName(ProvedAnnotatedFormula,NULL),FileName,GetName(DerivationRoot,NULL));
+        }
         FreeListOfAnnotatedFormulae(&ProblemConjectures,Signature);
     } else {
-//----CNF case without conjecture
-        *RootAnnotatedFormula = RootListHead->TheTree->AnnotatedFormula;
+//----Case without conjecture
         fprintf(Handle,"require %s.%s_thm ;\n",OptionValues.LambdaPiDirectory,
-GetName(*RootAnnotatedFormula,NULL));
+GetName(DerivationRoot,NULL));
         fprintf(Handle,"\nrule %s.conjecture_0000 ↪ %s.%s ;\n",FileName,FileName,
-GetName(*RootAnnotatedFormula,NULL));
+GetName(DerivationRoot,NULL));
     }
-    FreeRootList(&RootListHead,1,Signature);
     fflush(Handle);
     return(1);
 }
@@ -97,7 +93,7 @@ void WriteLPFormulaeWithRole(FILE * Handle,LISTNODE Head,StatusType Role,SIGNATU
 }
 //-------------------------------------------------------------------------------------------------
 int WriteLPSignatureFile(OptionsType OptionValues,LISTNODE Head,LISTNODE ProblemHead,
-ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature) {
+ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATURE Signature) {
 
     String FileName;
     FILE * Handle;
@@ -111,7 +107,10 @@ ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature) {
         return(0);
     }
     fprintf(Handle,"require open Logic.Zenon.FOL ;\n");
+
+//----Print the signatures
     fprintf(Handle,"\n//----Symbol signatures\n");
+//----Get all TFF type formulae
     if (Signature->Types == NULL) {
         TypeFormulae = NULL;
     } else {
@@ -119,23 +118,33 @@ ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature) {
         MoreTypeFormulae = GetListOfAnnotatedFormulaeWithRole(Head,type,Signature);
         TypeFormulae = AppendListsOfAnnotatedTSTPNodes(TypeFormulae,MoreTypeFormulae);
     }
-    LPPrintSignatureList(Handle,Signature->Types,TypeFormulae,"SET??");
+    LPPrintSignatureList(Handle,Signature->Types,TypeFormulae,"TYPE");
     LPPrintSignatureList(Handle,Signature->Functions,TypeFormulae,"κ");
     LPPrintSignatureList(Handle,Signature->Predicates,TypeFormulae,"Prop");
     FreeListOfAnnotatedFormulae(&TypeFormulae,Signature);
+
+//----Print the problem formulae
     fprintf(Handle,"\n//----The problem formulae\n");
     if (ProblemHead != NULL) {
         WriteLPFormulaeWithRole(Handle,ProblemHead,axiom_like,Signature);
         WriteLPFormulaeWithRole(Handle,ProblemHead,negated_conjecture,Signature);
         WriteLPFormulaeWithRole(Handle,ProblemHead,conjecture,Signature);
     }
-//OLD WAY    fprintf(Handle,"symbol conjecture_0000 : ϵ ");
-//OLD WAY    LPPrintFormula(Handle,RootAnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.
-//OLD WAYFormulaWithVariables->Formula);
-//OLD WAY    fprintf(Handle," ;\n");
+    if (FalseAnnotatedFormula(DerivationRoot)) {
+        if (ProvedAnnotatedFormula != NULL) {
+            fprintf(Handle,"symbol Prf problem_conjecture_nnpp ≔ Prf (¬ ");
+            LPPrintFormula(Handle,
+ProvedAnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula);
+            fprintf(Handle,") → Prf problem_conjecture_nnpp ;\n");
+        } else {
+            fprintf(Handle,"symbol conjecture_0000 : ϵ (⊥) ;\n");
+        }
+    }
+
 //----Print all the derivation formulae
     fprintf(Handle,"\n//----Derivation formulae\n");
     PrintListOfAnnotatedTSTPNodes(Handle,Signature,Head,lambdapi,1);
+
     fclose(Handle);
     return(1);
 }

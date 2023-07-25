@@ -1,9 +1,9 @@
 //-------------------------------------------------------------------------------------------------
 int WriteLPPackageFile(OptionsType OptionValues);
 int WriteLPProofFile(OptionsType OptionValues,LISTNODE Head,LISTNODE ProblemHead,
-SIGNATURE Signature,ANNOTATEDFORMULA * RootAnnotatedFormula);
+ANNOTATEDFORMULA RootAnnotatedFormula,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATURE Signature);
 int WriteLPSignatureFile(OptionsType OptionValues,LISTNODE Head,LISTNODE ProblemHead,
-ANNOTATEDFORMULA RootAnnotatedFormula,SIGNATURE Signature);
+ANNOTATEDFORMULA RootAnnotatedFormula,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATURE Signature);
 
 #define LP_PACKAGE_FILENAME "lambdapi.pkg"
 #define LP_SIGNATURE_FILENAME "Signature.lp"

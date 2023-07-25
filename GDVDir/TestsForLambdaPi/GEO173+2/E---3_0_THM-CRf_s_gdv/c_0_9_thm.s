@@ -691,5 +691,5 @@ rule S.c_0_9 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_9_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.09 WC = 0.10  NodesSearch = 45 MaxBranchF = 43 ProofNodes = 19 Formulas = 508
-OUTPUT: c_0_9_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.09 WC = 0.11 
+RESULT: c_0_9_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.07 WC = 0.13  NodesSearch = 45 MaxBranchF = 43 ProofNodes = 19 Formulas = 508
+OUTPUT: c_0_9_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.07 WC = 0.14 

@@ -68,7 +68,7 @@ cnf(or3,axiom,
 cnf(says_yes,axiom,
     says(asked,or(isa(asked,knight),isa(other,knight))) ).
 
-cnf(query_0009,negated_conjecture,
+cnf(query,negated_conjecture,
     ( ~ truth(isa(asked,X))
     | ~ truth(isa(other,Y)) ) ).
 

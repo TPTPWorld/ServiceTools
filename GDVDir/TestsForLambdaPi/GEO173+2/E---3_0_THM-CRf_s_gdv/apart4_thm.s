@@ -200,5 +200,5 @@ rule S.apart4 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: apart4_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.00 WC = 0.09  NodesSearch = 1 MaxBranchF = 14 ProofNodes = 1 Formulas = 457
-OUTPUT: apart4_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.00 WC = 0.09 
+RESULT: apart4_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.05 WC = 0.10  NodesSearch = 1 MaxBranchF = 14 ProofNodes = 1 Formulas = 457
+OUTPUT: apart4_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.05 WC = 0.10 

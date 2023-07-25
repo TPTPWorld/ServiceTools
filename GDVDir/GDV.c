@@ -1513,8 +1513,8 @@ GetName(Target->AnnotatedFormula,NULL));
     return(OKSoFar);
 }
 //-------------------------------------------------------------------------------------------------
-int WellFormedProofsByContradiction(OptionsType OptionValues,LISTNODE Head,
-SIGNATURE Signature,int * NumberOfProofsByContradiction) {
+int WellFormedProofsByContradiction(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature,
+int * NumberOfProofsByContradiction) {
 
     LISTNODE Target;
     int OKSoFar;
@@ -1586,11 +1586,11 @@ ROOTLIST RootListHead,int * NumberOfExplicitSplits) {
     int SplitIndex1;
     int SplitIndex2;
     String InnerName;
-    TREENODE RefutationRoot;
+    TREENODE DerivationRoot;
     ROOTLIST FalseList;
     TERM JoinRecord;
 
-    RefutationRoot = GetFalseRootNode(RootListHead);
+    DerivationRoot = GetFalseRootNode(RootListHead);
     FalseList = GetFalseNodes(RootListHead,Head);
     OKSoFar = 1;
     *NumberOfExplicitSplits = 0;
@@ -1636,9 +1636,9 @@ SplitChildrenNames[SplitIndex1],SplitChildrenNames[SplitIndex2]);
 //----If child is an ancestor of the refutation node, not going through non-thm
 //----Both sides must have a false descendant
                     if (OKSoFar && OptionValues.CheckRefutation &&
-((AnnotatedFormulaInTreeTHM(RefutationRoot,SplitChild1,1) != NULL &&
+((AnnotatedFormulaInTreeTHM(DerivationRoot,SplitChild1,1) != NULL &&
 AnnotatedFormulaInTreesTHM(FalseList,SplitChild2,1) == NULL) ||
-(AnnotatedFormulaInTreeTHM(RefutationRoot,SplitChild2,1) != NULL && 
+(AnnotatedFormulaInTreeTHM(DerivationRoot,SplitChild2,1) != NULL && 
 AnnotatedFormulaInTreesTHM(FalseList,SplitChild1,1) == NULL))) {
                         OKSoFar = 0;
                         QPRINTF(OptionValues,2)(
@@ -1692,7 +1692,7 @@ FormulaUnion.Atom);
 }
 //-------------------------------------------------------------------------------------------------
 int StructuralVerification(OptionsType * OptionValues,LISTNODE Head,LISTNODE ProblemHead,
-SIGNATURE Signature) {
+ANNOTATEDFORMULA * DerivationRoot,ANNOTATEDFORMULA * ProvedAnnotatedFormula,SIGNATURE Signature) {
 
     int OKSoFar;
     int NumberOfInstances;
@@ -1726,7 +1726,10 @@ SIGNATURE Signature) {
 //----Build the derivation tree
     if ((RootListHead = BuildRootList(Head,Signature)) == NULL) {
         QPRINTF((*OptionValues),2)("FAILURE: Cannot build explicit proof tree\n");
+        *DerivationRoot = NULL;
         OKSoFar = 0;
+    } else {
+        *DerivationRoot = RootListHead->TheTree->AnnotatedFormula;
     }
     fflush(stdout);
 
@@ -1743,16 +1746,19 @@ SIGNATURE Signature) {
 
 //----Check a refutation has a false root (at least one)
     if (!GlobalInterrupted && OKSoFar) {
-        if (OptionValues->CheckRefutation) {
-            if (CheckFalseRootNode(*OptionValues,RootListHead) != NULL) {
+        if (CheckFalseRootNode(*OptionValues,RootListHead) != NULL) {
+            if (!OptionValues->CheckRefutation && OptionValues->AutoMode) {
+                OptionValues->CheckRefutation = 1;
+                QPRINTF((*OptionValues),1)("AUTOSET: Has false root, will check as a refutation\n");
+            }
+            if (OptionValues->CheckRefutation) {
                 QPRINTF((*OptionValues),2)("SUCCESS: Derivation could be a refutation\n");
-            } else {
+            }
+        } else {
+            if (OptionValues->CheckRefutation) {
+                QPRINTF((*OptionValues),2)("FAILURE: Derivation is not a refutation\n");
                 OKSoFar = 0;
             }
-        } else if (OptionValues->AutoMode && GetFalseRootNode(RootListHead) != NULL) {
-            OptionValues->CheckRefutation = 1;
-            QPRINTF((*OptionValues),1)("AUTOSET: Has false root, will check as a refutation\n");
-            QPRINTF((*OptionValues),2)("SUCCESS: Derivation could be a refutation\n");
         }
     }
     fflush(stdout);
@@ -1826,13 +1832,14 @@ SIGNATURE Signature) {
     }
     fflush(stdout);
 
-//----Check the problem conjecture, or derivation conjecture, if they exist, can be derived
-//----from the root formulae
+//----Get the problem conjecture, or derivation conjecture, if one exists. No check (yet).
     if ((ProblemConjectures = GetListOfAnnotatedFormulaeWithRole(ProblemHead,conjecture,
 Signature)) != NULL || (ProblemConjectures = GetListOfAnnotatedFormulaeWithRole(Head,conjecture,
 Signature)) != NULL) {
-printf("CHECK CONJECTURE CAN BE DERIVED AS THM FROM ROOT\n");
-            FreeListOfAnnotatedFormulae(&ProblemConjectures,Signature);
+        *ProvedAnnotatedFormula = ProblemConjectures->AnnotatedFormula;
+        FreeListOfAnnotatedFormulae(&ProblemConjectures,Signature);
+    } else {
+        *ProvedAnnotatedFormula = NULL;
     }
 
     FreeRootList(&RootListHead,1,Signature);
@@ -2839,6 +2846,7 @@ int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signatu
     String SZSStatus;
     SZSResultArray SZSArray;
     int NumberOfSZSResults;
+    String NNPPTag;
 
     Target = Head;
     OKSoFar = 1;
@@ -2898,17 +2906,26 @@ FormulaName,ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
 //----If none, then try special cases (one right now) - negated_conjecture with conjecture and 
 //----sole parent
                     if (ParentAnnotatedFormulae != NULL && ParentAnnotatedFormulae->Next == NULL &&
-ParentAnnotatedFormulae->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == 
-conjecture && 
-Target->AnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.Status == negated_conjecture) {
+GetRole(ParentAnnotatedFormulae->AnnotatedFormula,NULL) == conjecture && 
+GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
                         strcpy(SZSStatus,"cth");
                     } else {
                         strcpy(SZSStatus,"thm");
+                        strcpy(NNPPTag,"");
                     }
                     QPRINTF(OptionValues,1)(", assuming %s\n",SZSStatus);
                 } else {
                     CombineSZSStatusesForVerification(SZSArray,SZSStatus,NumberOfSZSResults);
                     Free((void **)&SZSArray);
+                }
+//----Send the name of the negated conjecture to ZenonModulo
+                if (!strcmp(SZSStatus,"cth") && ParentAnnotatedFormulae != NULL &&
+GetRole(ParentAnnotatedFormulae->AnnotatedFormula,NULL) == conjecture &&
+GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture && 
+OptionValues.GenerateLambdaPiFiles) {
+                    sprintf(NNPPTag,"nnpp(%s)",GetName(Target->AnnotatedFormula,NULL));
+                    AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
+NNPPTag);
                 }
                 if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,FormulaName,
 ParentAnnotatedFormulae,ListParentNames,SZSStatus,FileName,-1,"")) {
@@ -2996,7 +3013,8 @@ int main(int argc,char * argv[]) {
     LISTNODE ProblemHead;
     SIGNATURE Signature;
     int OKSoFar;
-    ANNOTATEDFORMULA RootAnnotatedFormula;
+    ANNOTATEDFORMULA DerivationRoot;
+    ANNOTATEDFORMULA ProvedAnnotatedFormula;
 
     GlobalInterrupted = 0;
     if (signal(SIGQUIT,GlobalInterruptHandler) == SIG_ERR ||
@@ -3111,7 +3129,8 @@ OptionValues.KeepFilesDirectory);
 //----Structural verification - failure cannot be forced past
     if (!GlobalInterrupted && (OKSoFar || OptionValues.ForceContinue)) {
         QPRINTF(OptionValues,0)("Start structural verification\n");
-        if (!StructuralVerification(&OptionValues,Head,ProblemHead,Signature)) {
+        if (!StructuralVerification(&OptionValues,Head,ProblemHead,&DerivationRoot,
+&ProvedAnnotatedFormula,Signature)) {
             OKSoFar = 0;
             if (OptionValues.ForceContinue) {
                 OptionValues.ForceContinue = 0;
@@ -3131,9 +3150,10 @@ OptionValues.GenerateLambdaPiFiles) {
         strcpy(OptionValues.LambdaPiDirectory,OptionValues.KeepFilesDirectory);
         *strrchr(OptionValues.LambdaPiDirectory,'/') = '.';
         strcpy(OptionValues.LambdaPiDirectory,strrchr(OptionValues.LambdaPiDirectory,'/')+1);
-        OKSoFar *= WriteLPProofFile(OptionValues,Head,ProblemHead,Signature,&RootAnnotatedFormula);
-        OKSoFar *= WriteLPSignatureFile(OptionValues,Head,ProblemHead,RootAnnotatedFormula,
-Signature);
+        OKSoFar *= WriteLPProofFile(OptionValues,Head,ProblemHead,DerivationRoot,
+ProvedAnnotatedFormula,Signature);
+        OKSoFar *= WriteLPSignatureFile(OptionValues,Head,ProblemHead,DerivationRoot,
+ProvedAnnotatedFormula,Signature);
 //----Write package file, which needs the directory name created in WriteLPProofFile
         OKSoFar *= WriteLPPackageFile(OptionValues);
     }

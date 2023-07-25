@@ -9,8 +9,7 @@ fof(everyone_a_knight_or_knave,axiom,
     ! [X1] :
       ( truth(isa(X1,knight))
       | truth(isa(X1,knave)) ),
-    file('/export/starexec/sandbox2/benchmark/theBenchmark.p',everyone_a_knight_or_knave),
-    [verified(leaf)] ).
+    file('/export/starexec/sandbox2/benchmark/theBenchmark.p',everyone_a_knight_or_knave) ).
 fof(c_0_3,conjecture,
     ! [X1] :
       ( truth(isa(X1,knight))
@@ -24,8 +23,7 @@ fof(everyone_a_knight_or_knave,axiom,
     ! [X1] :
       ( truth(isa(X1,knight))
       | truth(isa(X1,knave)) ),
-    file('/export/starexec/sandbox2/benchmark/theBenchmark.p',everyone_a_knight_or_knave),
-    [verified(leaf)] ).
+    file('/export/starexec/sandbox2/benchmark/theBenchmark.p',everyone_a_knight_or_knave) ).
 fof(c_0_3,conjecture,
     ! [X1] :
       ( truth(isa(X1,knight))
@@ -71,5 +69,5 @@ rule S.c_0_3 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_3_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.08 WC = 0.14  NodesSearch = 1 MaxBranchF = 2 ProofNodes = 1 Formulas = 147
-OUTPUT: c_0_3_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.08 WC = 0.14 
+RESULT: c_0_3_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.04 WC = 0.12  NodesSearch = 1 MaxBranchF = 2 ProofNodes = 1 Formulas = 147
+OUTPUT: c_0_3_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.04 WC = 0.12 

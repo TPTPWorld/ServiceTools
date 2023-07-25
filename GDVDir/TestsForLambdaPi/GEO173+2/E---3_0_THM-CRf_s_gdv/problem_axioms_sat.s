@@ -62,13 +62,13 @@ fof(ceq3_0012,axiom,
      => distinct_lines(X,Y) ) ).
 
 Paradox---4.0's problem_axioms_sat being prepared by /exp/home/tptp/ServiceTools/tptp4X
-    -d /tmp/SystemOnTPTP58697 
+    -d /tmp/SystemOnTPTP14793 
     -t none 
     -f tptp:short
     -x 
     -u machine
     TestsForLambdaPi/GEO173+2/E---3_0_THM-CRf_s_gdv/problem_axioms_sat.p
-Paradox---4.0   will use /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
+Paradox---4.0   will use /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
 Paradox---4.0's own format source file is ...
 fof(apart1_0001,axiom,! [X] : ~ distinct_points(X,X) ).
 fof(apart2_0002,axiom,! [X] : ~ distinct_lines(X,X) ).
@@ -84,14 +84,14 @@ fof(ceq2_0011,axiom,! [X] : ! [Y] : ! [Z] : ( apart_point_and_line(X,Y) => ( dis
 fof(ceq3_0012,axiom,! [X] : ! [Y] : ( convergent_lines(X,Y) => distinct_lines(X,Y) ) ).
 
 Paradox---4.0   is forced to process that problem/solution
-Paradox---4.0   being executed on problem_axioms_sat using /exp/home/tptp/Systems/Paradox---4.0/paradox --no-progress --time 60 --tstp --model '/tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short'
+Paradox---4.0   being executed on problem_axioms_sat using /exp/home/tptp/Systems/Paradox---4.0/paradox --no-progress --time 60 --tstp --model '/tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short'
 % START OF SYSTEM OUTPUT
 Paradox, version 4.0, 2010-06-29.
-+++ PROBLEM: /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
-Reading '/tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short' ... OK
-+++ SOLVING: /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
++++ PROBLEM: /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
+Reading '/tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short' ... OK
++++ SOLVING: /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
 +++ BEGIN MODEL
-SZS output start FiniteModel for /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
+SZS output start FiniteModel for /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
 % domain size is 1
 fof(domain, fi_domain,
   (![X] : (X = "1"))
@@ -121,11 +121,11 @@ fof(line_connecting, fi_functors,
   ( (line_connecting("1","1") = "1")
   )
 ).
-SZS output end FiniteModel for /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
+SZS output end FiniteModel for /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
 +++ END MODEL
 +++ RESULT: Satisfiable
-SZS status Satisfiable for /tmp/SystemOnTPTP58697/problem_axioms_sat.tptp:short
+SZS status Satisfiable for /tmp/SystemOnTPTP14793/problem_axioms_sat.tptp:short
 
 % END OF SYSTEM OUTPUT
-RESULT: problem_axioms_sat - Paradox---4.0 says Satisfiable - CPU = 0.00 WC = 0.00  Size = 1
-OUTPUT: problem_axioms_sat - Paradox---4.0 says FiniteModel - CPU = 0.00 WC = 0.00 
+RESULT: problem_axioms_sat - Paradox---4.0 says Satisfiable - CPU = 0.00 WC = 0.01  Size = 1
+OUTPUT: problem_axioms_sat - Paradox---4.0 says FiniteModel - CPU = 0.00 WC = 0.01 
