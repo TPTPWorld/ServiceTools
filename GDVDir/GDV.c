@@ -83,6 +83,7 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
 != -1) {
         switch (OptionChar) {
 //----Options for processing
+//----Help is done down below
             case 'q':
                 OptionValues->Quietness = atoi(optarg);
                 break;
@@ -105,7 +106,6 @@ int ProcessCommandLine(int argc,char * argv[],OptionsType * OptionValues) {
                 strcpy(OptionValues->KeepFilesDirectory,optarg);
                 break;
 //----What to do
-//----Help is done down below
 //----DerivationFileName is a separate parameter
             case 'i':
                 strcpy(OptionValues->ProblemFileName,optarg);

@@ -1,24 +1,29 @@
 //-------------------------------------------------------------------------------------------------
 typedef struct {
 //----Options for processing
+    int NoHTML;
     int Quietness;
 //----What to do
+    String SubmitButton;
+    String ListStatus;
+    String AutoMode;
+    int AutoModeSystems;
+    String System;
+    int TimeLimit;
+    String ProblemSource;
+    String Problem;
+    int Force;
+    int TSTPOutput;
 } OptionsType;
-
-typedef struct {
-  char * TheMemoryemory;
-  size_t Size;
-} MemoryStruct;
 //-------------------------------------------------------------------------------------------------
-#define SYSTEMONTPTP_FORMREPLY_URL "https://www.tptp.org/cgi-bin/SystemOnTPTPFormReply"
+// #define SYSTEMONTPTP_FORMREPLY_URL "https://www.tptp.org/cgi-bin/SystemOnTPTPFormReply"
+#define SYSTEMONTPTP_FORMREPLY_URL "https://tptp.cs.miami.edu/cgi-bin/SystemOnTPTPFormReply"
 
-#define USAGE = "Usage: RemoteSOT <options> [<File name>]\n \
+#define USAGE "Usage: RemoteSoT <options> [<File name>]\n \
     <options> are ...\n \
     -v              --version    - print version information\n \
     -h --help       --help       - print this help\n \
     -w[<status>]    --what       - list available ATP systems\n \
-    -rr             --recommend  - recommend ATP systems at level\n \
-    -r<type><level> --report     - report type (i,c,s,t) at level (0,2)\n \
     -q<quietness>   --quiet      - control amount of output\n \
     -t<timelimit>   --time-limit - CPU time limit for system\n \
     -c<automode>    --auto       - one of N, E, S\n \
