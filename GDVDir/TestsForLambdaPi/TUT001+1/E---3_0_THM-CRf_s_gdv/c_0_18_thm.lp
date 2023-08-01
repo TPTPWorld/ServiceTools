@@ -3,7 +3,8 @@ require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_16_thm ;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_15_thm ;
 
-rule S.c_0_18 ↪ 
+rule S.c_0_18 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  ¬
  (S.country (v_Vm))))
@@ -79,7 +80,7 @@ rule S.c_0_18 ↪
 )
  (v_Vt)
 )
- (S.c_0_16)
+ (S.c_0_16 c_0_5)
 )
  (λ (v_Vv : ϵ (¬
  (S.country (v_Vo)))),
@@ -90,7 +91,7 @@ rule S.c_0_18 ↪
 )
  (v_Vr)
 )
- (S.c_0_15)
+ (S.c_0_15 c_0_5)
 )
  (v_Vp)
 )

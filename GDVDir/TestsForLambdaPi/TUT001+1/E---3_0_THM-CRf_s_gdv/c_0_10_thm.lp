@@ -1,7 +1,9 @@
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
+require TUT001+1.E---3_0_THM-CRf_s_gdv.crime_axiom_thm ;
 
-rule S.c_0_10 ↪ 
+rule S.c_0_10 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (¬
  (S.big_city (v_Vm)))
@@ -72,7 +74,7 @@ rule S.c_0_10 ↪
 )
  (v_Vu)
 )
- (S.crime_axiom)
+ (S.crime_axiom c_0_5)
 )
  (v_Vq)
 )

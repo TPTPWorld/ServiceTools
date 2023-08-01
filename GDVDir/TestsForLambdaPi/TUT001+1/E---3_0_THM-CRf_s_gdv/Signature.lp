@@ -10,9 +10,15 @@ constant symbol country : κ → Prop ;
 constant symbol has_crime : κ → Prop ;
 
 //----The problem formulae
-symbol Prf problem_conjecture_nnpp ≔ Prf (¬ (∃ (λ X1, (((city X1)) ∧ (((beautiful X1)) ∧ ((has_crime X1))))))) → Prf problem_conjecture_nnpp ;
+symbol country_usa_0001 : ϵ ((country usa)) ;
+symbol country_big_city_0002 : ϵ (∀ (λ C, (((country C)) ⇒ (((big_city (capital_of C))) ∧ ((beautiful (capital_of C))))))) ;
+symbol usa_capital_axiom_0003 : ϵ ((city (capital_of usa))) ;
+symbol crime_axiom_0004 : ϵ (∀ (λ C, (((big_city C)) ⇒ ((has_crime C))))) ;
+symbol big_city_city_0005 : ϵ (∀ (λ C, (((big_city C)) ⇒ ((city C))))) ;
+symbol some_beautiful_crime_0006 : ϵ (∃ (λ C, (((city C)) ∧ (((beautiful C)) ∧ ((has_crime C)))))) ;
 
 //----Derivation formulae
+symbol ϵ problem_conjecture_nnpp ≔ ϵ (¬ (∃ (λ C, (((city C)) ∧ (((beautiful C)) ∧ ((has_crime C))))))) → ϵ problem_conjecture_nnpp ;
 symbol some_beautiful_crime : ϵ (∃ (λ X1, (((city X1)) ∧ (((beautiful X1)) ∧ ((has_crime X1)))))) ;
 symbol country_big_city : ϵ (∀ (λ X1, (((country X1)) ⇒ (((big_city (capital_of X1))) ∧ ((beautiful (capital_of X1))))))) ;
 symbol crime_axiom : ϵ (∀ (λ X1, (((big_city X1)) ⇒ ((has_crime X1))))) ;

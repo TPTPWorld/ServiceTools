@@ -4,7 +4,8 @@ require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_14_thm ;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_13_thm ;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_12_thm ;
 
-rule S.c_0_16 ↪ 
+rule S.c_0_16 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (¬
  (S.big_city (S.capital_of (v_Vm))))
@@ -122,7 +123,7 @@ rule S.c_0_16 ↪
 )
  (v_Vw)
 )
- (S.c_0_13)
+ (S.c_0_13 c_0_5)
 )
  (λ (v_Vz : ϵ ((¬
  (S.city (S.capital_of (v_Vo))))
@@ -170,7 +171,7 @@ rule S.c_0_16 ↪
 )
  (v_Vba)
 )
- (S.c_0_14)
+ (S.c_0_14 c_0_5)
 )
  (λ (v_Vda : ϵ (¬
  (S.country (v_Vo)))),
@@ -183,7 +184,7 @@ rule S.c_0_16 ↪
 )
  (v_Vu)
 )
- (S.c_0_12)
+ (S.c_0_12 c_0_5)
 )
  (v_Vr)
 )

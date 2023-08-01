@@ -21,6 +21,39 @@
 #include "GDV.h"
 #include "LambdaPi.h"
 //-------------------------------------------------------------------------------------------------
+int GetNNPPTag(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signature) {
+
+    extern String NNPPTag;
+    char * AllParentNames;
+    StringParts ParentNames;
+    int NumberOfParents;
+    LISTNODE ParentAnnotatedFormulae;
+    LISTNODE Target;
+
+//----If in the LambdaPi world, find the negated conjecture
+    Target = Head;
+    strcpy(NNPPTag,"");
+    while (Target != NULL && !strcmp(NNPPTag,"")) {
+        if (GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
+//----This is all copied from DerivedVerification, but I have to get the negated conjecture name 
+//----in advance for the LambdaPi stuff
+            AllParentNames = GetNodeParentNames(Target->AnnotatedFormula,NULL);
+            NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
+            NumberOfParents = UniquifyStringParts(ParentNames);
+            GetNodesForNames(Head,ParentNames,NumberOfParents,&ParentAnnotatedFormulae,Signature);
+            if (ParentAnnotatedFormulae != NULL && ParentAnnotatedFormulae->Next == NULL &&
+GetRole(ParentAnnotatedFormulae->AnnotatedFormula,NULL) == conjecture) {
+                sprintf(NNPPTag,"nnpp(%s)",GetName(Target->AnnotatedFormula,NULL));
+            }
+        }
+        Target = Target->Next;
+    }
+//----Free the parents list
+    Free((void **)&AllParentNames);
+    FreeListOfAnnotatedFormulae(&ParentAnnotatedFormulae,Signature);
+    return(1);
+}
+//-------------------------------------------------------------------------------------------------
 int WriteLPPackageFile(OptionsType OptionValues) {
 
     String FileName;
@@ -57,7 +90,7 @@ ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATUR
     *strstr(FileName,".lp") = '\0';
     fprintf(Handle,
 "require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen ;\n");
-    fprintf(Handle,"require %s.%s as %s;\n",OptionValues.LambdaPiDirectory,FileName,FileName);
+    fprintf(Handle,"require open %s.%s ;\n",OptionValues.LambdaPiDirectory,FileName);
 //----See if a real conjecture to use instead of derivation root
     if (ProvedAnnotatedFormula != NULL) {
         fprintf(Handle,"require %s.%s_thm ;\n",OptionValues.LambdaPiDirectory,
@@ -65,8 +98,10 @@ GetName(DerivationRoot,NULL));
 //----Print the final rule
         fprintf(Handle,"\n//----Conjecture rule\n");
         if (FalseAnnotatedFormula(DerivationRoot)) {
-            fprintf(Handle,"rule %s ↪ nnpp %s \n",GetName(ProvedAnnotatedFormula,NULL),
-GetName(DerivationRoot,NULL));
+            fprintf(Handle,"rule %s ↪ nnpp ",GetName(ProvedAnnotatedFormula,NULL));
+            LPPrintFormula(Handle,
+ProvedAnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula);
+            fprintf(Handle," %s ;\n",GetName(DerivationRoot,NULL));
         } else {
             fprintf(Handle,"\nrule %s.%s ↪ %s.%s ;\n",FileName,
 GetName(ProvedAnnotatedFormula,NULL),FileName,GetName(DerivationRoot,NULL));
@@ -130,19 +165,19 @@ ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATUR
         WriteLPFormulaeWithRole(Handle,ProblemHead,negated_conjecture,Signature);
         WriteLPFormulaeWithRole(Handle,ProblemHead,conjecture,Signature);
     }
+
+//----Print all the derivation formulae
+    fprintf(Handle,"\n//----Derivation formulae\n");
     if (FalseAnnotatedFormula(DerivationRoot)) {
         if (ProvedAnnotatedFormula != NULL) {
-            fprintf(Handle,"symbol Prf problem_conjecture_nnpp ≔ Prf (¬ ");
+            fprintf(Handle,"symbol ϵ problem_conjecture_nnpp ≔ ϵ (¬ ");
             LPPrintFormula(Handle,
 ProvedAnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula);
-            fprintf(Handle,") → Prf problem_conjecture_nnpp ;\n");
+            fprintf(Handle,") → ϵ problem_conjecture_nnpp ;\n");
         } else {
             fprintf(Handle,"symbol conjecture_0000 : ϵ (⊥) ;\n");
         }
     }
-
-//----Print all the derivation formulae
-    fprintf(Handle,"\n//----Derivation formulae\n");
     PrintListOfAnnotatedTSTPNodes(Handle,Signature,Head,lambdapi,1);
 
     fclose(Handle);

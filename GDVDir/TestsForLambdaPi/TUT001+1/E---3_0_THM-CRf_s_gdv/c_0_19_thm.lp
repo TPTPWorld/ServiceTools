@@ -3,7 +3,8 @@ require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_18_thm ;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_17_thm ;
 
-rule S.c_0_19 ↪ 
+rule S.c_0_19 ↪ λ c_0_5,
+
   nnpp (⊥)
     (λ (v_Vm : ϵ (¬
  (⊥))),
@@ -17,8 +18,8 @@ rule S.c_0_19 ↪
  (S.country (S.usa)))),
  Raxiom
  (S.country (S.usa))
- (S.c_0_17)
+ (S.c_0_17 c_0_5)
  (v_Vo)
 )
- (S.c_0_18)
+ (S.c_0_18 c_0_5)
 );

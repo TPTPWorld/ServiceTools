@@ -10,14 +10,16 @@ fof(country_big_city,axiom,
       ( country(X1)
      => ( big_city(capital_of(X1))
         & beautiful(capital_of(X1)) ) ),
-    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',country_big_city) ).
+    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',country_big_city),
+    [nnpp(c_0_5),verified(leaf)] ).
 fof(c_0_7,conjecture,
     ! [X4] :
       ( ( big_city(capital_of(X4))
         | ~ country(X4) )
       & ( beautiful(capital_of(X4))
         | ~ country(X4) ) ),
-    inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]) ).
+    inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]),
+    [nnpp(c_0_5)] ).
 
 ZenonModulo---0.4.2's c_0_7_thm does not need preparation
 ZenonModulo---0.4.2   will use TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p
@@ -27,29 +29,28 @@ fof(country_big_city,axiom,
       ( country(X1)
      => ( big_city(capital_of(X1))
         & beautiful(capital_of(X1)) ) ),
-    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',country_big_city) ).
+    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',country_big_city),
+    [nnpp(c_0_5),verified(leaf)] ).
 fof(c_0_7,conjecture,
     ! [X4] :
       ( ( big_city(capital_of(X4))
         | ~ country(X4) )
       & ( beautiful(capital_of(X4))
         | ~ country(X4) ) ),
-    inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]) ).
+    inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]),
+    [nnpp(c_0_5)] ).
 
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_7_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p'
 % START OF SYSTEM OUTPUT
-nodes searched: 26
-max branch formulas: 17
-proof nodes created: 16
-formulas created: 210
-
+Rnning zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5 -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_7_thm.p > /tmp/tmp.4qQHE4oLWz/ZenonModulo_50872.s
 % SZS status Theorem
 % SZS output start Proof
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
 require LAMBDAPI_CONTEXT.Signature as S;
 
-rule S.c_0_7 ↪ 
+rule S.c_0_7 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  ((S.big_city (S.capital_of (v_Vm)))
 ∨
@@ -184,7 +185,7 @@ rule S.c_0_7 ↪
 )
  (v_Vv)
 )
- (S.country_big_city)
+ (S.country_big_city c_0_5)
 )
  (v_Vs)
 )
@@ -257,7 +258,7 @@ rule S.c_0_7 ↪
 )
  (v_Vv)
 )
- (S.country_big_city)
+ (S.country_big_city c_0_5)
 )
  (v_Vs)
 )
@@ -272,5 +273,5 @@ rule S.c_0_7 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_7_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.05 WC = 0.12  NodesSearch = 26 MaxBranchF = 17 ProofNodes = 16 Formulas = 210
-OUTPUT: c_0_7_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.05 WC = 0.12 
+RESULT: c_0_7_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.14 
+OUTPUT: c_0_7_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.14 

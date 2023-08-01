@@ -2,7 +2,8 @@ require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Lo
 require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_7_thm ;
 
-rule S.c_0_15 ↪ 
+rule S.c_0_15 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (S.big_city (S.capital_of (v_Vm)))
 ∨
@@ -91,7 +92,7 @@ rule S.c_0_15 ↪
 )
  (v_Vr)
 )
- (S.c_0_7)
+ (S.c_0_7 c_0_5)
 )
  (v_Vn)
 );

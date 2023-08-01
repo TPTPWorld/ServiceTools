@@ -2,7 +2,8 @@ require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Lo
 require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_10_thm ;
 
-rule S.c_0_13 ↪ 
+rule S.c_0_13 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (S.has_crime (v_Vm))
 ∨
@@ -76,7 +77,7 @@ rule S.c_0_13 ↪
 )
  (v_Vu)
 )
- (S.c_0_10)
+ (S.c_0_10 c_0_5)
 )
  (v_Vr)
 )

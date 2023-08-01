@@ -2569,6 +2569,7 @@ SIGNATURE Signature) {
     int OKSoFar;
     int ThisOneOK;
     char * SymbolDefined;
+    extern String NNPPTag;
 
 //----Mark all type formulae as checked (although no check is made yet)
     Target = Head;
@@ -2733,6 +2734,12 @@ GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
 //----Target->AnnotatedFormula tagged on the end - sneaky hey?)
                     *TypesNext = ProblemParents;
                     CleanTheFileName(FormulaName,FileBaseName);
+//----Add NNPP tag if in the LambdaPi world and using ZenonModulo
+                    if (OptionValues.GenerateLambdaPiFiles && strcmp(NNPPTag,"") && 
+strstr(OptionValues.TheoremProver,"ZenonModulo") == OptionValues.TheoremProver) {
+                        AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
+NNPPTag);
+                    }
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,ProblemTypes,"the problem","thm",FileBaseName,-1,"")) {
                         if (OptionValues.GenerateObligations) {
@@ -2846,7 +2853,7 @@ int DerivedVerification(OptionsType OptionValues,LISTNODE Head,SIGNATURE Signatu
     String SZSStatus;
     SZSResultArray SZSArray;
     int NumberOfSZSResults;
-    String NNPPTag;
+    extern String NNPPTag;
 
     Target = Head;
     OKSoFar = 1;
@@ -2911,19 +2918,15 @@ GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture) {
                         strcpy(SZSStatus,"cth");
                     } else {
                         strcpy(SZSStatus,"thm");
-                        strcpy(NNPPTag,"");
                     }
                     QPRINTF(OptionValues,1)(", assuming %s\n",SZSStatus);
                 } else {
                     CombineSZSStatusesForVerification(SZSArray,SZSStatus,NumberOfSZSResults);
                     Free((void **)&SZSArray);
                 }
-//----Send the name of the negated conjecture to ZenonModulo
-                if (!strcmp(SZSStatus,"cth") && ParentAnnotatedFormulae != NULL &&
-GetRole(ParentAnnotatedFormulae->AnnotatedFormula,NULL) == conjecture &&
-GetRole(Target->AnnotatedFormula,NULL) == negated_conjecture && 
-OptionValues.GenerateLambdaPiFiles) {
-                    sprintf(NNPPTag,"nnpp(%s)",GetName(Target->AnnotatedFormula,NULL));
+//----Add NNPP tag if in the LambdaPi world and using ZenonModulo
+                if (OptionValues.GenerateLambdaPiFiles && strcmp(NNPPTag,"") && 
+strstr(OptionValues.TheoremProver,"ZenonModulo") == OptionValues.TheoremProver) {
                     AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
 NNPPTag);
                 }
@@ -3156,6 +3159,7 @@ ProvedAnnotatedFormula,Signature);
 ProvedAnnotatedFormula,Signature);
 //----Write package file, which needs the directory name created in WriteLPProofFile
         OKSoFar *= WriteLPPackageFile(OptionValues);
+        GetNNPPTag(OptionValues,Head,Signature);
     }
 
 //----Leaf verification

@@ -3,7 +3,8 @@ require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_9_thm ;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.c_0_8_thm ;
 
-rule S.c_0_12 ↪ 
+rule S.c_0_12 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (¬
  (S.has_crime (S.capital_of (v_Vm))))
@@ -179,7 +180,7 @@ rule S.c_0_12 ↪
 )
  (v_Vz)
 )
- (S.c_0_8)
+ (S.c_0_8 c_0_5)
 )
  (λ (v_Vea : ϵ (¬
  (S.country (v_Vo)))),
@@ -190,7 +191,7 @@ rule S.c_0_12 ↪
 )
  (v_Vx)
 )
- (S.c_0_9)
+ (S.c_0_9 c_0_5)
 )
  (v_Vq)
 )

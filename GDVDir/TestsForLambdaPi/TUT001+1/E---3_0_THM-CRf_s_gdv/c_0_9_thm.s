@@ -12,12 +12,13 @@ fof(c_0_7,axiom,
       & ( beautiful(capital_of(X4))
         | ~ country(X4) ) ),
     inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]),
-    [verified(thm)] ).
+    [nnpp(c_0_5),verified(thm)] ).
 fof(c_0_9,conjecture,
     ! [X1] :
       ( beautiful(capital_of(X1))
       | ~ country(X1) ),
-    inference(split_conjunct,[status(thm)],[c_0_7]) ).
+    inference(split_conjunct,[status(thm)],[c_0_7]),
+    [nnpp(c_0_5)] ).
 
 ZenonModulo---0.4.2's c_0_9_thm does not need preparation
 ZenonModulo---0.4.2   will use TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_9_thm.p
@@ -29,27 +30,25 @@ fof(c_0_7,axiom,
       & ( beautiful(capital_of(X4))
         | ~ country(X4) ) ),
     inference(distribute,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[country_big_city])])]),
-    [verified(thm)] ).
+    [nnpp(c_0_5),verified(thm)] ).
 fof(c_0_9,conjecture,
     ! [X1] :
       ( beautiful(capital_of(X1))
       | ~ country(X1) ),
-    inference(split_conjunct,[status(thm)],[c_0_7]) ).
+    inference(split_conjunct,[status(thm)],[c_0_7]),
+    [nnpp(c_0_5)] ).
 
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_9_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_9_thm.p'
 % START OF SYSTEM OUTPUT
-nodes searched: 11
-max branch formulas: 14
-proof nodes created: 4
-formulas created: 195
-
+Rnning zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5 -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_9_thm.p > /tmp/tmp.VTdDnAo4S7/ZenonModulo_50945.s
 % SZS status Theorem
 % SZS output start Proof
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
 require LAMBDAPI_CONTEXT.Signature as S;
 
-rule S.c_0_9 ↪ 
+rule S.c_0_9 ↪ λ c_0_5,
+
   nnpp (∀α (λ (v_Vm : τ (ι)),
  (S.beautiful (S.capital_of (v_Vm)))
 ∨
@@ -138,7 +137,7 @@ rule S.c_0_9 ↪
 )
  (v_Vr)
 )
- (S.c_0_7)
+ (S.c_0_7 c_0_5)
 )
  (v_Vn)
 );
@@ -147,5 +146,5 @@ rule S.c_0_9 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_9_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.05 WC = 0.13  NodesSearch = 11 MaxBranchF = 14 ProofNodes = 4 Formulas = 195
-OUTPUT: c_0_9_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.05 WC = 0.13 
+RESULT: c_0_9_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.14 
+OUTPUT: c_0_9_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.14 

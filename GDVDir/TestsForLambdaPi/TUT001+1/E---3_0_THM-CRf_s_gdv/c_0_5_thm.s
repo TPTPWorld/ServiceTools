@@ -10,7 +10,8 @@ fof(some_beautiful_crime,axiom,
       ( city(X1)
       & beautiful(X1)
       & has_crime(X1) ),
-    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',some_beautiful_crime) ).
+    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',some_beautiful_crime),
+    [nnpp(c_0_5),verified(leaf)] ).
 fof(c_0_5,conjecture,
     ~ ~ ? [X1] :
           ( city(X1)
@@ -27,7 +28,8 @@ fof(some_beautiful_crime,axiom,
       ( city(X1)
       & beautiful(X1)
       & has_crime(X1) ),
-    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',some_beautiful_crime) ).
+    file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',some_beautiful_crime),
+    [nnpp(c_0_5),verified(leaf)] ).
 fof(c_0_5,conjecture,
     ~ ~ ? [X1] :
           ( city(X1)
@@ -39,17 +41,14 @@ fof(c_0_5,conjecture,
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_5_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_5_thm.p'
 % START OF SYSTEM OUTPUT
-nodes searched: 4
-max branch formulas: 7
-proof nodes created: 2
-formulas created: 148
-
+Rnning zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5 -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_5_thm.p > /tmp/tmp.pn1ghVSSWT/ZenonModulo_50800.s
 % SZS status Theorem
 % SZS output start Proof
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
 require LAMBDAPI_CONTEXT.Signature as S;
 
-rule S.c_0_5 ↪ 
+rule S.c_0_5 ↪ λ c_0_5,
+
   nnpp (¬
  (¬
  (∃α (λ (v_Vm : τ (ι)),
@@ -99,7 +98,7 @@ rule S.c_0_5 ↪
 (S.has_crime (v_Vm))
 )
 ))
- (S.some_beautiful_crime)
+ (S.some_beautiful_crime c_0_5)
  (v_Vo)
 )
  (v_Vn)
@@ -109,5 +108,5 @@ rule S.c_0_5 ↪
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_5_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.06 WC = 0.12  NodesSearch = 4 MaxBranchF = 7 ProofNodes = 2 Formulas = 148
-OUTPUT: c_0_5_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.06 WC = 0.12 
+RESULT: c_0_5_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.11 WC = 0.13 
+OUTPUT: c_0_5_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.11 WC = 0.13 
