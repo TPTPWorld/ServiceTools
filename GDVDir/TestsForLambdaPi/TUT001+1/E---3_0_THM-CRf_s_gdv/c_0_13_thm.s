@@ -37,7 +37,7 @@ fof(c_0_13,conjecture,
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_13_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_13_thm.p'
 % START OF SYSTEM OUTPUT
-Rnning zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5 -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_13_thm.p > /tmp/tmp.RqdkQbG1Sb/ZenonModulo_51090.s
+Running zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5  -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_13_thm.p > /tmp/tmp.CnpoBFtuum/ZenonModulo_17170.s
 % SZS status Theorem
 % SZS output start Proof
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;

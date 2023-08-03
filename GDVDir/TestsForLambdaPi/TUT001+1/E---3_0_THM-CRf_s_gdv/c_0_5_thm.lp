@@ -2,7 +2,7 @@ require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Lo
 require TUT001+1.E---3_0_THM-CRf_s_gdv.Signature as S;
 require TUT001+1.E---3_0_THM-CRf_s_gdv.some_beautiful_crime_thm ;
 
-rule S.c_0_5 ↪ λ c_0_5,
+rule S.c_0_5_neg ↪ λ c_0_5,
 
   nnpp (¬
  (¬

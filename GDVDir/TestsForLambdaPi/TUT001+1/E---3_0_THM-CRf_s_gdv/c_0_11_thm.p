@@ -3,7 +3,7 @@ fof(big_city_city,axiom,
       ( big_city(X1)
      => city(X1) ),
     file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',big_city_city),
-    [nnpp(c_0_5),verified(leaf)] ).
+    [verified(leaf)] ).
 fof(c_0_11,conjecture,
     ! [X5] :
       ( ~ big_city(X5)

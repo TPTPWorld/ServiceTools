@@ -4,7 +4,7 @@ fof(country_big_city,axiom,
      => ( big_city(capital_of(X1))
         & beautiful(capital_of(X1)) ) ),
     file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',country_big_city),
-    [nnpp(c_0_5),verified(leaf)] ).
+    [verified(leaf)] ).
 fof(c_0_7,conjecture,
     ! [X4] :
       ( ( big_city(capital_of(X4))

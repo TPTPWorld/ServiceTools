@@ -132,7 +132,8 @@ ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATUR
 
     String FileName;
     FILE * Handle;
-    LISTNODE TypeFormulae,MoreTypeFormulae;
+    LISTNODE TypeFormulae,MoreTypeFormulae,NegatedConjectures,OneNegatedConjecture;
+    String NegatedNegatedConjectureName,NegatedConjectureName,SZSStatus;
 
     strcpy(FileName,OptionValues.KeepFilesDirectory);
     strcat(FileName,"/");
@@ -174,6 +175,29 @@ ANNOTATEDFORMULA DerivationRoot,ANNOTATEDFORMULA ProvedAnnotatedFormula,SIGNATUR
             LPPrintFormula(Handle,
 ProvedAnnotatedFormula->AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula);
             fprintf(Handle,") → ϵ problem_conjecture_nnpp ;\n");
+//----Need negated negated conjecture in signature
+            if ((NegatedConjectures = GetListOfAnnotatedFormulaeWithRole(Head,negated_conjecture,
+Signature)) != NULL) {
+                OneNegatedConjecture = NegatedConjectures;
+                while (OneNegatedConjecture != NULL && StringToSZSResult(GetInferenceStatus(
+OneNegatedConjecture->AnnotatedFormula,SZSStatus)) != CTH) {
+                    OneNegatedConjecture = OneNegatedConjecture->Next;
+                }
+                if (OneNegatedConjecture != NULL) {
+                    Negate(OneNegatedConjecture->AnnotatedFormula,0);
+                    GetName(OneNegatedConjecture->AnnotatedFormula,NegatedConjectureName);
+                    strcpy(NegatedNegatedConjectureName,NegatedConjectureName);
+                    strcat(NegatedNegatedConjectureName,"_neg");
+                    SetName(OneNegatedConjecture->AnnotatedFormula,NegatedNegatedConjectureName);
+                    fprintf(Handle,"symbol %s : ϵ (",NegatedNegatedConjectureName);
+                    LPPrintFormula(Handle,OneNegatedConjecture->AnnotatedFormula->
+AnnotatedFormulaUnion.AnnotatedTSTPFormula.FormulaWithVariables->Formula);
+                    fprintf(Handle,") ;\n");
+                    Negate(NegatedConjectures->AnnotatedFormula,1);
+                    SetName(NegatedConjectures->AnnotatedFormula,NegatedConjectureName);
+                }
+                FreeListOfAnnotatedFormulae(&NegatedConjectures,Signature);
+            }
         } else {
             fprintf(Handle,"symbol conjecture_0000 : ϵ (⊥) ;\n");
         }

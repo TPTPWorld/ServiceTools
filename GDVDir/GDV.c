@@ -637,6 +637,7 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
     LISTNODE ESAParentNode;
     int CheckResult;
     String SZSFileBaseName;
+    String TargetName,NewTargetName;
 
 //----Suppress output as required
     OutcomeOptionValues = OptionValues;
@@ -644,7 +645,7 @@ char * FileBaseName,int OutcomeQuietness,char * Comment) {
         OutcomeOptionValues.Quietness = OutcomeQuietness;
     }
 
-    if (!strcmp(SZSStatus,"thm")) {
+    if (!strcmp(SZSStatus,"thm") || !strcmp(SZSStatus,"cth")) {
         if (OptionValues.CheckParentRelevance) {
             if ((CheckResult = GDVCheckSatisfiable(OptionValues,ParentAnnotatedFormulae,
 FileBaseName,"parents_sat")) == 1) {
@@ -680,6 +681,13 @@ FormulaName,ParentNames,Comment != NULL?Comment:"");
         }
 
         if (!GlobalInterrupted && (Correct || OptionValues.ForceContinue)) {
+            if (!strcmp(SZSStatus,"cth")) {
+                Negate(Target,0);
+                GetName(Target,TargetName);
+                strcpy(NewTargetName,TargetName);
+                strcat(NewTargetName,"_neg");
+                SetName(Target,NewTargetName);
+            }
             if ((CheckResult = GDVCheckTheorem(OptionValues,Signature,ParentAnnotatedFormulae,
 Target,FileBaseName,"thm")) == 1) {
                 Correct = 1;
@@ -707,15 +715,20 @@ SZSStatus);
                 QPRINTF(OutcomeOptionValues,2)(" %s",Comment);
             }
             QPRINTF(OutcomeOptionValues,2)("\n");
+            if (!strcmp(SZSStatus,"cth")) {
+                Negate(Target,1);
+                SetName(Target,TargetName);
+            }
         }
         return(Correct);
 
-    } else if (!strcmp(SZSStatus,"cth")) {
-        Negate(Target,0);
-        Correct = CorrectlyInferred(OptionValues,Signature,Target,FormulaName,
-ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,-1,"(Negated cth)");
-        Negate(Target,1);
-        return(Correct);
+//----Now rolled in above
+//     } else if (!strcmp(SZSStatus,"cth")) {
+//         Negate(Target,0);
+//         Correct = CorrectlyInferred(OptionValues,Signature,Target,FormulaName,
+// ParentAnnotatedFormulae,ParentNames,"thm",FileBaseName,-1,"(Negated cth)");
+//         Negate(Target,1);
+//         return(Correct);
 
     } else if (!strcmp(SZSStatus,"esa")) {
 //----First try a THM check and also try the weak reverse check.
@@ -964,18 +977,16 @@ SIGNATURE Signature,int * NumberOfExplicitSplits) {
         GetName(Target->AnnotatedFormula,SiblingName);
 //----Check if derived by a split and not already processed
         GetInferenceRule(Target->AnnotatedFormula,InferenceRule);
-        if (GetInferenceInfoTerm(Target->AnnotatedFormula,InferenceRule,
-InferenceInfo) != NULL && ExtractTermArguments(InferenceInfo) &&
-strstr(InferenceInfo,"split,") == InferenceInfo && GetUsefulInfoTerm(
-Target->AnnotatedFormula,"explicit_split_from",1,ProcessedTag) == NULL) {
+        if (GetInferenceInfoTerm(Target->AnnotatedFormula,InferenceRule,InferenceInfo) != NULL && 
+ExtractTermArguments(InferenceInfo) && strstr(InferenceInfo,"split,") == InferenceInfo && 
+GetUsefulInfoTerm(Target->AnnotatedFormula,"explicit_split_from",1,ProcessedTag) == NULL) {
             GetNodeParentNames(Target->AnnotatedFormula,AllParentNames);
             NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
 //----Check that there's just one parent
             if (NumberOfParents > 2 ||
-(NumberOfParents == 2 && !FalseAnnotatedFormula(
-GetAnnotatedFormulaFromListByName(Head,ParentNames[0])) && 
-!FalseAnnotatedFormula(
-GetAnnotatedFormulaFromListByName(Head,ParentNames[1])))) {
+(NumberOfParents == 2 && 
+ !FalseAnnotatedFormula(GetAnnotatedFormulaFromListByName(Head,ParentNames[0])) && 
+ !FalseAnnotatedFormula(GetAnnotatedFormulaFromListByName(Head,ParentNames[1])))) {
                 QPRINTF(OptionValues,2)(
 "FAILURE: %s has been split from more than one parent\n",SiblingName);
                 OKSoFar = 0;
@@ -983,8 +994,8 @@ GetAnnotatedFormulaFromListByName(Head,ParentNames[1])))) {
             if (NumberOfParents == 1 && OKSoFar) {
                 (*NumberOfExplicitSplits)++;
                 sprintf(ProcessedTag,"explicit_split_from(%s)",ParentNames[0]);
-                AddUsefulInformationToAnnotatedFormula(
-Target->AnnotatedFormula,Signature,ProcessedTag);
+                AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
+ProcessedTag);
                 strcpy(SplitSiblingsNames,"explicit_split_to(");
                 strcat(SplitSiblingsNames,SiblingName);
 
@@ -997,8 +1008,8 @@ Target->AnnotatedFormula,Signature,ProcessedTag);
                     while (OKSoFar && !NextChildFound && Sibling != NULL) {
                         if (GetInferenceInfoTerm(Sibling->AnnotatedFormula,
 InferenceRule,InferenceInfo) != NULL && ExtractTermArguments(InferenceInfo) &&
-strstr(InferenceInfo,"split,") == InferenceInfo && GetUsefulInfoTerm(
-Sibling->AnnotatedFormula,"psuedo_split_from",1,ProcessedTag) == NULL) {
+strstr(InferenceInfo,"split,") == InferenceInfo && 
+GetUsefulInfoTerm(Sibling->AnnotatedFormula,"psuedo_split_from",1,ProcessedTag) == NULL) {
 //----Check it's split from the same parent
                             GetName(Sibling->AnnotatedFormula,SiblingName);
                             GetNodeParentNames(Sibling->AnnotatedFormula,AllSiblingParentNames);
@@ -2740,6 +2751,12 @@ strstr(OptionValues.TheoremProver,"ZenonModulo") == OptionValues.TheoremProver) 
                         AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
 NNPPTag);
                     }
+//----Add leaf tag for ZenonModulo
+                    if (OptionValues.GenerateLambdaPiFiles && 
+strstr(OptionValues.TheoremProver,"ZenonModulo") == OptionValues.TheoremProver) {
+                        AddUsefulInformationToAnnotatedFormula(Target->AnnotatedFormula,Signature,
+"gdv_leaf");
+                    }
                     if (CorrectlyInferred(OptionValues,Signature,Target->AnnotatedFormula,
 FormulaName,ProblemTypes,"the problem","thm",FileBaseName,-1,"")) {
                         if (OptionValues.GenerateObligations) {
@@ -2751,6 +2768,10 @@ FormulaName,ProblemTypes,"the problem","thm",FileBaseName,-1,"")) {
                         QPRINTF(OptionValues,2)(
 "FAILURE: Leaf %s cannot be shown to be a thm of the problem formulae\n",FormulaName);
                     }
+                    RemoveUsefulInformationFromAnnotatedFormula(Target->AnnotatedFormula,Signature,
+"nnpp");
+                    RemoveUsefulInformationFromAnnotatedFormula(Target->AnnotatedFormula,Signature,
+"gdv_leaf");
                     *TypesNext = NULL;
                 } 
                 if (ThisOneOK) {

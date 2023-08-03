@@ -10,7 +10,7 @@ fof(big_city_city,axiom,
       ( big_city(X1)
      => city(X1) ),
     file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',big_city_city),
-    [nnpp(c_0_5),verified(leaf)] ).
+    [verified(leaf)] ).
 fof(c_0_11,conjecture,
     ! [X5] :
       ( ~ big_city(X5)
@@ -26,7 +26,7 @@ fof(big_city_city,axiom,
       ( big_city(X1)
      => city(X1) ),
     file('/tmp/tmp.BJIDJiIgjN/E---3.1_13943',big_city_city),
-    [nnpp(c_0_5),verified(leaf)] ).
+    [verified(leaf)] ).
 fof(c_0_11,conjecture,
     ! [X5] :
       ( ~ big_city(X5)
@@ -37,7 +37,7 @@ fof(c_0_11,conjecture,
 ZenonModulo---0.4.2   is forced to process that problem/solution
 ZenonModulo---0.4.2   being executed on c_0_11_thm using /exp/home/tptp/Systems/ZenonModulo---0.4.2/run_zenon_modulo 60 'TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_11_thm.p'
 % START OF SYSTEM OUTPUT
-Rnning zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5 -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_11_thm.p > /tmp/tmp.6OQyMgPHvX/ZenonModulo_51017.s
+Running zenon_modulo -p0 -itptp -olpterm -x arith -neg-conj=c_0_5  -max-time 60s -max-size 12G -sig LAMBDAPI_CONTEXT.Signature TestsForLambdaPi/TUT001+1/E---3_0_THM-CRf_s_gdv/c_0_11_thm.p > /tmp/tmp.ysZ8Q68mmD/ZenonModulo_17095.s
 % SZS status Theorem
 % SZS output start Proof
 require open Logic.Zenon.FOL Logic.Zenon.LL Logic.Zenon.ND Logic.Zenon.ND_eps Logic.Zenon.ND_eps_full Logic.Zenon.ND_eps_aux Logic.Zenon.LL_ND Logic.Zenon.zen;
@@ -128,5 +128,5 @@ rule S.c_0_11 ↪ λ c_0_5,
 % ZenonModulo exiting
 
 % END OF SYSTEM OUTPUT
-RESULT: c_0_11_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.05 WC = 0.11 
-OUTPUT: c_0_11_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.05 WC = 0.11 
+RESULT: c_0_11_thm - ZenonModulo---0.4.2 says Theorem - CPU = 0.09 WC = 0.14 
+OUTPUT: c_0_11_thm - ZenonModulo---0.4.2 says Proof - CPU = 0.09 WC = 0.14 

@@ -19,6 +19,7 @@ symbol some_beautiful_crime_0006 : ϵ (∃ (λ C, (((city C)) ∧ (((beautiful C
 
 //----Derivation formulae
 symbol ϵ problem_conjecture_nnpp ≔ ϵ (¬ (∃ (λ C, (((city C)) ∧ (((beautiful C)) ∧ ((has_crime C))))))) → ϵ problem_conjecture_nnpp ;
+symbol c_0_5_neg : ϵ ((¬ (¬ (∃ (λ X1, (((city X1)) ∧ (((beautiful X1)) ∧ ((has_crime X1))))))))) ;
 symbol some_beautiful_crime : ϵ (∃ (λ X1, (((city X1)) ∧ (((beautiful X1)) ∧ ((has_crime X1)))))) ;
 symbol country_big_city : ϵ (∀ (λ X1, (((country X1)) ⇒ (((big_city (capital_of X1))) ∧ ((beautiful (capital_of X1))))))) ;
 symbol crime_axiom : ϵ (∀ (λ X1, (((big_city X1)) ⇒ ((has_crime X1))))) ;
