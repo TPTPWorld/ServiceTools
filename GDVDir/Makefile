@@ -1,6 +1,6 @@
 #----Set TPTP_HOME if not already imported from environment
 TPTP_HOME ?= /home/tptp
-JJPARSER = $(TPTP_HOME)/ServiceTools/JJParser
+JJPARSER = ./JJParser
 
 CC = gcc
 CFLAGS = -Wall -Wformat-overflow=0 -I$(JJPARSER) -D TPTP_HOME=\"$(TPTP_HOME)\"
