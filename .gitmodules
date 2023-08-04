@@ -1,3 +1,6 @@
 [submodule "JJParser"]
 	path = JJParser
 	url = https://github.com/TPTPWorld/JJParser.git
+[submodule "GDVDir/JJParser"]
+	path = GDVDir/JJParser
+	url = https://github.com/TPTPWorld/JJParser.git
