@@ -91,8 +91,11 @@ sub DoMain {
         die("\n");
     }
 
-#----Convert the interpretation formula in model file to axiom
-    system("$TPTP4X -x -c -u machine $ModelFile | sed -e 's/^\\(...([^,]*,\\)fi_[a-z]*\\(,.*\\)/\\1axiom\\2/' -e 's/^\\(...([^,]*,\\)interpretation\\(,.*\\)/\\1axiom\\2/' > $ModelAsAxiomFile");
+#----Convert the interpretation formula in model file to axiom. First save the type declarations
+    system("$TPTP4X -x -c -u machine $ModelFile | grep ',type,' > $ModelAsAxiomFile");
+#----Second convert all formulae to axioms. Note this does satuartions too, which was not part of
+#----the original plan. Check emails with Joe.
+    system("$TPTP4X -x -c -u machine $ModelFile | grep -v ',type,' | sed -e 's/^tcf/tff/' -e 's/^\\(...([^,]*,\\)[a-z]*\\(,.*\\)/\\1axiom\\2/' >> $ModelAsAxiomFile");
     QuietPrint("% Testing model status",1);
     ($Result) = TryToProve($ModelAsAxiomFile,undef,
 # 'fof(prove_false,conjecture,$false).',
@@ -114,7 +117,7 @@ sub Usage {
 
     print("
 Usage 
-    GCMV [-qN] [-f0/1] [-tN] [-p prover] [-m model_finder] [-k dir] model_file problem_file
+    GCMV [-qN] [-f0/1] [-tN] [-p prover] [-m model_finder] [-k dir] problem_file model_file
 ");
 }
 #--------------------------------------------------------------------------------------------------
