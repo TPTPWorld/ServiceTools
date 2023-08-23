@@ -75,7 +75,7 @@
 #define HAVE_BIND_TEXTDOMAIN_CODESET 1
 
 /* Define to 1 if you have the <bluetooth/bluetooth.h> header file. */
-#define HAVE_BLUETOOTH_BLUETOOTH_H 1
+/* #undef HAVE_BLUETOOTH_BLUETOOTH_H */
 
 /* Define to 1 if you have the <bluetooth.h> header file. */
 /* #undef HAVE_BLUETOOTH_H */
@@ -965,7 +965,7 @@
 #define HAVE_STDLIB_H 1
 
 /* Has stdatomic.h with atomic_int */
-/* #undef HAVE_STD_ATOMIC */
+#define HAVE_STD_ATOMIC 1
 
 /* Define to 1 if you have the `strdup' function. */
 #define HAVE_STRDUP 1

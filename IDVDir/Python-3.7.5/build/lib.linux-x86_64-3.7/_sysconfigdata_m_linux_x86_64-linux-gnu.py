@@ -28,6 +28,7 @@ build_time_vars = {'ABIFLAGS': 'm',
  'CONFIGURE_CFLAGS_NODIST': '-std=c99 -Wextra -Wno-unused-result '
                             '-Wno-unused-parameter '
                             '-Wno-missing-field-initializers '
+                            '-Wno-cast-function-type '
                             '-Werror=implicit-function-declaration',
  'CONFIGURE_CPPFLAGS': '',
  'CONFIGURE_LDFLAGS': '-Wl,--rpath=/home/tptp/ServiceTools/IDVDir/IDVPython/lib',
@@ -38,8 +39,8 @@ build_time_vars = {'ABIFLAGS': 'm',
  'CONFINCLUDEDIR': '/home/tptp/ServiceTools/IDVDir/IDVPython/include',
  'CONFINCLUDEPY': '/home/tptp/ServiceTools/IDVDir/IDVPython/include/python3.7m',
  'COREPYTHONPATH': '',
- 'COVERAGE_INFO': '/home/tptp/ServiceTools/IDVDir/Python-3.7.5/coverage.info',
- 'COVERAGE_REPORT': '/home/tptp/ServiceTools/IDVDir/Python-3.7.5/lcov-report',
+ 'COVERAGE_INFO': '/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5/coverage.info',
+ 'COVERAGE_REPORT': '/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5/lcov-report',
  'COVERAGE_REPORT_OPTIONS': '--no-branch-coverage --title "CPython lcov '
                             'report"',
  'CPPFLAGS': '-I. -I./Include',
@@ -94,7 +95,7 @@ build_time_vars = {'ABIFLAGS': 'm',
  'HAVE_ASM_TYPES_H': 1,
  'HAVE_ATANH': 1,
  'HAVE_BIND_TEXTDOMAIN_CODESET': 1,
- 'HAVE_BLUETOOTH_BLUETOOTH_H': 1,
+ 'HAVE_BLUETOOTH_BLUETOOTH_H': 0,
  'HAVE_BLUETOOTH_H': 0,
  'HAVE_BROKEN_MBSTOWCS': 0,
  'HAVE_BROKEN_NICE': 0,
@@ -384,7 +385,7 @@ build_time_vars = {'ABIFLAGS': 'm',
  'HAVE_STDARG_PROTOTYPES': 1,
  'HAVE_STDINT_H': 1,
  'HAVE_STDLIB_H': 1,
- 'HAVE_STD_ATOMIC': 0,
+ 'HAVE_STD_ATOMIC': 1,
  'HAVE_STRDUP': 1,
  'HAVE_STRFTIME': 1,
  'HAVE_STRINGS_H': 1,
@@ -605,18 +606,21 @@ build_time_vars = {'ABIFLAGS': 'm',
                              '-fwrapv -O3 -Wall -std=c99 -Wextra '
                              '-Wno-unused-result -Wno-unused-parameter '
                              '-Wno-missing-field-initializers '
+                             '-Wno-cast-function-type '
                              '-Werror=implicit-function-declaration '
                              '-fprofile-use -fprofile-correction -I. '
                              '-I./Include -fPIC -DPy_BUILD_CORE_BUILTIN',
  'PY_CFLAGS': '-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall',
  'PY_CFLAGS_NODIST': '-std=c99 -Wextra -Wno-unused-result '
                      '-Wno-unused-parameter -Wno-missing-field-initializers '
+                     '-Wno-cast-function-type '
                      '-Werror=implicit-function-declaration -fprofile-use '
                      '-fprofile-correction',
  'PY_COERCE_C_LOCALE': 1,
  'PY_CORE_CFLAGS': '-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 '
                    '-Wall -std=c99 -Wextra -Wno-unused-result '
                    '-Wno-unused-parameter -Wno-missing-field-initializers '
+                   '-Wno-cast-function-type '
                    '-Werror=implicit-function-declaration -fprofile-use '
                    '-fprofile-correction -I. -I./Include -fPIC -DPy_BUILD_CORE',
  'PY_CORE_LDFLAGS': '-Wl,--rpath=/home/tptp/ServiceTools/IDVDir/IDVPython/lib',
@@ -629,6 +633,7 @@ build_time_vars = {'ABIFLAGS': 'm',
  'PY_STDMODULE_CFLAGS': '-Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv '
                         '-O3 -Wall -std=c99 -Wextra -Wno-unused-result '
                         '-Wno-unused-parameter -Wno-missing-field-initializers '
+                        '-Wno-cast-function-type '
                         '-Werror=implicit-function-declaration -fprofile-use '
                         '-fprofile-correction -I. -I./Include -fPIC',
  'Py_DEBUG': 0,
@@ -638,7 +643,7 @@ build_time_vars = {'ABIFLAGS': 'm',
  'READELF': 'readelf',
  'RESSRCDIR': 'Mac/Resources/framework',
  'RETSIGTYPE': 'void',
- 'RUNSHARED': 'LD_LIBRARY_PATH=/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/lib:/opt/lib:/opt/lib/i386_linux',
+ 'RUNSHARED': 'LD_LIBRARY_PATH=/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/local/lib:/usr/lib:/opt/lib:/opt/lib/i386_linux',
  'SCRIPTDIR': '/home/tptp/ServiceTools/IDVDir/IDVPython/lib',
  'SETPGRP_HAVE_ARG': 0,
  'SGI_ABI': '@SGI_ABI@',
@@ -680,10 +685,10 @@ build_time_vars = {'ABIFLAGS': 'm',
  'TCLTK_LIBS': '',
  'TESTOPTS': '',
  'TESTPATH': '',
- 'TESTPYTHON': 'LD_LIBRARY_PATH=/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/lib:/opt/lib:/opt/lib/i386_linux '
+ 'TESTPYTHON': 'LD_LIBRARY_PATH=/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/local/lib:/usr/lib:/opt/lib:/opt/lib/i386_linux '
                './python',
  'TESTPYTHONOPTS': '',
- 'TESTRUNNER': 'LD_LIBRARY_PATH=/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/lib:/opt/lib:/opt/lib/i386_linux '
+ 'TESTRUNNER': 'LD_LIBRARY_PATH=/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/local/lib:/usr/lib:/opt/lib:/opt/lib/i386_linux '
                './python ./Tools/scripts/run_tests.py',
  'TESTTIMEOUT': 1200,
  'TIMEMODULE_LIB': 0,
@@ -704,8 +709,8 @@ build_time_vars = {'ABIFLAGS': 'm',
  'WITH_VALGRIND': 0,
  'X87_DOUBLE_ROUNDING': 0,
  'XMLLIBSUBDIRS': 'xml xml/dom xml/etree xml/parsers xml/sax',
- 'abs_builddir': '/home/tptp/ServiceTools/IDVDir/Python-3.7.5',
- 'abs_srcdir': '/home/tptp/ServiceTools/IDVDir/Python-3.7.5',
+ 'abs_builddir': '/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5',
+ 'abs_srcdir': '/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5',
  'datarootdir': '/home/tptp/ServiceTools/IDVDir/IDVPython/share',
  'exec_prefix': '/home/tptp/ServiceTools/IDVDir/IDVPython',
  'prefix': '/home/tptp/ServiceTools/IDVDir/IDVPython',

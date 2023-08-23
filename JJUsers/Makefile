@@ -3,12 +3,12 @@ TPTP_HOME ?= /home/tptp
 JJPARSER = $(TPTP_HOME)/ServiceTools/JJParser
 
 CC = gcc
-CFLAGS = -Wall -Wformat-overflow=0 -I$(JJPARSER) -D TPTP_HOME=\"$(TPTP_HOME)\"
-LFLAGS = -lm
+CFLAGS = -Wall -Wformat-overflow=0 -I/usr/local/include -L/usr/local/lib -I$(JJPARSER) -D TPTP_HOME=\"$(TPTP_HOME)\"
+LFLAGS = -lcurl -lm
 
 OBJS = $(JJPARSER)/ListStatistics.o $(JJPARSER)/List.o $(JJPARSER)/Examine.o $(JJPARSER)/Modify.o $(JJPARSER)/Tree.o $(JJPARSER)/TreeStatistics.o $(JJPARSER)/ParseTPTP.o $(JJPARSER)/ParseTSTP.o $(JJPARSER)/PrintTSTP.o $(JJPARSER)/Parsing.o $(JJPARSER)/Signature.o $(JJPARSER)/Tokenizer.o $(JJPARSER)/Utilities.o $(JJPARSER)/Compare.o $(JJPARSER)/Interpret.o $(JJPARSER)/PrintXML.o $(JJPARSER)/PrintSMT2.o $(JJPARSER)/PrintDFG.o $(JJPARSER)/PrintOtter.o $(JJPARSER)/PrintKIF.o $(JJPARSER)/PrintSUMO.o $(JJPARSER)/PrintLP.o $(JJPARSER)/FileUtilities.o $(JJPARSER)/SystemOnTPTP.o $(JJPARSER)/Statistics.o
 
-all: most AxiofyC CLayout
+all: most AxiofyC 
 
 #----Most is for all tools used by other people
 most: some SPCForProblem
@@ -18,7 +18,6 @@ some: MakeTreeStats MakeListStats GetSymbols ProofSummary CheckTyping
 
 install: all install-most
 	mv AxiofyC $(TPTP_HOME)/ServiceTools/Axiofier
-	mv CLayoutDir/CLayout $(TPTP_HOME)/Systems/IDV---0.0
 
 install-most: install-some
 	cp SPCForProblem $(TPTP_HOME)/Systems/SPCForProblem---1.0
@@ -64,14 +63,8 @@ SortByUsefulInfoField: $(OBJS) SortByUsefulInfoField.o
 PostOrderTree: $(OBJS) PostOrderTree.o
 	$(CC) $(CFLAGS) -o $@ $(OBJS) PostOrderTree.o $(LFLAGS)
 
-CLayout:
-	$(MAKE) -C $(JJPARSER) clean
-	$(MAKE) -C CLayoutDir
-	$(MAKE) -C $(JJPARSER) clean
-
 TPTP2XML: $(OBJS) TPTP2XML.o
 	$(CC) $(CFLAGS) -o $@ $(OBJS) TPTP2XML.o $(LFLAGS)
 
 clean:
-	$(MAKE) -C CLayoutDir clean
 	rm -f *.o

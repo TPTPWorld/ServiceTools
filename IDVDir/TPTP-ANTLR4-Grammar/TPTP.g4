@@ -111,12 +111,12 @@ thf_and_formula         : thf_unit_formula And thf_unit_formula |
                           thf_and_formula And thf_unit_formula;
 thf_apply_formula       : thf_unit_formula App thf_unit_formula | 
                           thf_apply_formula App thf_unit_formula;
-thf_unit_formula        : thf_unitary_formula | thf_unary_formula;
+thf_unit_formula        : thf_unitary_formula | thf_unary_formula | thf_defined_infix;
 thf_preunit_formula     : thf_unitary_formula | thf_prefix_unary;
 thf_unitary_formula     : thf_quantified_formula | thf_atomic_formula | variable | 
                           '('thf_logic_formula')';
 
-thf_quantified_formula  : thf_quantification thf_unitary_formula;
+thf_quantified_formula  : thf_quantification thf_unit_formula;
 thf_quantification      : thf_quantifier '[' thf_variable_list ']' ':';
 thf_variable_list       : thf_variable (',' thf_variable)*; // #INFO thf_variable_list flattened
 thf_variable            : thf_typed_variable | variable;

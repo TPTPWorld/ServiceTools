@@ -30,8 +30,8 @@ MODLIBS=           $(LOCALMODLIBS) $(BASEMODLIBS)
 VERSION=	3.7
 srcdir=		.
 
-abs_srcdir=	/home/tptp/ServiceTools/IDVDir/Python-3.7.5
-abs_builddir=	/home/tptp/ServiceTools/IDVDir/Python-3.7.5
+abs_srcdir=	/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5
+abs_builddir=	/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5
 
 
 CC=		gcc -pthread
@@ -85,7 +85,7 @@ CONFIGURE_CFLAGS=
 # CFLAGS_NODIST is used for building the interpreter and stdlib C extensions.
 # Use it when a compiler flag should _not_ be part of the distutils CFLAGS
 # once Python is installed (Issue #21121).
-CONFIGURE_CFLAGS_NODIST= -std=c99 -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-missing-field-initializers -Werror=implicit-function-declaration
+CONFIGURE_CFLAGS_NODIST= -std=c99 -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-missing-field-initializers -Wno-cast-function-type -Werror=implicit-function-declaration
 # LDFLAGS_NODIST is used in the same manner as CFLAGS_NODIST.
 # Use it when a linker flag should _not_ be part of the distutils LDFLAGS
 # once Python is installed (bpo-35257)
@@ -188,7 +188,7 @@ LIPO_32BIT_FLAGS=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       LD_LIBRARY_PATH=/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/lib:/opt/lib:/opt/lib/i386_linux
+RUNSHARED=       LD_LIBRARY_PATH=/exp/home/tptp/ServiceTools/IDVDir/Python-3.7.5:/usr/local/lib:/usr/lib:/opt/lib:/opt/lib/i386_linux
 
 # ensurepip options
 ENSUREPIP=      upgrade
