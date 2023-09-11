@@ -66,19 +66,19 @@ void DetermineTFFSPC(StatisticsType Statistics,String SPC) {
 
 //DEBUG printf("NumberOfMathPredicates %.0f NumberOfEqualityAtoms %.0f NumberOfPredicates %.0f NumberOfMathFunctions %.0f NumberOfNumbers %.0f NumberOfFunctors %.0f\n",Statistics.NumberOfMathPredicates,Statistics.NumberOfEqualityAtoms,Statistics.NumberOfPredicates,Statistics.NumberOfMathFunctions,Statistics.NumberOfNumbers,Statistics.NumberOfFunctors);
 
-    DetermineEqualityPresence(Statistics,SPC);
-    DetermineArithmeticPresence(Statistics,SPC);
-
-//    if (Statistics.SymbolStatistics.NumberOfPredicates == 
-//Statistics.SymbolStatistics.NumberOfPropositions) {
-//        strcat(SPC,"_PRP");
+    if (Statistics.SymbolStatistics.NumberOfPredicates == 
+Statistics.SymbolStatistics.NumberOfPropositions) {
+        strcat(SPC,"_PRP");
 //    } else if (FOFEPRProblem(Statistics,Head,Signature)) {
 //        strcat(SPC,"_EPR");
 //    } else {
 //        strcat(SPC,"_RFO");
 //        DetermineEqualityPresence(Statistics,SPC);
 //        DetermineArithmeticPresence(Statistics,SPC);
-//    }
+    }
+
+    DetermineEqualityPresence(Statistics,SPC);
+    DetermineArithmeticPresence(Statistics,SPC);
 }
 //-------------------------------------------------------------------------------------------------
 int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
@@ -224,8 +224,8 @@ void DetermineProvabability(char * Status,int HasAConjecture,String SPC) {
 //-------------------------------------------------------------------------------------------------
 //----Here it is done right, as opposed to SPCForTPTPProblem which puts
 //----Unknowns without a conjecture into NKC.
-void DetermineSPC(LISTNODE Head,SIGNATURE Signature,SyntaxType Syntax,
-StatisticsType Statistics,char * Status,int HasAConjecture,String SPC) {
+void DetermineSPC(LISTNODE Head,SIGNATURE Signature,SyntaxType Syntax,StatisticsType Statistics,
+char * Status,int HasAConjecture,String SPC) {
 
     String SyntaxTypes;
     char * ASyntax;
@@ -265,6 +265,7 @@ Statistics.ConnectiveStatistics.NumberOfDescriptions > 0) {
         }
         DetermineProvabability(Status,HasAConjecture,SPC);
         DetermineTHFSPC(Statistics,SPC);
+
     } else if (Syntax == tptp_tff) {
         strcpy(SPC,Classicality);
 //DEBUG printf("NF %d BV %d Tu %d ITE %d Let %d\n",
@@ -311,6 +312,7 @@ Statistics.FormulaStatistics.NumberOfLets > 0) {
         strcpy(SPC,"MIX_");
         GetListSyntaxTypes(Head,SyntaxTypes);
         ASyntax = SyntaxTypes;
+//----Convert it all to uppercase
         while (*ASyntax != '\0') {
             *ASyntax = toupper(*ASyntax);
             ASyntax++;
@@ -322,9 +324,9 @@ Statistics.FormulaStatistics.NumberOfLets > 0) {
                 strcat(SPC,"TH0");
             } else if (!strcmp(ASyntax,"TFF")) {
                 if (Statistics.ConnectiveStatistics.NumberOfPiBinders > 0) {
-                    strcpy(SPC,"TF1_");
+                    strcat(SPC,"TF1");
                 } else {
-                    strcpy(SPC,"TF0_");
+                    strcat(SPC,"TF0");
                 }
             } else {
                 strcat(SPC,ASyntax);
