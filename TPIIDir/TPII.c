@@ -853,7 +853,7 @@ strstr(ExecuteCommand,"---") != NULL) {
         }
         SystemOnTPTPGetResult(Quietness,FileName,ExecuteCommand,TimeLimit,
 "",NULL,"",KeepOutputFile,NULL,OutputFileName,NULL,SZSResultStatus,
-SZSOutputStatus);
+SZSOutputStatus,1);
     } else {
 //----Otherwise do directly. Replace $getgroups terms.
         ReplaceLogicalFormulaeGroups(Signature,LogicalFormulae,ExecuteCommand,
