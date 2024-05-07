@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
         Statistics = GetSolutionStatistics(Head,Signature,&RootListHead,SZSResult,SZSOutput);
 //DEBUG printf("Try print root list\n");
 //DEBUG PrintRootList(stdout,RootListHead);
+//DEBUG printf("Root list printed\n");
 //DEBUG PrintSolutionStatistics(stdout,Statistics);
         if (Statistics.Type != Non && Statistics.Type != nonszsoutput) {
             PrintSolutionStatistics(stdout,Statistics);
