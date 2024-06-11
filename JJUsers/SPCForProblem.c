@@ -222,10 +222,23 @@ void DetermineProvabability(char * Status,int HasAConjecture,String SPC) {
     }
 }
 //-------------------------------------------------------------------------------------------------
+int ThereIsALogicSpecification(LISTNODE Head) {
+
+    while (Head != NULL) {
+        if (GetRole(Head->AnnotatedFormula,NULL) == logic) {
+            return(1);
+        } else {
+        }
+        Head = Head->Next;
+    }
+
+    return(0);
+}
+//-------------------------------------------------------------------------------------------------
 //----Here it is done right, as opposed to SPCForTPTPProblem which puts
 //----Unknowns without a conjecture into NKC.
 void DetermineSPC(LISTNODE Head,SIGNATURE Signature,SyntaxType Syntax,StatisticsType Statistics,
-char * Status,int HasAConjecture,String SPC) {
+char * Status,int HasAConjecture,int IsNonClassical,String SPC) {
 
     String SyntaxTypes;
     char * ASyntax;
@@ -233,13 +246,7 @@ char * Status,int HasAConjecture,String SPC) {
     char * Classicality;
 
 //----Check if non-classical
-    if (
-Statistics.FormulaStatistics.NumberOfAppliedConnectives > 0 ||
-Statistics.ConnectiveStatistics.NumberOfNTFConnectives > 0) {
-        Classicality = "N";
-    } else {
-        Classicality = "T";
-    }
+    Classicality = IsNonClassical ? "N" : "T";
 
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
@@ -375,6 +382,7 @@ int main(int argc, char *argv[]) {
     StatisticsType Statistics;
     String SPC;
     char * Status;
+    int IsNonClassical;
 
     if (argc == 1) {
         printf("Usage: SPCForProblem <file name>\n");
@@ -393,12 +401,13 @@ int main(int argc, char *argv[]) {
     Signature = NewSignatureWithTypes();
     SetNeedForNonLogicTokens(0);
     if ((Head = ParseFileOfFormulae(argv[1],NULL,Signature,1,NULL)) != NULL) {
+        IsNonClassical = ThereIsALogicSpecification(Head);
         RemoveAnnotatedFormulaWithRole(&Head,Signature,logic);
         RemovedUnusedSymbols(Signature);
         Statistics = GetListStatistics(Head,Signature);
         Status = GetStatusFromHeader(argv[1],Signature);
         DetermineSPC(Head,Signature,GetListSyntax(Head),Statistics,Status,ThereIsAConjecture(Head),
-SPC);
+IsNonClassical,SPC);
         printf("%s\n",SPC);
         FreeListOfAnnotatedFormulae(&Head,Signature);
         assert(Head == NULL);
