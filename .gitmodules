@@ -1,8 +1,0 @@
-[submodule "JJParser"]
-	path = JJParser
-	url = https://github.com/TPTPWorld/JJParser.git
-    branch = master
-[submodule "GDVDir/JJParser"]
-	path = GDVDir/JJParser
-	url = https://github.com/TPTPWorld/JJParser.git
-    branch = master
