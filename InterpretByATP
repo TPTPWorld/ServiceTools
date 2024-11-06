@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict "vars";
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 my $TPTPDirectory = "/home/tptp";
 
 if (exists($ENV{TPTP_HOME})) {
@@ -15,6 +15,7 @@ if (! -d $ENV{TPTP}) {
 }
 
 my $TryToProve = "$TPTPDirectory/ServiceTools/TryToProve";
+my $TPTP4X = "$TPTPDirectory/ServiceTools/tptp4X";
 
 #----Global for use in END statements
 my $GlobalTemporaryDirectory = "/tmp/InterpretByATP_$$";
@@ -24,9 +25,9 @@ my %GlobalOptions;
 my $DefaultProver = "Vampire---4.0";
 my $DefaultModelFinder = "iProver---SAT-2.0";
 my $DefaultCPULimit = 10;
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 DoMain();
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub DoMain {
 
     %GlobalOptions = (
@@ -39,7 +40,7 @@ sub DoMain {
        );
     my $Key;
 
-    my $ModelFile;
+    my $InterpretFile;
     my $ConjectureFileOrFormula;
     my $Prover;
     my $ModelFinder;
@@ -80,8 +81,8 @@ sub DoMain {
         }
     }
 
-#----Command line is model file, problem file, optional ATP system
-    if (scalar(@ARGV) < 2 || ! -f ($ModelFile = $ARGV[0])) {
+#----Command line is interpretation file, problem file, optional ATP system
+    if (scalar(@ARGV) < 2 || ! -f ($InterpretFile = $ARGV[0])) {
         Usage();
         die("\n");
     }
@@ -105,10 +106,13 @@ sub DoMain {
         $GlobalOptions{'-m'} = "1";
     }
 
-    Interpret($ModelFile,$ConjectureFileOrFormula,$Prover,$ModelFinder,
-$GlobalOptions{'-t'});
+#----Convert all interpretation formulae to axioms
+    system("$TPTP4X -u machine $InterpretFile | sed -e '/^[cft][nofxh][f01](/s/,[^,]*,/,axiom,/' > $GlobalTemporaryDirectory/IBAInterpretationFile_$$");
+
+    Interpret("$GlobalTemporaryDirectory/IBAInterpretationFile_$$",$ConjectureFileOrFormula,
+$Prover,$ModelFinder, $GlobalOptions{'-t'});
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub Usage {
 
     print("
@@ -116,7 +120,7 @@ Usage
     InterpretByATP [-qN] [-c0/1] [-t N] [-p prover] [-m model_finder] [-k dir] model_file conjecture[_file]
 ");
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub QUITHandler {
     my ($Signal) = @_;
 
@@ -126,9 +130,9 @@ sub QUITHandler {
         die("Terminated by ^C\n");
     }
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub Interpret {
-    my ($ModelFile,$FileOrFormula,$Prover,$ModelFinder,$CPULimit) = @_;
+    my ($InterpretFile,$FileOrFormula,$Prover,$ModelFinder,$CPULimit) = @_;
 
     my $FormulaName;
     my $TryToProveCommand;
@@ -151,9 +155,10 @@ sub Interpret {
     if ($GlobalOptions{'-c'}) {
         $TryToProveCommand .= " -n 1";
     }
-    $TryToProveCommand .= " $ModelFile '$FileOrFormula'";
-    open(TRYTOPROVE,"$TryToProveCommand |") ||
-die("ERROR: Cannot start $TryToProveCommand\n");
+
+    $TryToProveCommand .= " $InterpretFile '$FileOrFormula'";
+#DEBUG print("The command is ===$TryToProveCommand===\n");
+    open(TRYTOPROVE,"$TryToProveCommand |") || die("ERROR: Cannot start $TryToProveCommand\n");
     $NumberOfResults = 0;
     while (!$GlobalInterrupted && defined($TryingLine = <TRYTOPROVE>)) {
         chomp($TryingLine);
@@ -169,7 +174,7 @@ die("ERROR: Cannot start $TryToProveCommand\n");
             } else {
                 QuietPrint("Proving result for $FormulaName is $Result",0);
                 print("% SZS status $Result for $FormulaName");
-                QuietPrint(" from $ModelFile",0);
+                QuietPrint(" from $InterpretFile",0);
                 print("\n");
             }
         }
@@ -180,11 +185,11 @@ die("ERROR: Cannot start $TryToProveCommand\n");
     }
     if ($GlobalInterrupted || $NumberOfResults > 1) {
         print("% SZS status $AllResult for $FileOrFormula");
-        QuietPrint(" from $ModelFile",0);
+        QuietPrint(" from $InterpretFile",0);
         print("\n");
     }
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub InterpretATPResult {
     my ($Result) = @_;
 
@@ -200,7 +205,7 @@ sub InterpretATPResult {
         return("Unknown");
     }
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
 sub QuietPrint {
     my ($Message,$MaxQuietness) = @_;
 
@@ -208,4 +213,4 @@ sub QuietPrint {
         print("$Message\n");
     }
 }
-#-----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------

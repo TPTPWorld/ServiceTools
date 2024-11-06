@@ -15,9 +15,9 @@
 #include "List.h"
 #include "Tree.h"
 #include "PrintTSTP.h"
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 typedef enum {byformula,all} CollectionType;
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void PrologFormat(char * Name,char * Predicates,char * Functors) {
 
     char * Symbol;
@@ -46,7 +46,7 @@ void PrologFormat(char * Name,char * Predicates,char * Functors) {
     }
     printf("]).\n");
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
 
     SIGNATURE Signature;
@@ -107,18 +107,17 @@ int main(int argc, char *argv[]) {
             Target = Head;
             while (Target != NULL) {
                 Symbols = (char *)Malloc(sizeof(String));
-                Predicates = GetAnnotatedFormulaSymbolUsage(Target->
-AnnotatedFormula,&Symbols,&Functors,&Variables,&Types);
-                PrologFormat(GetName(Target->AnnotatedFormula,Name),Predicates,
-Functors);
+                Predicates = GetAnnotatedFormulaSymbolUsage(Target->AnnotatedFormula,&Symbols,
+&Functors,&Variables,&Types);
+                PrologFormat(GetName(Target->AnnotatedFormula,Name),Predicates,Functors);
                 Free((void **)&Symbols);
                 Target = Target->Next;
             }
             break;
         case all:
             Symbols = (char *)Malloc(sizeof(String));
-            Predicates = GetListOfAnnotatedFormulaSymbolUsage(Head,
-&Symbols,&Functors,&Variables,&Types);
+            Predicates = GetListOfAnnotatedFormulaSymbolUsage(Head,&Symbols,&Functors,&Variables,
+&Types);
             PrologFormat("all",Predicates,Functors);
             Free((void **)&Symbols);
             break;
@@ -128,4 +127,4 @@ Functors);
     FreeSignature(&Signature);
     return(EXIT_SUCCESS);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
