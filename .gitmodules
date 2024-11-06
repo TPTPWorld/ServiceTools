@@ -1,3 +1,4 @@
 [submodule "JJParser"]
 	path = JJParser
 	url = https://github.com/TPTPWorld/JJParser.git
+    branch = master
