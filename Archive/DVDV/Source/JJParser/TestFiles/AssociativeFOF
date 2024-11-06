@@ -1,4 +1,0 @@
-fof(associative,axiom, (
-    ( ( p
-      & q )
-    & r )  )).

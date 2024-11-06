@@ -1,6 +1,0 @@
-fof(vacuous,axiom, (
-    ! [X,Y] : 
-      ( p
-      & ? [X] :
-          ( ~ ! [Z] : ~ q) )
-  )).
