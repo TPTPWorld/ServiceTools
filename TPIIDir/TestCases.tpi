@@ -1,20 +1,20 @@
+fof(an,axiom,( p )).
+fof(another,axiom, ( p => q )).
+tpi(1,execute_async,'ASYNC_SZS_STATUS' = '/home/tptp/Systems/Paradox---4.0/paradox --time 300 --tstp $getgroups(tpi)').
+fof(a,conjecture,( q )).
+tpi(2,execute,'SZS_STATUS' = 'E--- 300 $getgroups(tpi)').
+tpi(3,waitenv,'ASYNC_SZS_STATUS').
+tpi(4,write,'Axioms status: ' & $getenv('ASYNC_SZS_STATUS') & ' Conjecture status: ' & $getenv('SZS_STATUS')).
+tpi(5,exit,exit).
+
 fof(an,axiom,p).
 fof(another,axiom,p => q).
 fof(a,conjecture,q).
 tpi(1,output,stdout).
-% tpi(2,execute,'SZS_VAR' = 'E---1.8 300 $getgroups(tpi)').
-tpi(2,execute,'SZS_VAR' = '/home/tptp/Systems/E---1.8/eprover --auto --cpu-limit=300 --tstp-format $getgroups(tpi)').
+tpi(2,execute,'SZS_VAR' = 'E--- 300 $getgroups(tpi)').
+% tpi(2,execute,'SZS_VAR' = '/home/tptp/Systems/E---1.8/eprover --auto --cpu-limit=300 --tstp-format $getgroups(tpi)').
 tpi(3,write,'The SZS status is' & $getenv('SZS_VAR')).
 tpi(4,exit,exit).
-
-% fof(an,axiom,( p )).
-% fof(another,axiom, ( p => q )).
-% tpi(1,execute_async,'ASYNC_SZS_STATUS' = '/home/tptp/Systems/Paradox---4.0/paradox --time 300 --tstp $getgroups(tpi)').
-% fof(a,conjecture,( q )).
-% tpi(2,execute,'SZS_STATUS' = '/home/tptp/Systems/E---1.8/eprover --auto --cpu-limit=300 --tstp-format $getgroups(tpi)').
-% tpi(3,waitenv,'ASYNC_SZS_STATUS').
-% tpi(4,write,'Axioms status: ' & $getenv('ASYNC_SZS_STATUS') & ' Conjecture status: ' & $getenv('SZS_STATUS')).
-% tpi(5,exit,exit).
 
 % fof(not1,axiom,not1).
 % tpi(1,input,ingroup = 'SomeFormulae.p').

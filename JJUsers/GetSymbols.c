@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 //----Were we given any arguments at all?  If not, die.
     if (argc == 1) {
-        printf("Usage: GetSymbols TPTP-SOURCE\n");
+        printf("Usage: GetSymbols [-all,-formula,-noerror] TPTP-SOURCE\n");
         exit(EXIT_FAILURE);
     }
 //----Check output form flag

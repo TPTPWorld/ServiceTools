@@ -28,9 +28,9 @@ install-most: install-some
 install-some: some
 	mv MakeTreeStats $(TPTP_HOME)/ServiceTools/MakeTreeStats
 	mv MakeListStats $(TPTP_HOME)/ServiceTools/MakeListStats
-	mv GetSymbols $(TPTP_HOME)/ServiceTools/GetSymbols
 	mv ProofSummary $(TPTP_HOME)/ServiceTools/ProofSummary
 	mv CheckTyping $(TPTP_HOME)/ServiceTools/CheckTyping
+# mv GetSymbols $(TPTP_HOME)/ServiceTools/GetSymbols
 
 MakeTreeStats: $(OBJS) MakeTreeStats.o
 	$(CC) $(CFLAGS) -o $@ $(OBJS) MakeTreeStats.o $(LFLAGS)
