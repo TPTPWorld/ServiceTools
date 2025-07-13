@@ -1229,7 +1229,7 @@ int * NumberOfGroups) {
     READFILE InputStream; 
     SyntaxType ThisNodeType;
     String NewIncludeFile;
-    String NewIncludeFilter;
+    SuperString NewIncludeFilter;
     int Continue;
     extern int GlobalQUIT;
 
@@ -1241,8 +1241,7 @@ int * NumberOfGroups) {
             AnnotatedFormula = ParseAnnotatedFormula(InputStream,Signature);
             ThisNodeType = GetSyntax(AnnotatedFormula);
             if (ThisNodeType == include) {
-                GetIncludeParts(AnnotatedFormula,NewIncludeFile,
-NewIncludeFilter);
+                GetIncludeParts(AnnotatedFormula,NewIncludeFile,NewIncludeFilter);
                 FreeTerm(&(AnnotatedFormula->AnnotatedFormulaUnion.Include),Signature,NULL);
                 Free((void **)&AnnotatedFormula);
                 Continue = Interpret(Options,NewIncludeFile,LogicalFormulae,

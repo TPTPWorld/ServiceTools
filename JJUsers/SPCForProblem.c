@@ -246,20 +246,21 @@ char * Status,int HasAConjecture,int IsNonClassical,String SPC) {
     char * Classicality;
 
 //----Check if non-classical
-    Classicality = IsNonClassical ? "N" : "T";
+    Classicality = IsNonClassical ? "N" : 
+Statistics.ConnectiveStatistics.NumberOfDependentPis > 0 ? "D" : "T";
 
 //----Separate CNF and FOF and THF and TFF
     if (Syntax == tptp_thf) {
         strcpy(SPC,Classicality);
 //DEBUG printf("PiB %.0f TE %.0f Pi %.0f Sig %.0f Ch %.0f De %.0f\n",
-//DEBUG Statistics.ConnectiveStatistics.NumberOfPiBinders,
+//DEBUG Statistics.ConnectiveStatistics.NumberOfPolymorphicPis,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfTypedEquations,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfPis,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfSigmas,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfChoices,
 //DEBUG Statistics.ConnectiveStatistics.NumberOfDescriptions);
         if (
-Statistics.ConnectiveStatistics.NumberOfPiBinders > 0 ||
+Statistics.ConnectiveStatistics.NumberOfPolymorphicPis > 0 ||
 Statistics.ConnectiveStatistics.NumberOfSigmaBinders > 0 ||
 Statistics.ConnectiveStatistics.NumberOfTypedEqualitySymbols > 0 ||
 Statistics.ConnectiveStatistics.NumberOfPis > 0 ||

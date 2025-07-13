@@ -22,7 +22,7 @@ int HasNegatedConjectureAncestor(ANNOTATEDFORMULA AnnotatedFormula,LISTNODE Head
     int ParentNumber;
     ANNOTATEDFORMULA Parent;
 
-    GetParentNames(AnnotatedFormula,AllParentNames);
+    GetParentNames(AnnotatedFormula,0,AllParentNames);
     NumberOfParents = Tokenize(AllParentNames,ParentNames,"\n");
     if (NumberOfParents == 0) {
         return(GetRole(AnnotatedFormula,NULL) == negated_conjecture);
