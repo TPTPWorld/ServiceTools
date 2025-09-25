@@ -22,8 +22,8 @@
 #include "PrintTSTP.h"
 #include "SystemOnTPTP.h"
 
-char * IsFOFEPRCommandFromTPTPHome = "SPCs/IsFOFEPR";
-char * IsFOFEPRCommandFlags = " -q --";
+char * IsFOFBSRCommandFromTPTPHome = "SPCs/IsFOFBSR";
+char * IsFOFBSRCommandFlags = " -q -- ";
 char * DefaultTPTPHome = "/home/tptp";
 //-------------------------------------------------------------------------------------------------
 void XCPUHandler(int TheSignal) {
@@ -83,44 +83,49 @@ Statistics.SymbolStatistics.NumberOfPropositions) {
 //-------------------------------------------------------------------------------------------------
 int FOFEPRProblem(StatisticsType Statistics,LISTNODE Head,SIGNATURE Signature) {
 
-    String IsFOFEPRCommand;
+    String IsFOFBSRCommand;
     char * TPTPHome;
     FILE* SendHandle;
     int Status;
 
-//----Functions and (variables or equality) => NO
+//----Functions and variables => NO
     if (
 Statistics.SymbolStatistics.MaxFunctorArity > 0 &&
-(Statistics.SymbolStatistics.NumberOfVariables > 0 || 
- Statistics.FormulaStatistics.NumberOfEqualityAtoms > 0)) {
+Statistics.SymbolStatistics.NumberOfVariables > 0) {
+//----Equality is allowed... Statistics.FormulaStatistics.NumberOfEqualityAtoms > 0)) {
         return(0);
     }
+//----No variables => YES
+    if (Statistics.SymbolStatistics.NumberOfVariables == 0) {
+        return(1);
+    }
 
+//----Otherwise look for BSR
     if ((TPTPHome = getenv("TPTP_HOME")) == NULL) {
         TPTPHome = DefaultTPTPHome;
     }
-    strcpy(IsFOFEPRCommand,TPTPHome);
-    strcat(IsFOFEPRCommand,"/");
-    strcat(IsFOFEPRCommand,IsFOFEPRCommandFromTPTPHome);
+    strcpy(IsFOFBSRCommand,TPTPHome);
+    strcat(IsFOFBSRCommand,"/");
+    strcat(IsFOFBSRCommand,IsFOFBSRCommandFromTPTPHome);
 //----Check if the test for EPR even exists
-    if (eaccess(IsFOFEPRCommand,X_OK) == 0) {
-        strcat(IsFOFEPRCommand,IsFOFEPRCommandFlags);
-        if ((SendHandle = popen(IsFOFEPRCommand,"w")) == NULL) {
-            printf("ERROR: Could not run %s\n",IsFOFEPRCommand);
+    if (eaccess(IsFOFBSRCommand,X_OK) == 0) {
+        strcat(IsFOFBSRCommand,IsFOFBSRCommandFlags);
+        if ((SendHandle = popen(IsFOFBSRCommand,"w")) == NULL) {
+            printf("ERROR: Could not run %s\n",IsFOFBSRCommand);
             exit(EXIT_FAILURE);
         }
-        PrintListOfAnnotatedTSTPNodes(SendHandle,Signature,Head,tptp,1);
+        // PrintListOfAnnotatedTSTPNodes(SendHandle,Signature,Head,tptp,1);
         Status = pclose(SendHandle);
         if (WIFEXITED(Status)) {
-//DEBUG printf("%s exited normally with status %d -- %d\n",IsFOFEPRCommand,Status,WEXITSTATUS(Status));
+//DEBUG printf("%s exited normally with status %d -- %d\n",IsFOFBSRCommand,Status,WEXITSTATUS(Status));fflush(stdout);
             Status = WEXITSTATUS(Status);
         } else {
-//DEBUG printf("%s exited abnormally\n",IsFOFEPRCommand);
-//DEBUG printf("========%d\n",Status);
+//DEBUG printf("%s exited abnormally\n",IsFOFBSRCommand);fflush(stdout);
+//DEBUG printf("========%d\n",Status);fflush(stdout);
             exit(EXIT_FAILURE);
         }
         if (Status != 0 && Status != 1) {
-            printf("ERROR: Invalid status returned from %s\n",IsFOFEPRCommand);
+            printf("ERROR: Invalid status returned from %s\n",IsFOFBSRCommand);
             exit(EXIT_FAILURE);
         }
         return(Status == 1);
@@ -158,13 +163,15 @@ void DetermineCNFSPC(StatisticsType Statistics,String SPC) {
 Statistics.SymbolStatistics.NumberOfPropositions) {
         strcat(SPC,"_PRP");
     } else {
+//----Functions and variables => NO
         if (
-Statistics.SymbolStatistics.MaxFunctorArity < 1 ||
-(Statistics.SymbolStatistics.NumberOfVariables == 0 && 
- Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0)) {
-            strcat(SPC,"_EPR");
-        } else {
+Statistics.SymbolStatistics.MaxFunctorArity > 0 &&
+Statistics.SymbolStatistics.NumberOfVariables > 0) {
+//----Equality is OK... && Statistics.FormulaStatistics.NumberOfEqualityAtoms == 0)) {
             strcat(SPC,"_RFO");
+        } else {
+//----No variables or BSR
+            strcat(SPC,"_EPR");
         }
         if (strstr(SPC,"_UNS_") != NULL || strstr(SPC,"_UNK_") != NULL ||
 strstr(SPC,"_OPN_") != NULL) {
